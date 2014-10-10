@@ -1,0 +1,18 @@
+@(message: String)
+
+@main("zbw subapp") {
+    <script type="text/javascript" src='@routes.Assets.at("js/index.js")'></script>
+    <h2>@message</h2>
+    <table id="repositories" class="table table-hover"></table>
+
+    <form action="@routes.RepositoryApp.addRepository()" method="post" role="form">
+        <div class="form-group">
+        <label for="title">Title</label> <input type="text" class="form-control" name="title" />
+        </div>
+        <div class="form-group">
+        <label for="id">Handle (com_10836_1)</label> <input type="text" class="form-control" name="id" />
+        </div>
+        <button type="submit" class="btn btn-default">Add Repository</button>
+    </form>
+
+}

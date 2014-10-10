@@ -1,0 +1,32 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET         /                                     controllers.Application.index()
+POST        /repository                           controllers.RepositoryApp.addRepository()
+GET         /repositories                         controllers.RepositoryApp.getRepositories()
+GET         /repositorylist                       controllers.RepositoryApp.list()
+GET         /repository/submit                    controllers.RepositoryApp.submit()
+GET         /repository/:id                       controllers.RepositoryApp.edit(id: String)
+GET         /repository/delete/:id                controllers.RepositoryApp.delete(id: String)
+GET         /repository/show/:id                  controllers.RepositoryApp.showRepository(id: String)
+GET         /repository/identifiers/:id           controllers.RepositoryApp.getRecords(id: String)
+GET         /repository/bfetch/:identifier        controllers.RecordApplication.bfetchOAI(identifier: String)
+GET         /record/show/:identifier              controllers.RecordApplication.show(identifier: String)
+GET         /record/list/:identifier              controllers.RecordApplication.list(identifier: String,p:Int ?= 0, s ?= "logcreated", o ?= "desc", f ?= "", status:Int ?= 0)
+GET         /record/fetch/:identifier             controllers.RecordApplication.fetchOAI(identifier: String)
+GET         /record/createie/:identifier          controllers.RecordApplication.createIE(identifier: String)
+GET         /record/bcreateie/:identifier         controllers.RecordApplication.bcreateIE(identifier: String)
+GET         /record/push/:identifier              controllers.RecordApplication.push(identifier : String)
+GET         /record/bpush/:identifier             controllers.RecordApplication.bpush(identifier : String)
+GET         /record/deposit/:identifier           controllers.RecordApplication.deposit(identifier : String)
+GET         /record/bdeposit/:identifier          controllers.RecordApplication.bdeposit(identifier : String)
+GET         /record/sipstatus/:identifier         controllers.RecordApplication.sipstatus(identifier : String)
+GET         /record/bsipstatus/:identifier        controllers.RecordApplication.bsipstatus(identifier : String)
+GET         /record/monitor/:identifier           controllers.RecordApplication.actorStatus(identifier : String)
+GET         /monitor                              controllers.RepositoryApp.monitor()
+
+# Map static resources from the /public folder to the /assets URL path
+GET         /assets/*file                         controllers.Assets.at(path="/public", file)
+

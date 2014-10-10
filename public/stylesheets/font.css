@@ -1,0 +1,12 @@
+
+@font-face {
+    font-family: 'zbw_binaryregular';
+    src: url('fonts/zbw_binary-webfont.eot');
+    src: url('fonts/zbw_binary-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/zbw_binary-webfont.woff') format('woff'),
+         url('fonts/zbw_binary-webfont.ttf') format('truetype'),
+         url('fonts/zbw_binary-webfont.svg#zbw_binaryregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}

@@ -1,0 +1,33 @@
+# You can specialize this file for each language.
+# For example, for French create a messages.fr file
+#
+
+document.saved= Das Dokument {%s} wird gerade gespeichert.
+document.save.error= Das Dokument {%s} konnte nicht geladen werden.
+document.updated = Das Dokument {%s} war schon vorhanden und wurde nicht aktualisiert.
+document.deleted = Das Dokument {%s} wurde gelöscht.
+document.savedall = Dokumente wurden gespeichert.
+documents.saved.rosetta = Die Dokumente werden zu Rosetta verschoben.
+documents.notsaved.rosetta = Es wurden keine Dokumente zu Rosetta verschoben.
+document.job.documents.save=Dokumente werden im Job gespeichert.
+document.status.0=New
+document.status.1=Created
+document.status.2=Importfehler
+document.status.3=Imported
+document.status.4=Importing
+document.status.5=IECreateError
+document.status.6= IECreated
+document.status.7=IECreating
+document.status.8=Exportiertfehler
+document.status.9=Exported
+document.status.10=Exporting
+document.status.11=IngestError
+document.status.12=Ingested
+document.status.13=Ingesting
+document.status.11=To Permanent
+document.status.100=Finished
+sets.newsets=%s neue Sets geladen
+logs.filter=Filtern
+logs.search=Suchen
+
+records.list.title={0,choice,0#No Records|1#One record|1<{0,number,integer} records} found

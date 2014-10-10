@@ -1,0 +1,35 @@
+@(record: Record)
+@import helper._
+@import helper.twitterBootstrap._
+@import play.i18n._
+
+@main(record.repository.title) {
+
+    <h2>@record.identifier @record.title</h2>
+    <div>in: <a href="@routes.RecordApplication.list(record.repository.id)">@record.repository.title</a></div>
+    <div>Status: @Messages.get("document.status."+record.status)</div>
+    <div>SIP ID: @record.sipId</div>
+    <div>SipStatus: @record.sipStatus</div>
+    <div>SipActive: @record.sipActive</div>
+    <div>SipModul: @record.sipModul</div>
+
+
+    <a href="@routes.RecordApplication.show(record.identifier)">refresh</a>
+
+    @if(record.status < Record.STATUSIMPORTED) {
+    <div><a href="@routes.RecordApplication.fetchOAI(record.identifier)">fetch</a></div>
+    }
+    @if(record.status == Record.STATUSIMPORTED) {
+        <div><a href="@routes.RecordApplication.createIE(record.identifier)">createIE</a></div>
+    }
+    @if(record.status == Record.STATUSIECREATED) {
+        <div><a href="@routes.RecordApplication.push(record.identifier)">push</a></div>
+    }
+    @if(record.status == Record.STATUSEXPORTED) {
+        <div><a href="@routes.RecordApplication.deposit(record.identifier)">deposit</a></div>
+    }
+    @if(record.status == Record.STATUSINGESTED) {
+        <div><a href="@routes.RecordApplication.sipstatus(record.identifier)">sipstatus</a></div>
+    }
+
+}

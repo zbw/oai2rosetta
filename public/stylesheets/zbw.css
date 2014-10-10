@@ -1,0 +1,53 @@
+body {
+    min-height: 2000px;
+    padding-top: 70px;
+}
+h1, .title {
+    font-family: 'zbw_binaryregular';
+}
+
+section#main {
+    position: relative;
+    padding: 5em 2em;
+    border-bottom: 1px solid #ccc;
+    min-height: 600px;
+}
+
+table.records em {
+    color: #aaa;
+}
+
+table.records .sipId, table.records .status,table.records .sipStatus {
+    width: 10%;
+    min-width: 100px;
+}
+
+table.records .identifier {
+    width: 30%;
+    min-width: 300px;
+}
+
+table.records .header a {
+}
+#actions {
+    position: relative;
+}
+
+#actions #add {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+#pagination {
+    position: relative;
+}
+
+#pagination ul {
+    position: absolute;
+    right: 0;
+}
+
+#pagination ul .current a {
+    color: #666;
+}

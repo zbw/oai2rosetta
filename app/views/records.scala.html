@@ -1,0 +1,34 @@
+@(repository: Repository)
+
+@import helper._
+@import helper.twitterBootstrap._
+@import play.i18n._
+
+@main("zbw subapp") {
+     <h2>@repository.title</h2>
+     <div>
+         <h3>@repository.records.size() Records</h3>
+         <a href="@routes.RepositoryApp.getRecords(repository.id)">Records holen</a>
+         <a href="@routes.RecordApplication.list(repository.id)">Records zeigen</a>
+         <table class="table table-hover">
+             <thead>
+                 <th>Identifier</th>
+                 <th>SIP ID</th>
+                 <th>Status</th>
+                 <th>SipStatus</th>
+                 <th></th>
+             </thead>
+         @for(record <- repository.records) {
+             <tr>
+                 <td><a href="@routes.RecordApplication.show(record.identifier)">@record.identifier</a></td>
+                 <td>@record.sipId</td>
+                 <td>@Messages.get("document.status."+record.status)</td>
+                 <td>@record.sipStatus</td>
+                 <td><a href="@routes.RecordApplication.show(record.identifier)">show</a></td>
+             </tr>
+             }
+         </table>
+     </div>
+
+
+}

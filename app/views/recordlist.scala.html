@@ -1,0 +1,163 @@
+@(currentPage: com.avaje.ebean.Page[Record], currentSortBy: String, currentOrder: String, currentFilter: String,status: Integer, repository: Repository)
+@import helper._
+@import helper.twitterBootstrap._
+@****************************************
+* Helper generating navigation links    *
+****************************************@
+    @link(newPage:Int, newSortBy:String) = @{
+
+        var sortBy = currentSortBy
+        var order = currentOrder
+
+        if(newSortBy != null) {
+            sortBy = newSortBy
+            if(currentSortBy == newSortBy) {
+                if(currentOrder == "asc") {
+                    order = "desc"
+                } else {
+                    order = "asc"
+                }
+            } else {
+                order = "asc"
+            }
+        }
+
+        // Generate the link
+        routes.RecordApplication.list(repository.id,newPage,sortBy, order, currentFilter, status)
+
+    }
+
+@**********************************
+* Helper generating table headers *
+***********************************@
+@header(key:String, title:String) = {
+    <th class="@key.replace(".","_") header @if(currentSortBy == key) @{if(currentOrder == "asc") "headerSortDown" else "headerSortUp"}">
+        <a href="@link(0, key)">@title</a>
+    </th>
+}
+
+@main(repository.title) {
+    <script type="text/javascript" src='@routes.Assets.at("js/jobs.js")'></script>
+    <div class="row">
+        <div class="col-md-6">
+            <div id="actions">
+
+                <form class="form-inline" action="@link(0, "identifier")" method="GET">
+
+                    <div class="form-group">
+                        <input class="form-control" type="search" id="searchbox" name="f" value="@currentFilter" placeholder="identifier or sip">
+                        </div>
+                    <div class="form-group">
+                        <select class="form-control" name="status">
+                            <option value="-1" @if(status == -1){selected}>All</option>
+                            <option value="0" @if(status == 0){selected}>@Messages("document.status.0")</option>
+                            <option value="1" @if(status == 1){selected}>@Messages("document.status.1")</option>
+                            <option value="2" @if(status == 2){selected}>@Messages("document.status.2")</option>
+                            <option value="3" @if(status == 3){selected}>@Messages("document.status.3")</option>
+                            <option value="4" @if(status == 4){selected}>@Messages("document.status.4")</option>
+                            <option value="5" @if(status == 5){selected}>@Messages("document.status.5")</option>
+                            <option value="6" @if(status == 6){selected}>@Messages("document.status.6")</option>
+                            <option value="7" @if(status == 7){selected}>@Messages("document.status.7")</option>
+                            <option value="8" @if(status == 8){selected}>@Messages("document.status.8")</option>
+                            <option value="9" @if(status == 9){selected}>@Messages("document.status.9")</option>
+                            <option value="10" @if(status == 10){selected}>@Messages("document.status.10")</option>
+                            <option value="11" @if(status == 11){selected}>@Messages("document.status.11")</option>
+                            <option value="100" @if(status == 100){selected}>@Messages("document.status.100")</option>
+                        </select>
+                    </div>
+                    <button type="submit" id="searchsubmit" class="btn btn-default">Filter</button>
+
+                </form>
+                <div class="h4">@Messages("records.list.title", currentPage.getTotalRowCount)</div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row btn-block">
+                <div class="col-md-6 ">
+                    <a class="btn btn-default" href="@routes.RepositoryApp.getRecords(repository.id)">Records holen</a>
+                </div>
+            </div>
+            <div class="row btn-block" >
+                <div class="col-md-12">
+                    <a id="fetcher" class="btn btn-default jobbutton" data-url="@routes.RecordApplication.bfetchOAI(repository.id)" href="">Fetch</a>
+                    <a id="creater" class="btn btn-default jobbutton" data-url="@routes.RecordApplication.bcreateIE(repository.id)" href="">CreateIE</a>
+                    <a id="pusher" class="btn btn-default jobbutton" data-url="@routes.RecordApplication.bpush(repository.id)" href="">Push</a>
+                    <a id="depositer" class="btn btn-default jobbutton" data-url="@routes.RecordApplication.bdeposit(repository.id)" href="">Deposit</a>
+                    <a id="sipper" class="btn btn-default jobbutton" data-url="@routes.RecordApplication.bsipstatus(repository.id)" href="">SipStatus</a>
+                    <div class="alert alert-success fade in" data-url="" id="statusmessage" style="margin-top:20px;display:none;">
+                        hello
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    @if(currentPage.getTotalRowCount == 0) {
+
+        <div class="well">
+            <em>Nothing to display</em>
+        </div>
+
+    } else {
+
+        <table class="records table table-hover">
+            <thead>
+                <tr>
+                    @header("identifier", "Identifier")
+                    @header("logcreated", "Date")
+                    @header("sipId", "SIP ID")
+                    @header("status", "Status")
+                    @header("sipStatus", "SipStatus")
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @for(record <-currentPage.getList) {
+                    <tr>
+                        <td><a href="@routes.RecordApplication.show(record.identifier)">@record.identifier</a></td>
+                        <td>
+                        @if(record.logcreated == null) {
+                            <em>-</em>
+                        } else {
+                            @record.logcreated.format("dd MMM yyyy")
+                        }
+                        </td>
+                        <td>@record.sipId</td>
+                        <td>@Messages("document.status."+record.status)</td>
+                        <td>@record.sipStatus</td>
+                        <td><a href="@routes.RecordApplication.show(record.identifier)">show</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="center-block">
+            <ul class="pagination pagination-centered">
+                @if(currentPage.hasPrev) {
+                    <li>
+                        <a href="@link(currentPage.getPageIndex - 1, null)">&larr; Previous</a>
+                    </li>
+                } else {
+                    <li class="disabled">
+                        <a>&larr; Previous</a>
+                    </li>
+                }
+                <li class="active">
+                    <a>Displaying @currentPage.getDisplayXtoYofZ(" to "," of ")</a>
+                </li>
+                @if(currentPage.hasNext) {
+                    <li>
+                        <a href="@link(currentPage.getPageIndex + 1, null)">Next &rarr;</a>
+                    </li>
+                } else {
+                    <li class="disabled">
+                        <a>Next &rarr;</a>
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+}
+

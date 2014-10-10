@@ -1,0 +1,81 @@
+# --- Created by Ebean DDL
+# To stop Ebean DDL generation, remove this comment and start using Evolutions
+
+# --- !Ups
+
+create table record (
+  identifier                varchar(255) not null,
+  id                        varchar(255),
+  repository_id             varchar(255),
+  title                     varchar(255),
+  metadata                  varchar(255),
+  logcreated                datetime,
+  logmodified               datetime,
+  loguser                   varchar(255),
+  sip_id                    bigint,
+  status                    integer,
+  sip_status                varchar(255),
+  sip_modul                 varchar(255),
+  sip_active                varchar(255),
+  constraint pk_record primary key (identifier))
+;
+
+create table repository (
+  id                        varchar(255) not null,
+  title                     varchar(255),
+  oai_url                   varchar(255),
+  oai_title                 varchar(255),
+  oai_mapping               varchar(255),
+  pds_url                   varchar(255),
+  deposit_wsdl_url          varchar(255),
+  deposit_wsdl_endpoint     varchar(255),
+  producer_wsdl_url         varchar(255),
+  producer_wsdl_endpoint    varchar(255),
+  sipstatus_wsdl_url        varchar(255),
+  sipstatus_wsdl_endpoint   varchar(255),
+  material_flow_id          varchar(255),
+  producer_id               varchar(255),
+  deposit_set_id            varchar(255),
+  user_name                 varchar(255),
+  institution               varchar(255),
+  password                  varchar(255),
+  ftp_host                  varchar(255),
+  ftp_user                  varchar(255),
+  ftp_port                  varchar(255),
+  ftp_dir                   varchar(255),
+  ftp_key                   varchar(255),
+  ftp_max                   varchar(255),
+  limit                     integer,
+  active                    tinyint(1) default 0,
+  constraint pk_repository primary key (id))
+;
+
+create table resource (
+  id                        bigint auto_increment not null,
+  orig_file                 varchar(255),
+  local_file                varchar(255),
+  description               varchar(255),
+  mime                      varchar(255),
+  record_identifier         varchar(255),
+  constraint pk_resource primary key (id))
+;
+
+alter table record add constraint fk_record_repository_1 foreign key (repository_id) references repository (id) on delete restrict on update restrict;
+create index ix_record_repository_1 on record (repository_id);
+alter table resource add constraint fk_resource_record_2 foreign key (record_identifier) references record (identifier) on delete restrict on update restrict;
+create index ix_resource_record_2 on resource (record_identifier);
+
+
+
+# --- !Downs
+
+SET FOREIGN_KEY_CHECKS=0;
+
+drop table record;
+
+drop table repository;
+
+drop table resource;
+
+SET FOREIGN_KEY_CHECKS=1;
+
