@@ -83,6 +83,10 @@ public class Record extends Model {
       return Resource.find.where().eq("record_identifier",this.identifier).findList();
     }
 
+    public static Integer countStatus(String identifier, int status) {
+        return new Integer(find.where().eq("repository_id",identifier).eq("status", status).findRowCount());
+
+    }
     public boolean existResource(String origfile) {
         for (Resource resource : resources) {
             if (resource.localFile.equals(origfile)) {
@@ -91,6 +95,8 @@ public class Record extends Model {
         }
         return false;
     }
+
+
 
     /**
      * Return a page of records

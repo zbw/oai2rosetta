@@ -12,6 +12,7 @@
     <div>SipStatus: @record.sipStatus</div>
     <div>SipActive: @record.sipActive</div>
     <div>SipModul: @record.sipModul</div>
+    <div>Resources: @record.resources.size()</div>
 
 
     <a href="@routes.RecordApplication.show(record.identifier)">refresh</a>
@@ -30,6 +31,10 @@
     }
     @if(record.status == Record.STATUSINGESTED) {
         <div><a href="@routes.RecordApplication.sipstatus(record.identifier)">sipstatus</a></div>
+    }
+
+    @if(record.status < Record.STATUSINGESTED) {
+        <div><a href="@routes.RecordApplication.reset(record.identifier)">reset @Record.STATUSINGESTED </a></div>
     }
 
 }

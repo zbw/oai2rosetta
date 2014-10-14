@@ -25,6 +25,7 @@ GET         /record/bdeposit/:identifier          controllers.RecordApplication.
 GET         /record/sipstatus/:identifier         controllers.RecordApplication.sipstatus(identifier : String)
 GET         /record/bsipstatus/:identifier        controllers.RecordApplication.bsipstatus(identifier : String)
 GET         /record/monitor/:identifier           controllers.RecordApplication.actorStatus(identifier : String)
+GET         /record/reset/:identifier             controllers.RecordApplication.reset(identifier: String)
 GET         /monitor                              controllers.RepositoryApp.monitor()
 
 # Map static resources from the /public folder to the /assets URL path

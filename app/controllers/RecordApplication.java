@@ -9,11 +9,14 @@ import akka.actor.ActorSystem;
 import akka.actor.Props;
 import models.Record;
 import models.Repository;
+import models.Resource;
 import play.mvc.Controller;
 import play.mvc.Result;
 import utils.Utils;
 import views.html.index;
 import views.html.recordlist;
+
+import java.util.List;
 
 import static play.libs.Json.toJson;
 
@@ -55,6 +58,19 @@ public class RecordApplication extends Controller {
       );
     }
 
+    public static Result reset(String id) {
+        Record record = Record.findByIdentifier(id);
+        if (record.status < Record.STATUSINGESTED) {
+            List<Resource> resources =record.getResources();
+            for (Resource resource: resources) {
+                resource.delete();
+            }
+            record.getResources().clear();
+            record.status = Record.STATUSNEW;
+            record.save();
+        }
+        return show(id);
+    }
 
     public static Result actorStatus(String identifier) {
         System.out.println("Statusmesssages ");

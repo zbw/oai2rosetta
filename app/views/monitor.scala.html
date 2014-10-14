@@ -1,13 +1,15 @@
 
 
 @import actors.StatusMessage
-@(statusMessages: Set[StatusMessage])
+@(statusMessages: Set[StatusMessage], stats: Map[String,Map[String, Integer]])
 <div class="modal-content">
+
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
         <h4 class="modal-title" id="myModalLabel">Monitor</h4>
     </div>
     <div class="modal-body">
+        <h2>Jobs</h2>
         <table class="table table-hover">
             <thead>
                 <th>Type</th>
@@ -16,6 +18,11 @@
                 <th>Started</th>
                 <th>Error</th>
             </thead>
+            @if(statusMessages.size() == 0) {
+            <tr>
+                <td colspan="5">no active Jobs</td>
+        </tr>
+                }
             @for(message <- statusMessages) {
                 @if(message.isExists()) {
                 <tr>
@@ -28,8 +35,27 @@
             }
             }
             </table>
+        <h2>Statistics</h2>
+       @for((key,value) <- stats) {
+           <div>
+           <h3>@key</h3>
+           <table class="table table-hover">
+               <thead>
+                   <th>Type</th>
+                   <th>Count</th>
+               </thead>
+               @for((k,v) <- value) {
+                   <tr>
+                       <td>@Messages("document.status."+k)</td>
+                       <td>@v</td>
+                   </tr>
+               }
+               </table>
+           </div>
+       }
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
     </div>
+
 </div>

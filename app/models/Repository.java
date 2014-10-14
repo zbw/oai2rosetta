@@ -55,4 +55,8 @@ public class Repository extends Model {
     public static Repository findById(String id) {
         return find.where().eq("id", id).findUnique();
     }
+
+    public Integer countStatus(int status) {
+        return Record.countStatus(this.id, status);
+    }
 }

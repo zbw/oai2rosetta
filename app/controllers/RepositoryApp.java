@@ -3,32 +3,19 @@ package controllers;
 import actors.StatusMessage;
 import models.Record;
 import models.Repository;
-
 import oai.*;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 import play.data.Form;
 import play.db.ebean.Model;
-import play.mvc.*;
-
-import static play.data.Form.form;
-import static play.libs.Json.toJson;
-
+import play.mvc.Controller;
+import play.mvc.Result;
 import utils.Utils;
 import views.html.monitor;
 import views.html.records;
-import views.html.repository;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.*;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+
+import static play.data.Form.form;
+import static play.libs.Json.toJson;
 
 /**
  * Created by Ott Konstantin on 21.08.2014.
@@ -119,12 +106,34 @@ public class RepositoryApp extends Controller {
 
     public static Result monitor() {
         java.util.Set<StatusMessage> statusMessages = new HashSet<>();
-        statusMessages.add(Utils.getStatusMessage(StatusMessage.FETCHJOB));
-        statusMessages.add(Utils.getStatusMessage(StatusMessage.CREATEJOB));
-        statusMessages.add(Utils.getStatusMessage(StatusMessage.PUSHJOB));
-        statusMessages.add(Utils.getStatusMessage(StatusMessage.DEPOSITJOB));
-        statusMessages.add(Utils.getStatusMessage(StatusMessage.SIPSTATUSJOB));
+        StatusMessage msg = Utils.getStatusMessage(StatusMessage.FETCHJOB);
+        if (msg.isActive())
+            statusMessages.add(msg);
+        msg = Utils.getStatusMessage(StatusMessage.CREATEJOB);
+        if (msg.isActive())
+            statusMessages.add(msg);
+        msg = Utils.getStatusMessage(StatusMessage.PUSHJOB);
+        if (msg.isActive())
+            statusMessages.add(msg);
+        msg = Utils.getStatusMessage(StatusMessage.DEPOSITJOB);
+        if (msg.isActive())
+            statusMessages.add(msg);
+        msg = Utils.getStatusMessage(StatusMessage.SIPSTATUSJOB);
+        if (msg.isActive())
+            statusMessages.add(msg);
+        // get Stats
+        Map<String,Map<String,Integer>> stats = new HashMap<>();
+        List<Repository> repositories = new Model.Finder(String.class, Repository.class).all();
+        for (Repository repository: repositories) {
+            HashMap<String, Integer> reposStat = new HashMap<>();
+            for (int i = 0; i < Record.ALLSTATUS.length; i++) {
+                Integer count = repository.countStatus(Record.ALLSTATUS[i]);
+                if (count>0)
+                reposStat.put("" + Record.ALLSTATUS[i],count);
+            }
+            stats.put(repository.title,reposStat);
+        }
 
-        return ok(monitor.render(statusMessages));
+        return ok(monitor.render(statusMessages,stats));
     }
 }
