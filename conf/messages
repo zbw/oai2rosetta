@@ -24,7 +24,6 @@ document.status.10=Exporting
 document.status.11=IngestError
 document.status.12=Ingested
 document.status.13=Ingesting
-document.status.11=To Permanent
 document.status.100=Finished
 sets.newsets=%s neue Sets geladen
 logs.filter=Filtern
