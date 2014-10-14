@@ -102,17 +102,26 @@ public class Record extends Model {
      * @param filter Filter applied on the name column
      */
     public static Page<Record> page(Repository repository,int page, int pageSize, String sortBy, String order, String filter, int status) {
-        String sstatus = status+"";
-        if (status == -1) sstatus = "%";
-        return
-                find.where()
-                        .eq("repository",repository)
-                        .eq("status",sstatus)
-                        .or(Expr.ilike("identifier", "%" + filter + "%"),Expr.ilike("sipId", "%" + filter + "%"))
-                        .orderBy(sortBy + " " + order)
-                        .findPagingList(pageSize)
-                        .setFetchAhead(false)
-                        .getPage(page);
+        if (status == -1) {
+            return
+                    find.where()
+                            .eq("repository", repository)
+                            .or(Expr.ilike("identifier", "%" + filter + "%"), Expr.ilike("sipId", "%" + filter + "%"))
+                            .orderBy(sortBy + " " + order)
+                            .findPagingList(pageSize)
+                            .setFetchAhead(false)
+                            .getPage(page);
+        } else {
+            return
+                    find.where()
+                            .eq("repository", repository)
+                            .eq("status", status)
+                            .or(Expr.ilike("identifier", "%" + filter + "%"), Expr.ilike("sipId", "%" + filter + "%"))
+                            .orderBy(sortBy + " " + order)
+                            .findPagingList(pageSize)
+                            .setFetchAhead(false)
+                            .getPage(page);
+        }
     }
 
     public static List<Record> limit(String repository, int status, int limit) {
