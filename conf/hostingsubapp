@@ -3,7 +3,7 @@
 #
 # This scripts do the start/stop/restart of a PlayFramework project with GIT Support
 #
-
+# chkconfig: 2345 75 25
 ### BEGIN vars
 APP=hostingsubapp
 APPNAME=dspacesubapp
