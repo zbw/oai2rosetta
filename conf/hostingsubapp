@@ -1,9 +1,14 @@
 #!/bin/bash
 #
-#
-# This scripts do the start/stop/restart of a PlayFramework project with GIT Support
+#  hostingsubapp    Startup script for the hosting submission application#
 #
 # chkconfig: 2345 75 25
+# description: hostingsubapp
+# processname: hostingsubapp
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+
 ### BEGIN vars
 APP=hostingsubapp
 APPNAME=dspacesubapp
