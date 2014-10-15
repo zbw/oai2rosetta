@@ -13,7 +13,7 @@ PLAY_VERSION=23
 APPLICATION_PATH=${BASE_DIR}/${PLAY_VERSION}/${APP}
 PROD_PATH="${APPLICATION_PATH}/target/universal/stage"
 CONF_PATH="${PROD_PATH}/conf/prod.conf"
-echo  "echo1 $PROD_PATH"
+
 
 
 
@@ -27,15 +27,15 @@ set -e
 update() {
     echo "Updating"
 
-    cd $APP_PATH || exit
+    cd $APPLICATION_PATH || exit
 
     unset GIT_DIR
     # Update repo
     git pull
 
-    cd $APP_PATH
+    cd $APPLICATION_PATH
     # Creating new project (MUST BE ON THE GOOD DIR)
-    $APP_PATH/activator clean compile stage
+    $APPLICATION_PATH/activator clean compile stage
 }
 
 start() {
