@@ -289,7 +289,7 @@ public class RecordUtils {
             if (keyFile.exists()) {
                 jsch.addIdentity(keyFile.getAbsolutePath(), "");
             } else {
-                System.out.println("keyfile not found");
+                System.out.println("keyfile not found: " + record.repository.ftpKey);
                 return false;
             }
             sftpSession.connect();
