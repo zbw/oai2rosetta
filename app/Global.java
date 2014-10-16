@@ -7,6 +7,7 @@ import akka.actor.ActorRef;
 import akka.actor.Props;
 import play.Application;
 import play.GlobalSettings;
+import play.Logger;
 import play.libs.Akka;
 import scala.concurrent.duration.FiniteDuration;
 
@@ -19,7 +20,7 @@ public class Global extends GlobalSettings {
 
     @Override
     public void onStart(Application app) {
-
+        Logger.info("Application has started");
         FiniteDuration delay = FiniteDuration.create(0, TimeUnit.SECONDS);
         FiniteDuration frequency = FiniteDuration.create(5, TimeUnit.SECONDS);
         ActorRef myActor = Akka.system().actorOf(Props.create(TestActor.class));

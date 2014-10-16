@@ -27,6 +27,7 @@ import oai.OAIException;
 import org.apache.commons.io.FileUtils;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlOptions;
+import play.Logger;
 import play.libs.Json;
 
 import javax.xml.namespace.QName;
@@ -289,7 +290,7 @@ public class RecordUtils {
             if (keyFile.exists()) {
                 jsch.addIdentity(keyFile.getAbsolutePath(), "");
             } else {
-                System.out.println("keyfile not found: " + record.repository.ftpKey);
+                Logger.info("keyfile not found: " + record.repository.ftpKey);
                 return false;
             }
             sftpSession.connect();

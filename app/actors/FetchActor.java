@@ -45,7 +45,6 @@ public class FetchActor extends UntypedActor {
                     statusMessage.setCount(count);
                     monitorActor.tell(statusMessage, getSelf());
                     count++;
-                    System.out.println(count) ;
                 }
             } else {
                 statusMessage.setStatus("Fetching");

@@ -1,23 +1,9 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import models.Record;
+import org.junit.Test;
+import utils.RecordUtils;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import org.junit.*;
-
-import play.mvc.*;
-import play.test.*;
-import play.data.DynamicForm;
-import play.data.validation.ValidationError;
-import play.data.validation.Constraints.RequiredValidator;
-import play.i18n.Lang;
-import play.libs.F;
-import play.libs.F.*;
-import play.twirl.api.Content;
-
+import static org.fest.assertions.Assertions.assertThat;
 import static play.test.Helpers.*;
-import static org.fest.assertions.Assertions.*;
 
 
 /**
@@ -28,6 +14,7 @@ import static org.fest.assertions.Assertions.*;
 */
 public class ApplicationTest {
 
+
     @Test
     public void simpleCheck() {
         int a = 1 + 1;
@@ -35,11 +22,17 @@ public class ApplicationTest {
     }
 
     @Test
-    public void renderTemplate() {
-        Content html = views.html.index.render("Your new application is ready.");
-        assertThat(contentType(html)).isEqualTo("text/html");
-        assertThat(contentAsString(html)).contains("Your new application is ready.");
+    public void fetchRecord() {
+        running(fakeApplication(inMemoryDatabase("test")), new Runnable() {
+                    public void run() {
+                        Record record = new Record();
+                        record.identifier = "oai:nationallizenzen.zbw.eu:10836/19";
+                        record.save();
+                        boolean ok = RecordUtils.fetchRecord(record);
+                        assertThat(ok);
+                    }
+                }
+        );
     }
-
 
 }

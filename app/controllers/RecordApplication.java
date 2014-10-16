@@ -10,6 +10,7 @@ import akka.actor.Props;
 import models.Record;
 import models.Repository;
 import models.Resource;
+import play.Logger;
 import play.mvc.Controller;
 import play.mvc.Result;
 import utils.Utils;
@@ -73,19 +74,14 @@ public class RecordApplication extends Controller {
     }
 
     public static Result actorStatus(String identifier) {
-        System.out.println("Statusmesssages ");
         StatusMessage status = Utils.getStatusMessage(StatusMessage.FETCHJOB);
         if (status.isExists())
-        System.out.println("fetch "+ status);
         status = Utils.getStatusMessage(StatusMessage.CREATEJOB);
         if (status.isExists())
-        System.out.println("create " +status);
         status = Utils.getStatusMessage(StatusMessage.PUSHJOB);
         if (status.isExists())
-        System.out.println("push " +status);
         status = Utils.getStatusMessage(StatusMessage.DEPOSITJOB);
         if (status.isExists())
-        System.out.println("deposit " +status);
         status = Utils.getStatusMessage(StatusMessage.SIPSTATUSJOB);
         if (status.isExists())
         System.out.println("sip " +status);
@@ -159,7 +155,7 @@ public class RecordApplication extends Controller {
             ActorSelection rootActor = actorSystem.actorSelection("user/RootActor");
             rootActor.tell(msg,null);
         } else {
-            System.out.println(msg.getCommand()+ " still active");
+            Logger.info(msg.getCommand() + " still active");
         }
     }
 

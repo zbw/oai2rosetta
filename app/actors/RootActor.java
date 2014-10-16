@@ -1,6 +1,10 @@
 package actors;
 
-import akka.actor.*;
+import akka.actor.ActorRef;
+import akka.actor.ActorSystem;
+import akka.actor.Props;
+import akka.actor.UntypedActor;
+import play.Logger;
 
 /**
  * Created by Ott Konstantin on 08.10.2014.
@@ -37,7 +41,7 @@ public class RootActor extends UntypedActor {
             } else if (cmd.getCommand().equals(StatusMessage.SIPSTATUSJOB)) {
                 sipStatusActor.tell(cmd.getMessage(),self());
             } else {
-                 System.out.println(cmd.getCommand() + " not implemented");
+                Logger.info(cmd.getCommand() + " not implemented");
             }
         } else {
             unhandled(message);

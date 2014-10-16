@@ -45,7 +45,7 @@ create table repository (
   ftp_dir                   varchar(255),
   ftp_key                   varchar(255),
   ftp_max                   varchar(255),
-  limit                     integer,
+  joblimit                  integer,
   active                    tinyint(1) default 0,
   constraint pk_repository primary key (id))
 ;
