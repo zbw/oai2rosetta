@@ -17,7 +17,7 @@ PLAY_VERSION=23
 APPLICATION_PATH=${BASE_DIR}/${PLAY_VERSION}/${APP}
 PROD_PATH="${APPLICATION_PATH}/target/universal/stage"
 CONF_PATH="${PROD_PATH}/conf/prod.conf"
-
+RUNUSER=ottk
 
 
 
@@ -28,6 +28,9 @@ export _JAVA_OPTIONS="-Xms1024m -Xmx1024m -XX:PermSize=512m -XX:MaxPermSize=512m
 # Exit immediately if a command exits with a nonzero exit status.
 set -e
 
+# change to local user
+
+
 update() {
     echo "Updating"
 
@@ -35,17 +38,17 @@ update() {
 
     unset GIT_DIR
     # Update repo
-    git pull
+    su - $RUNUSER git pull
 
     cd $APPLICATION_PATH
     # Creating new project (MUST BE ON THE GOOD DIR)
-    $APPLICATION_PATH/activator clean compile stage
+    su - $RUNUSER $APPLICATION_PATH/activator clean compile stage
 }
 
 start() {
     echo "Starting server"
     cd $APPLICATION_PATH
-    eval $PROD_PATH"/bin/"$APPNAME" -Dhttp.port="$PORT" -Dconfig.file="$CONF_PATH" &"
+    su - $RUNUSER eval $PROD_PATH"/bin/"$APPNAME" -Dhttp.port="$PORT" -Dconfig.file="$CONF_PATH" &"
 }
 
 stop() {
