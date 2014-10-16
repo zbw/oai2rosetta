@@ -45,6 +45,7 @@ update() {
 
 start() {
     echo "Starting server"
+    cd $APPLICATION_PATH
     eval $PROD_PATH"/bin/"$APPNAME" -Dhttp.port="$PORT" -Dconfig.file="$CONF_PATH" &"
 }
 
