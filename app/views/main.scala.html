@@ -24,11 +24,7 @@
     </head>
     <body role="document">
             <!-- Button trigger modal -->
-<script>
-$(document).on("hidden.bs.modal", function (e) {
-$(e.target).removeData("bs.modal").find(".modal-content").empty();
-});
-</script>
+
 
             <!-- Modal -->
         <div class="modal fade" id="monitorModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -86,5 +82,23 @@ $(e.target).removeData("bs.modal").find(".modal-content").empty();
             @content
 
         </div>
+        <script>
+        $(document).on("hidden.bs.modal", function (e) {
+        $(e.target).removeData("bs.modal").find(".modal-content").empty();
+        });
+        var $modal = $('.modal-content');
+        $modal.on('click', '.update', function(){
+            var auto_refresh = setInterval(
+              function()
+              {
+              $modal.load("@routes.RepositoryApp.monitor()").fadeIn('slow');
+              }, 10000);
+
+
+        });
+
+
+
+        </script>
     </body>
 </html>
