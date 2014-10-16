@@ -36,7 +36,7 @@ update() {
 
     unset GIT_DIR
     # Update repo
-    su $USER "git pull"
+    su $USER -c "git pull"
 
     cd $APPLICATION_PATH
     # Creating new project (MUST BE ON THE GOOD DIR)
