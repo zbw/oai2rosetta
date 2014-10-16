@@ -36,11 +36,11 @@ update() {
 
     unset GIT_DIR
     # Update repo
-    git pull
+    su $USER "git pull"
 
     cd $APPLICATION_PATH
     # Creating new project (MUST BE ON THE GOOD DIR)
-    su $USER -c $APPLICATION_PATH/activator clean compile stage
+    su $USER -c "$APPLICATION_PATH/activator clean compile stage"
 }
 
 start() {
