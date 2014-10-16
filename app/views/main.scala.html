@@ -24,7 +24,11 @@
     </head>
     <body role="document">
             <!-- Button trigger modal -->
-
+<script>
+$(document).on("hidden.bs.modal", function (e) {
+$(e.target).removeData("bs.modal").find(".modal-content").empty();
+});
+</script>
 
             <!-- Modal -->
         <div class="modal fade" id="monitorModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
