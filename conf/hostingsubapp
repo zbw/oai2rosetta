@@ -6,7 +6,6 @@
 # description: hostingsubapp
 # processname: hostingsubapp
 # Source function library.
-. /etc/rc.d/init.d/functions
 
 
 ### BEGIN vars
