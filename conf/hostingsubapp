@@ -17,6 +17,7 @@ PLAY_VERSION=23
 APPLICATION_PATH=${BASE_DIR}/${PLAY_VERSION}/${APP}
 PROD_PATH="${APPLICATION_PATH}/target/universal/stage"
 CONF_PATH="${PROD_PATH}/conf/prod.conf"
+USER=ottk
 
 
 
@@ -39,13 +40,13 @@ update() {
 
     cd $APPLICATION_PATH
     # Creating new project (MUST BE ON THE GOOD DIR)
-    $APPLICATION_PATH/activator clean compile stage
+    su $USER -c $APPLICATION_PATH/activator clean compile stage
 }
 
 start() {
     echo "Starting server"
     cd $APPLICATION_PATH
-    eval $PROD_PATH"/bin/"$APPNAME" -Dhttp.port="$PORT" -Dconfig.file="$CONF_PATH" &"
+    su $USER -c $PROD_PATH"/bin/"$APPNAME" -Dhttp.port="$PORT" -Dconfig.file="$CONF_PATH" &"
 }
 
 stop() {
