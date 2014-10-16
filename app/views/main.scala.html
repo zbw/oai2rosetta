@@ -83,18 +83,20 @@
 
         </div>
         <script>
+        var auto_refresh = null;
         $(document).on("hidden.bs.modal", function (e) {
         $(e.target).removeData("bs.modal").find(".modal-content").empty();
         });
         var $modal = $('.modal-content');
         $modal.on('click', '.update', function(){
-            var auto_refresh = setInterval(
+            auto_refresh = setInterval(
               function()
               {
               $modal.load("@routes.RepositoryApp.monitor()").fadeIn('slow');
-              }, 10000);
-
-
+              }, 1000);
+        });
+        $modal.on('click', '.stop', function(){
+            clearInterval(auto_refresh);
         });
 
 
