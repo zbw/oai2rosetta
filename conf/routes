@@ -4,6 +4,9 @@
 
 # Home page
 GET         /                                     controllers.Application.index()
+GET         /login                                controllers.Application.login()
+GET         /logout                               controllers.Application.logout()
+POST        /login                                controllers.Application.authenticate()
 POST        /repository                           controllers.RepositoryApp.addRepository()
 GET         /repositories                         controllers.RepositoryApp.getRepositories()
 GET         /repositorylist                       controllers.RepositoryApp.list()

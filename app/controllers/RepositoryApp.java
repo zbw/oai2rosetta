@@ -8,6 +8,8 @@ import play.data.Form;
 import play.db.ebean.Model;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Security;
+import play.mvc.With;
 import utils.Utils;
 import views.html.monitor;
 import views.html.records;
@@ -20,24 +22,27 @@ import static play.libs.Json.toJson;
 /**
  * Created by Ott Konstantin on 21.08.2014.
  */
+
 public class RepositoryApp extends Controller {
 
     public static Result list() {
         return ok(views.html.repositories.render(""));
     }
 
+    @Security.Authenticated(Secured.class)
     public static Result edit(String id) {
         Repository repository = Repository.findById(id);
         Form<Repository> repoForm  = form(Repository.class).fill(repository);
         return ok(views.html.repository.render(repoForm));
     }
-
+    @Security.Authenticated(Secured.class)
     public static Result delete(String id) {
         Repository repository = Repository.findById(id);
         repository.delete();
         return redirect(routes.RepositoryApp.list());
     }
 
+    @Security.Authenticated(Secured.class)
     public static Result submit() {
         Form<Repository> repoForm  = form(Repository.class).bindFromRequest();
         if (repoForm.hasErrors()) {
@@ -49,6 +54,8 @@ public class RepositoryApp extends Controller {
         flash("success", String.format("%s erfolgreich gespeichert.",repos.title));
         return list();
     }
+
+    @Security.Authenticated(Secured.class)
     public static Result addRepository() {
         Repository repository = Form.form(Repository.class).bindFromRequest().get();
         repository.save();
@@ -60,6 +67,7 @@ public class RepositoryApp extends Controller {
         return ok(toJson(repositories));
     }
 
+    @Security.Authenticated(Secured.class)
     public static Result getRecords(String id) {
         Repository repository = Repository.findById(id);
         OAIClient oaiClient = new OAIClient(repository.oaiUrl);
@@ -104,6 +112,7 @@ public class RepositoryApp extends Controller {
         return ok(records.render(repository));
     }
 
+    @Security.Authenticated(Secured.class)
     public static Result monitor() {
         java.util.Set<StatusMessage> statusMessages = new HashSet<>();
         StatusMessage msg = Utils.getStatusMessage(StatusMessage.FETCHJOB);

@@ -5,13 +5,18 @@
 import actors.TestActor;
 import akka.actor.ActorRef;
 import akka.actor.Props;
+import com.avaje.ebean.Ebean;
+import models.User;
 import play.Application;
 import play.GlobalSettings;
 import play.Logger;
 import play.libs.Akka;
+import play.libs.Yaml;
 import scala.concurrent.duration.FiniteDuration;
 
+import java.util.Collection;
 import java.util.Date;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class Global extends GlobalSettings {
@@ -31,6 +36,12 @@ public class Global extends GlobalSettings {
             }
         };
 
+        if (User.find.findRowCount() == 0) {
+            Map users =   (Map) Yaml.load("initial-user.yml");
+            System.out.println(users);
+            Ebean.save((Collection) (users.get("users")));
+            Ebean.save(users.get("users"));
+        }
 
 
         Akka.system().scheduler().schedule(

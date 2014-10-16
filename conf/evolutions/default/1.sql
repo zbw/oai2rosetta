@@ -60,6 +60,13 @@ create table resource (
   constraint pk_resource primary key (id))
 ;
 
+create table user (
+  email                     varchar(255) not null,
+  name                      varchar(255),
+  password                  varchar(255),
+  constraint pk_user primary key (email))
+;
+
 alter table record add constraint fk_record_repository_1 foreign key (repository_id) references repository (id) on delete restrict on update restrict;
 create index ix_record_repository_1 on record (repository_id);
 alter table resource add constraint fk_resource_record_2 foreign key (record_identifier) references record (identifier) on delete restrict on update restrict;
@@ -76,6 +83,8 @@ drop table record;
 drop table repository;
 
 drop table resource;
+
+drop table user;
 
 SET FOREIGN_KEY_CHECKS=1;
 

@@ -13,6 +13,7 @@ import models.Resource;
 import play.Logger;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Security;
 import utils.Utils;
 import views.html.index;
 import views.html.recordlist;
@@ -45,6 +46,7 @@ public class RecordApplication extends Controller {
      * @param order Sort order (either asc or desc)
      * @param filter Filter applied on record titles
      */
+    @Security.Authenticated(Secured.class)
     public static Result list(String id, int page, String sortBy, String order, String filter, int status) {
       Repository repository = Repository.findById(id);
       return ok(
@@ -59,6 +61,7 @@ public class RecordApplication extends Controller {
       );
     }
 
+    @Security.Authenticated(Secured.class)
     public static Result reset(String id) {
         Record record = Record.findByIdentifier(id);
         if (record.status < Record.STATUSINGESTED) {
@@ -89,7 +92,7 @@ public class RecordApplication extends Controller {
     }
 
 
-
+    @Security.Authenticated(Secured.class)
     public static Result bfetchOAI(String identifier) {
         Repository repository = Repository.findById(identifier);
         CommandMessage msg = new CommandMessage(StatusMessage.FETCHJOB,true, identifier, repository.joblimit);
@@ -97,16 +100,19 @@ public class RecordApplication extends Controller {
         return ok(toJson(msg));
     }
 
+    @Security.Authenticated(Secured.class)
     public static Result fetchOAI(String identifier)  {
         startJob(new CommandMessage(StatusMessage.FETCHJOB,false,identifier,0));
         return show(identifier);
     }
 
+    @Security.Authenticated(Secured.class)
     public static Result createIE(String identifier) {
         startJob(new CommandMessage(StatusMessage.CREATEJOB,false,identifier,0));
         return show(identifier);
     }
 
+    @Security.Authenticated(Secured.class)
     public static Result bcreateIE(String identifier) {
         Repository repository = Repository.findById(identifier);
         startJob(new CommandMessage(StatusMessage.CREATEJOB,true, identifier, repository.joblimit));
@@ -114,38 +120,45 @@ public class RecordApplication extends Controller {
         return ok();
     }
 
+    @Security.Authenticated(Secured.class)
     public static Result push(String identifier) {
         startJob(new CommandMessage(StatusMessage.PUSHJOB, false, identifier, 0));
         return show(identifier);
     }
 
+    @Security.Authenticated(Secured.class)
     public static Result bpush(String identifier) {
         Repository repository = Repository.findById(identifier);
         startJob(new CommandMessage(StatusMessage.PUSHJOB, true, identifier, repository.joblimit));
         return ok();
     }
 
+    @Security.Authenticated(Secured.class)
     public static Result deposit(String identifier) {
         startJob(new CommandMessage(StatusMessage.DEPOSITJOB, false, identifier, 0));
         return show(identifier);
     }
 
+    @Security.Authenticated(Secured.class)
     public static Result bdeposit(String identifier) {
         Repository repository = Repository.findById(identifier);
         startJob(new CommandMessage(StatusMessage.DEPOSITJOB, true, identifier, repository.joblimit));
         return ok();
     }
 
+    @Security.Authenticated(Secured.class)
     public static Result sipstatus(String identifier) {
         startJob(new CommandMessage(StatusMessage.SIPSTATUSJOB, false, identifier, 0));
         return show(identifier);
     }
 
+    @Security.Authenticated(Secured.class)
     public static Result bsipstatus(String identifier) {
         Repository repository = Repository.findById(identifier);
         startJob(new CommandMessage(StatusMessage.SIPSTATUSJOB, true, identifier, repository.joblimit));
         return ok();
     }
+
 
 
 

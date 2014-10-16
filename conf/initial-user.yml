@@ -1,0 +1,11 @@
+users:
+
+    - !!models.User
+        email:      k.ott@zbw.eu
+        name:       Konstantin Ott
+        password:   1234
+
+    - !!models.User
+            email:      y.friese@zbw.eu
+            name:       Yvonne Friese
+            password:   asdf
