@@ -1,5 +1,5 @@
 import org.junit.Test;
-import play.libs.F.Callback;
+import play.libs.F;
 import play.test.TestBrowser;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -13,12 +13,16 @@ public class IntegrationTest {
      */
     @Test
     public void test() {
-        running(testServer(3333, fakeApplication(inMemoryDatabase())), HTMLUNIT, new Callback<TestBrowser>() {
+
+        running(testServer(3333, fakeApplication()), HTMLUNIT, new F.Callback<TestBrowser>() {
             public void invoke(TestBrowser browser) {
                 browser.goTo("http://localhost:3333");
                 assertThat(browser.pageSource()).contains("zbw hosting subap");
+                browser.goTo("http://localhost:3333/record/sipstatus/oai:nationallizenzen.zbw.eu:10836%2F16");
+                assertThat(browser.pageSource()).contains("zbw hosting subap");
             }
         });
+
     }
 
 }

@@ -137,4 +137,14 @@ public class Record extends Model {
                         .eq("status",status)
                         .setMaxRows(limit).findList();
     }
+
+    public String toString() {
+        return "record: "
+                + identifier + " "
+                + title  + " "
+                + sipId  + " "
+                + sipStatus  + " "
+                + sipModul + " "
+                + sipActive;
+    }
 }

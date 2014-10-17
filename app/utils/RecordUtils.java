@@ -172,7 +172,8 @@ public class RecordUtils {
         }
         return ok;
     }
-    public static void getSipStatus(Record record) {
+    public static boolean getSipStatus(Record record) {
+        boolean ok = false;
         PdsClient pds = PdsClient.getInstance();
         pds.init(record.repository.pdsUrl, false);
         String producerId = record.repository.producerId;
@@ -196,9 +197,11 @@ public class RecordUtils {
             record.sipActive = sipStatusInfo.getStatus();
             record.sipModul = sipStatusInfo.getModule();
             record.save();
+            ok = true;
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return ok;
     }
 
     public static boolean deposit(Record record) {
