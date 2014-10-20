@@ -3,6 +3,7 @@ package actors;
 import akka.actor.ActorSelection;
 import akka.actor.UntypedActor;
 import models.Record;
+import play.Logger;
 import utils.RecordUtils;
 
 import java.util.Date;
@@ -39,6 +40,7 @@ public class FetchActor extends UntypedActor {
             int limit = myMessage.getLimit();
             if (myMessage.isBatch()) {
                 List<Record> records = Record.limit(identifier, Record.STATUSNEW, limit);
+                Logger.info("fetching " + records.size() + " records");
                 for (Record record : records) {
                     fetch(record.identifier);
                     statusMessage.setStatus("Fetching");

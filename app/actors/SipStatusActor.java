@@ -3,6 +3,7 @@ package actors;
 import akka.actor.ActorSelection;
 import akka.actor.UntypedActor;
 import models.Record;
+import play.Logger;
 import utils.RecordUtils;
 
 import java.util.Date;
@@ -40,6 +41,7 @@ public class SipStatusActor extends UntypedActor {
             int limit = myMessage.getLimit();
             if (myMessage.isBatch()) {
                 List<Record> records = Record.limit(identifier, Record.STATUSINGESTED, limit);
+                Logger.info("checking sipstatus for " + records.size() + " records");
                 for (Record record : records) {
                     sipstatus(record.identifier);
                     statusMessage.setStatus("Running");
