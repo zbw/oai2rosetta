@@ -34,6 +34,7 @@ public class Record extends Model {
     public String sipStatus;
     public String sipModul;
     public String sipActive;
+    public String errormsg;
 
     public static final int STATUSNEW = 0;
     public static final int STATUSCREATED = 1;

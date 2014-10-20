@@ -79,12 +79,13 @@ public class RecordUtils {
                     resource.origFile = origfile;
 
                     resource.localFile = importdirectory + record.repository.id + "/" + record.id + "/content/streams/" + filename;
-                    ResourceUtils.getResource(resource.origFile, importdirectory + record.repository.id + "/" + record.id + "/content/streams/", filename);
                     resource.mime = resources.get(uri);
                     resource.record = record;
                     resource.save();
                     record.resources.add(resource);
-                    }
+                    ResourceUtils.getResource(resource.origFile, importdirectory + record.repository.id + "/" + record.id + "/content/streams/", filename);
+
+                }
                 }
 
             record.logcreated        = new Date();
@@ -93,14 +94,20 @@ public class RecordUtils {
 
             ok = true;
         } catch (OAIException e) {
+            record.errormsg = e.getLocalizedMessage();
             record.status = record.STATUSIMPORTEDERROR;
             e.printStackTrace();
+            Logger.error("fetchError for: " + record.identifier + " - "+ e.getMessage());
         } catch (IOException e) {
+            Logger.error("fetchError for: " + record.identifier + " - "+ e.getMessage());
+            record.errormsg = e.getLocalizedMessage();
             record.status = record.STATUSIMPORTEDERROR;
             e.printStackTrace();
         } catch (URISyntaxException e) {
+            record.errormsg = e.getLocalizedMessage();
             record.status = record.STATUSIMPORTEDERROR;
             e.printStackTrace();
+            Logger.error("fetchError for: " + record.identifier + " - "+ e.getMessage());
         }
         record.save();
         return ok;
@@ -169,6 +176,7 @@ public class RecordUtils {
             ok= true;
         } catch (Exception e) {
             e.printStackTrace();
+            Logger.error("createIEError for: " + record.identifier + " - "+ e.getMessage());
         }
         return ok;
     }
@@ -199,7 +207,9 @@ public class RecordUtils {
             record.save();
             ok = true;
         } catch (Exception e) {
+            Logger.error("sipstatusError for: " + record.identifier + " - "+ e.getMessage());
             e.printStackTrace();
+
         }
         return ok;
     }
@@ -266,10 +276,13 @@ public class RecordUtils {
 
         } catch (XmlException e) {
             e.printStackTrace();
+            Logger.error("depositError for: " + record.identifier + " - "+ e.getMessage());
         } catch (MalformedURLException e) {
             e.printStackTrace();
+            Logger.error("depositError for: " + record.identifier + " - "+ e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
+            Logger.error("depositError for: " + record.identifier + " - "+ e.getMessage());
         }
         return ok;
     }
@@ -317,8 +330,10 @@ public class RecordUtils {
             ok = true;
             sftpSession.disconnect();
         } catch (JSchException e) {
+            Logger.error("moveError for: " + record.identifier + " - "+ e.getMessage());
             e.printStackTrace();
         } catch (SftpException e) {
+            Logger.error("moveError for: " + record.identifier + " - "+ e.getMessage());
             e.printStackTrace();
         }
 

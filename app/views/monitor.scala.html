@@ -17,7 +17,7 @@
                 <th>Active</th>
                 <th>Status</th>
                 <th>Started</th>
-                <th>Error</th>
+                <th>Count</th>
             </thead>
             @if(statusMessages.size() == 0) {
             <tr>
@@ -31,7 +31,7 @@
                     <td>@message.isActive()</td>
                     <td>@message.getStatus()</td>
                     <td>@message.getStarted().format("dd MMM yyyy")</td>
-                    <td>@message.getError()</td>
+                    <td>@message.getCount()</td>
                 </tr>
             }
             }

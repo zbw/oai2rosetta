@@ -17,6 +17,7 @@ create table record (
   sip_status                varchar(255),
   sip_modul                 varchar(255),
   sip_active                varchar(255),
+  errormsg                  varchar(255),
   constraint pk_record primary key (identifier))
 ;
 

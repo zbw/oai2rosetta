@@ -42,13 +42,13 @@ public class SipStatusActor extends UntypedActor {
                 List<Record> records = Record.limit(identifier, Record.STATUSINGESTED, limit);
                 for (Record record : records) {
                     sipstatus(record.identifier);
-                    statusMessage.setStatus("Fetching");
+                    statusMessage.setStatus("Running");
                     statusMessage.setCount(count);
                     monitorActor.tell(statusMessage, getSelf());
                     count++;
                 }
             } else {
-                statusMessage.setStatus("Fetching");
+                statusMessage.setStatus("Running");
                 statusMessage.setCount(count);
                 monitorActor.tell(statusMessage, getSelf());
                 sipstatus(identifier);
