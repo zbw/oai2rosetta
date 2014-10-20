@@ -43,13 +43,13 @@ public class CreateIEActor extends UntypedActor {
                 List<Record> records = Record.limit(identifier, Record.STATUSIMPORTED, limit);
                 for (Record record : records) {
                     create(record.identifier);
-                    statusMessage.setStatus("Fetching");
+                    statusMessage.setStatus("Running");
                     statusMessage.setCount(count);
                     monitorActor.tell(statusMessage, getSelf());
                     count++;
                 }
             } else {
-                statusMessage.setStatus("Fetching");
+                statusMessage.setStatus("Running");
                 statusMessage.setCount(count);
                 monitorActor.tell(statusMessage, getSelf());
                 create(identifier);

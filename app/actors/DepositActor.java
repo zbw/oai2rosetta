@@ -42,19 +42,19 @@ public class DepositActor extends UntypedActor {
                 List<Record> records = Record.limit(identifier, Record.STATUSEXPORTED, limit);
                 for (Record record : records) {
                     deposit(record.identifier);
-                    statusMessage.setStatus("Fetching");
+                    statusMessage.setStatus("Running");
                     statusMessage.setCount(count);
                     monitorActor.tell(statusMessage, getSelf());
                     count++;
                 }
             } else {
-                statusMessage.setStatus("Fetching");
+                statusMessage.setStatus("Running");
                 statusMessage.setCount(count);
                 monitorActor.tell(statusMessage, getSelf());
                 deposit(identifier);
             }
             statusMessage.setActive(false);
-            statusMessage.setStatus("Finished");
+            statusMessage.setStatus("Running");
             statusMessage.setFinished(new Date());
             monitorActor.tell(statusMessage, getSelf());
         } else if (message instanceof StatusMessage){

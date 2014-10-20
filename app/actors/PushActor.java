@@ -41,13 +41,13 @@ public class PushActor extends UntypedActor {
                 List<Record> records = Record.limit(identifier, Record.STATUSIECREATED, limit);
                 for (Record record : records) {
                     push(record.identifier);
-                    statusMessage.setStatus("Fetching");
+                    statusMessage.setStatus("Running");
                     statusMessage.setCount(count);
                     monitorActor.tell(statusMessage, getSelf());
                     count++;
                 }
             } else {
-                statusMessage.setStatus("Fetching");
+                statusMessage.setStatus("Running");
                 statusMessage.setCount(count);
                 monitorActor.tell(statusMessage, getSelf());
                 push(identifier);
