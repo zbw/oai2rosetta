@@ -1,7 +1,11 @@
 
 
 @import actors.StatusMessage
-@(statusMessages: Set[StatusMessage], stats: Map[String,Map[String, Integer]])
+@import actors.Jobstatus
+
+@import java.util.List
+
+@(jobs:Vector[Jobstatus], stats: Map[String,Map[String, Integer]])
 <div class="modal-content">
 
     <div class="modal-header">
@@ -14,28 +18,27 @@
         <table class="table table-hover">
             <thead>
                 <th>Type</th>
-                <th>Active</th>
-                <th>Status</th>
-                <th>Started</th>
+                <th>Worker</th>
                 <th>Count</th>
+                <th></th>
             </thead>
-            @if(statusMessages.size() == 0) {
-            <tr>
-                <td colspan="5">no active Jobs</td>
-        </tr>
-                }
-            @for(message <- statusMessages) {
-                @if(message.isExists()) {
+            @if(jobs.size() == 0) {
                 <tr>
-                  <td>@message.getType()</td>
-                    <td>@message.isActive()</td>
-                    <td>@message.getStatus()</td>
-                    <td>@message.getStarted().format("dd MMM yyyy")</td>
-                    <td>@message.getCount()</td>
+                    <td colspan="5">no active Jobs</td>
                 </tr>
             }
+            @for(job <- jobs) {
+
+                <tr>
+                    <td>@job.getType()</td>
+                    <td>@job.getWorker()</td>
+                    <td>@job.getCount()</td>
+                    <td><a id="jobstopbutton" class="btn btn-default jobstopbutton" data-url="@routes.RepositoryApp.stop("stop"+job.getType())" href="#">Stop</a></td>
+                </tr>
+
             }
-            </table>
+        </table>
+
         <h2>Statistics</h2>
        @for((key,value) <- stats) {
            <div>

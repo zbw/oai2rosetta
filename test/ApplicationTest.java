@@ -1,9 +1,12 @@
+import actors.CreateIEActor;
+import actors.FetchActor;
+import actors.PushActor;
+import actors.SipStatusActor;
 import models.Record;
 import models.Repository;
 import org.junit.Test;
 import play.mvc.Result;
 import play.test.FakeRequest;
-import utils.RecordUtils;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -41,11 +44,11 @@ public class ApplicationTest {
                 record.id = record.id+"_test";
                 record.status = 0;
                 record.save();
-                boolean ok = RecordUtils.fetchRecord(record);
+                boolean ok = FetchActor.fetchRecord(record);
                 assertThat(ok);
-                assertThat(RecordUtils.createIE(record));
-                assertThat(RecordUtils.move(record));
-                assertThat(RecordUtils.getSipStatus(record));
+                assertThat(CreateIEActor.createIE(record));
+                assertThat(PushActor.move(record));
+                assertThat(SipStatusActor.getSipStatus(record));
                 System.out.println(record);
                 record = (Record) tmprecord._ebean_createCopy();
 
@@ -62,7 +65,7 @@ public class ApplicationTest {
         Record record = mock(Record.class);
         record.identifier = "oai:nationallizenzen.zbw.eu:10836/19";
         record.save();
-        boolean ok = RecordUtils.fetchRecord(record);
+        boolean ok = FetchActor.fetchRecord(record);
         assertThat(ok);
 
     }

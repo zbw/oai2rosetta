@@ -98,7 +98,10 @@
         $modal.on('click', '.stop', function(){
             clearInterval(auto_refresh);
         });
+        $modal.on('click', '.jobstopbutton', function(e){
+        $.get($( this ).attr('data-url'));
 
+        });
 
 
         </script>

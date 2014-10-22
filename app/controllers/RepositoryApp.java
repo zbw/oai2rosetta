@@ -1,5 +1,6 @@
 package controllers;
 
+import actors.Jobstatus;
 import actors.StatusMessage;
 import models.Record;
 import models.Repository;
@@ -9,7 +10,6 @@ import play.db.ebean.Model;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
-import play.mvc.With;
 import utils.Utils;
 import views.html.monitor;
 import views.html.records;
@@ -114,22 +114,7 @@ public class RepositoryApp extends Controller {
 
     @Security.Authenticated(Secured.class)
     public static Result monitor() {
-        java.util.Set<StatusMessage> statusMessages = new HashSet<>();
-        StatusMessage msg = Utils.getStatusMessage(StatusMessage.FETCHJOB);
-        if (msg.isActive())
-            statusMessages.add(msg);
-        msg = Utils.getStatusMessage(StatusMessage.CREATEJOB);
-        if (msg.isActive())
-            statusMessages.add(msg);
-        msg = Utils.getStatusMessage(StatusMessage.PUSHJOB);
-        if (msg.isActive())
-            statusMessages.add(msg);
-        msg = Utils.getStatusMessage(StatusMessage.DEPOSITJOB);
-        if (msg.isActive())
-            statusMessages.add(msg);
-        msg = Utils.getStatusMessage(StatusMessage.SIPSTATUSJOB);
-        if (msg.isActive())
-            statusMessages.add(msg);
+        Vector<Jobstatus> jobs = Utils.getJobMessages();
         // get Stats
         Map<String,Map<String,Integer>> stats = new HashMap<>();
         List<Repository> repositories = new Model.Finder(String.class, Repository.class).all();
@@ -143,6 +128,14 @@ public class RepositoryApp extends Controller {
             stats.put(repository.title,reposStat);
         }
 
-        return ok(monitor.render(statusMessages,stats));
+        return ok(monitor.render(jobs,stats));
     }
+
+    @Security.Authenticated(Secured.class)
+    public static Result stop(String type) {
+        Utils.stopJob(type);
+
+        return ok();
+    }
+
 }

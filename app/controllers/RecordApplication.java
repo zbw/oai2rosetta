@@ -10,17 +10,13 @@ import akka.actor.Props;
 import models.Record;
 import models.Repository;
 import models.Resource;
-import play.Logger;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
-import utils.Utils;
 import views.html.index;
 import views.html.recordlist;
 
 import java.util.List;
-
-import static play.libs.Json.toJson;
 
 public class RecordApplication extends Controller {
     //static ActorSystem actorSystem = ActorSystem.create( "zbwSubApp" );
@@ -76,29 +72,19 @@ public class RecordApplication extends Controller {
         return show(id);
     }
 
-    public static Result actorStatus(String identifier) {
-        StatusMessage status = Utils.getStatusMessage(StatusMessage.FETCHJOB);
-        if (status.isExists())
-        status = Utils.getStatusMessage(StatusMessage.CREATEJOB);
-        if (status.isExists())
-        status = Utils.getStatusMessage(StatusMessage.PUSHJOB);
-        if (status.isExists())
-        status = Utils.getStatusMessage(StatusMessage.DEPOSITJOB);
-        if (status.isExists())
-        status = Utils.getStatusMessage(StatusMessage.SIPSTATUSJOB);
-        if (status.isExists())
-        System.out.println("sip " +status);
-        return ok();
-    }
 
 
     @Security.Authenticated(Secured.class)
     public static Result bfetchOAI(String identifier) {
         Repository repository = Repository.findById(identifier);
-        CommandMessage msg = new CommandMessage(StatusMessage.FETCHJOB,true, identifier, repository.joblimit);
-        startJob(msg);
-        return ok(toJson(msg));
+        List<Record> records = Record.limit(identifier, Record.STATUSNEW, repository.joblimit);
+        for (Record record : records) {
+            CommandMessage msg = new CommandMessage(StatusMessage.FETCHJOB,false, record.identifier,0);
+            startJob(msg);
+        }
+        return ok();
     }
+
 
     @Security.Authenticated(Secured.class)
     public static Result fetchOAI(String identifier)  {
@@ -115,8 +101,11 @@ public class RecordApplication extends Controller {
     @Security.Authenticated(Secured.class)
     public static Result bcreateIE(String identifier) {
         Repository repository = Repository.findById(identifier);
-        startJob(new CommandMessage(StatusMessage.CREATEJOB,true, identifier, repository.joblimit));
-
+        List<Record> records = Record.limit(identifier, Record.STATUSIMPORTED, repository.joblimit);
+        for (Record record : records) {
+            CommandMessage msg = new CommandMessage(StatusMessage.CREATEJOB,false, record.identifier,0);
+            startJob(msg);
+        }
         return ok();
     }
 
@@ -129,7 +118,11 @@ public class RecordApplication extends Controller {
     @Security.Authenticated(Secured.class)
     public static Result bpush(String identifier) {
         Repository repository = Repository.findById(identifier);
-        startJob(new CommandMessage(StatusMessage.PUSHJOB, true, identifier, repository.joblimit));
+        List<Record> records = Record.limit(identifier, Record.STATUSIECREATED, repository.joblimit);
+        for (Record record : records) {
+            CommandMessage msg = new CommandMessage(StatusMessage.PUSHJOB,false, record.identifier,0);
+            startJob(msg);
+        }
         return ok();
     }
 
@@ -142,7 +135,11 @@ public class RecordApplication extends Controller {
     @Security.Authenticated(Secured.class)
     public static Result bdeposit(String identifier) {
         Repository repository = Repository.findById(identifier);
-        startJob(new CommandMessage(StatusMessage.DEPOSITJOB, true, identifier, repository.joblimit));
+        List<Record> records = Record.limit(identifier, Record.STATUSEXPORTED, repository.joblimit);
+        for (Record record : records) {
+            CommandMessage msg = new CommandMessage(StatusMessage.DEPOSITJOB,false, record.identifier,0);
+            startJob(msg);
+        }
         return ok();
     }
 
@@ -155,7 +152,11 @@ public class RecordApplication extends Controller {
     @Security.Authenticated(Secured.class)
     public static Result bsipstatus(String identifier) {
         Repository repository = Repository.findById(identifier);
-        startJob(new CommandMessage(StatusMessage.SIPSTATUSJOB, true, identifier, repository.joblimit));
+        List<Record> records = Record.limit(identifier, Record.STATUSINGESTED, repository.joblimit);
+        for (Record record : records) {
+            CommandMessage msg = new CommandMessage(StatusMessage.SIPSTATUSJOB,false, record.identifier,0);
+            startJob(msg);
+        }
         return ok();
     }
 
@@ -163,13 +164,8 @@ public class RecordApplication extends Controller {
 
 
     private static void startJob(CommandMessage msg) {
-        StatusMessage status = Utils.getStatusMessage(msg.getCommand());
-        if (!status.isActive()) {
-            ActorSelection rootActor = actorSystem.actorSelection("user/RootActor");
-            rootActor.tell(msg,null);
-        } else {
-            Logger.info(msg.getCommand() + " still active");
-        }
+        ActorSelection rootActor = actorSystem.actorSelection("user/RootActor");
+        rootActor.tell(msg,null);
     }
 
 

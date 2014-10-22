@@ -1,5 +1,7 @@
 package utils;
 
+import actors.CommandMessage;
+import actors.Jobstatus;
 import actors.RootActorSystem;
 import actors.StatusMessage;
 import akka.actor.ActorSelection;
@@ -8,6 +10,9 @@ import akka.util.Timeout;
 import scala.concurrent.Await;
 import scala.concurrent.Future;
 import scala.concurrent.duration.Duration;
+
+import java.util.ArrayList;
+import java.util.Vector;
 
 import static akka.pattern.Patterns.ask;
 
@@ -34,5 +39,45 @@ public class Utils {
             return result;
 
         }
+    }
+
+    public static ArrayList<StatusMessage> getStatusMessages() {
+        Timeout timeout = new Timeout(Duration.create(10, "seconds"));
+        ActorSelection monitor = actorSystem.actorSelection("/user/MonitorActor");
+        Future future = ask(monitor,"monitor",timeout);
+
+        //Abfragen
+        try {
+            ArrayList<StatusMessage> result = (ArrayList<StatusMessage>) Await.result(future, timeout.duration());
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return new ArrayList<>();
+
+        }
+    }
+
+    public static Vector<Jobstatus> getJobMessages() {
+        Timeout timeout = new Timeout(Duration.create(10, "seconds"));
+        ActorSelection monitor = actorSystem.actorSelection("user/RootActor");
+        Future future = ask(monitor,"monitor",timeout);
+
+        //Abfragen
+        try {
+            Vector<Jobstatus> result = (Vector<Jobstatus>) Await.result(future, timeout.duration());
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return new Vector();
+
+        }
+    }
+
+    public static void stopJob(String type) {
+        ActorSelection monitor = actorSystem.actorSelection("user/RootActor");
+        CommandMessage msg = new CommandMessage(type,false,null, 0);
+        monitor.tell(msg,null);
     }
 }

@@ -17,7 +17,7 @@ public class StatusMessage implements Serializable {
     private Date finished;
 
     public static final String FETCHJOB =       "FetchActor";
-    public static final String CREATEJOB =      "CreateIEActor";
+    public static final String CREATEJOB =      "CreateieActor";
     public static final String PUSHJOB =        "PushActor";
     public static final String DEPOSITJOB =     "DepositActor";
     public static final String SIPSTATUSJOB =   "SipStatusActor";
@@ -105,7 +105,8 @@ public class StatusMessage implements Serializable {
                 + " active: " + active
                 + " finished: " + count
                 + " started: " + started
-                + " ended: " + finished;
+                + " ended: " + finished
+                + " count: " + count;
     }
 }
 

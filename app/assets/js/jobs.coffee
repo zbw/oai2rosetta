@@ -8,3 +8,5 @@ $ ->
           $('#statusmessage').html("Job started")
           $('#statusmessage').show()
           $('#statusmessage').fadeOut(1000)
+
+

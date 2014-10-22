@@ -1,64 +1,45 @@
 package actors;
 
-import akka.actor.ActorSelection;
 import akka.actor.UntypedActor;
+import com.exlibris.dps.SipStatusInfo;
+import com.exlibris.dps.SipWebServices;
+import com.exlibris.dps.SipWebServices_Service;
+import com.exlibris.dps.sdk.pds.PdsClient;
 import models.Record;
 import play.Logger;
-import utils.RecordUtils;
 
+import javax.xml.namespace.QName;
+import javax.xml.ws.BindingProvider;
+import java.net.URL;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by Ott Konstantin on 25.09.2014.
  */
 public class SipStatusActor extends UntypedActor {
 
-    private final ActorSelection monitorActor;
-    private final String type = "STATUS";
 
-    public SipStatusActor() {
-        this.monitorActor = this.context().system().actorSelection("user/MonitorActor");
-    }
 
-    @Override
-    public void preStart() {
-        monitorActor.tell(new StatusMessage(false, "idle"), getSelf());
-    }
     @Override
     public void onReceive(Object message) throws Exception {
         StatusMessage statusMessage = new StatusMessage();
-        statusMessage.setType(type);
+        statusMessage.setType(StatusMessage.SIPSTATUSJOB);
         statusMessage.setCount(0);
         statusMessage.setStatus("Started");
         statusMessage.setStarted(new Date());
         int count = 1;
         if (message instanceof Message) {
             statusMessage.setActive(true);
-            monitorActor.tell(statusMessage, getSelf());
             Message myMessage = (Message) message;
             String identifier = myMessage.getIdentifier();
-            int limit = myMessage.getLimit();
-            if (myMessage.isBatch()) {
-                List<Record> records = Record.limit(identifier, Record.STATUSINGESTED, limit);
-                Logger.info("checking sipstatus for " + records.size() + " records");
-                for (Record record : records) {
-                    sipstatus(record.identifier);
-                    statusMessage.setStatus("Running");
-                    statusMessage.setCount(count);
-                    monitorActor.tell(statusMessage, getSelf());
-                    count++;
-                }
-            } else {
-                statusMessage.setStatus("Running");
-                statusMessage.setCount(count);
-                monitorActor.tell(statusMessage, getSelf());
-                sipstatus(identifier);
-            }
+            statusMessage.setStatus("Running");
+            statusMessage.setCount(count);
+            getSender().tell(statusMessage, getSelf());
+            sipstatus(identifier);
             statusMessage.setActive(false);
             statusMessage.setStatus("Finished");
             statusMessage.setFinished(new Date());
-            monitorActor.tell(statusMessage, getSelf());
+            getSender().tell(statusMessage, getSelf());
         } else if (message instanceof StatusMessage){
             getSender().tell(statusMessage,getSelf());
 
@@ -70,7 +51,41 @@ public class SipStatusActor extends UntypedActor {
     private void sipstatus(String identifier) {
         Record record = Record.findByIdentifier(identifier);
         if (record != null) {
-            RecordUtils.getSipStatus(record);
+            getSipStatus(record);
         }
+    }
+
+   public static boolean getSipStatus(Record record) {
+        boolean ok = false;
+        PdsClient pds = PdsClient.getInstance();
+        pds.init(record.repository.pdsUrl, false);
+        String producerId = record.repository.producerId;
+        String pdsHandle;
+        try {
+            pdsHandle = pds.login(record.repository.institution,record.repository.userName,record.repository.password);
+            SipWebServices sipws = new SipWebServices_Service(
+                    new URL(record.repository.sipstatusWsdlUrl),
+                    new QName("http://dps.exlibris.com/", "SipWebServices")).
+                    getSipWebServicesPort();
+            BindingProvider bindingProvider = (BindingProvider) sipws;
+            bindingProvider.getRequestContext().put(
+                    BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                    record.repository.sipstatusWsdlEndpoint);
+            SipStatusInfo sipStatusInfo = sipws.getSIPStatusInfo(""+record.sipId);
+            String sipStatus = sipStatusInfo.getStage();
+            record.sipStatus = sipStatus;
+            if (!sipStatus.isEmpty() && sipStatus.equals("Finished")) {
+                record.status = Record.STATUSFINISHED;
+            }
+            record.sipActive = sipStatusInfo.getStatus();
+            record.sipModul = sipStatusInfo.getModule();
+            record.save();
+            ok = true;
+        } catch (Exception e) {
+            Logger.error("sipstatusError for: " + record.identifier + " - " + e.getMessage());
+            e.printStackTrace();
+
+        }
+        return ok;
     }
 }
