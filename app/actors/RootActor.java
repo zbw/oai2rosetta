@@ -7,6 +7,7 @@ import akka.actor.UntypedActor;
 import akka.routing.RoundRobinPool;
 import play.Logger;
 
+import java.util.Iterator;
 import java.util.Vector;
 
 /**
@@ -66,6 +67,12 @@ public class RootActor extends UntypedActor {
         } else if (message instanceof String) {
             String msg = (String) message;
             if (msg.equals("monitor")) {
+                Iterator iter = getContext().getChildren().iterator();
+                while (iter.hasNext()) {
+                    ActorRef actor = (ActorRef) iter.next();
+                    System.out.println(actor.path() + " - terminated: " +actor.isTerminated());
+
+                }
                 sender().tell(jobs,getSelf());
             }
         } else {
