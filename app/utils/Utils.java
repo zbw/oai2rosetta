@@ -7,6 +7,7 @@ import actors.StatusMessage;
 import akka.actor.ActorSelection;
 import akka.actor.ActorSystem;
 import akka.util.Timeout;
+import play.Logger;
 import scala.concurrent.Await;
 import scala.concurrent.Future;
 import scala.concurrent.duration.Duration;
@@ -33,7 +34,7 @@ public class Utils {
             StatusMessage result = (StatusMessage) Await.result(future, timeout.duration());
             return result;
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error(e.getMessage());
             StatusMessage result = new StatusMessage(true);
             result.setError(e.getLocalizedMessage());
             return result;
@@ -51,7 +52,7 @@ public class Utils {
             ArrayList<StatusMessage> result = (ArrayList<StatusMessage>) Await.result(future, timeout.duration());
             return result;
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error(e.getMessage());
 
             return new ArrayList<>();
 
@@ -68,7 +69,7 @@ public class Utils {
             Vector<Jobstatus> result = (Vector<Jobstatus>) Await.result(future, timeout.duration());
             return result;
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error(e.getMessage());
 
             return new Vector();
 

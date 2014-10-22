@@ -5,6 +5,7 @@ import actors.StatusMessage;
 import models.Record;
 import models.Repository;
 import oai.*;
+import play.Logger;
 import play.data.Form;
 import play.db.ebean.Model;
 import play.mvc.Controller;
@@ -80,6 +81,7 @@ public class RepositoryApp extends Controller {
             }
         } catch (OAIException e) {
             e.printStackTrace();
+            Logger.error(e.getMessage());
         }
         return redirect(routes.RecordApplication.list(id,0,null,null,null,-1));
     }
