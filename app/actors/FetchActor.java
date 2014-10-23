@@ -80,30 +80,34 @@ public class FetchActor extends UntypedActor {
             }
             record.metadata= Json.toJson(metadata).toString();
             Hashtable<String, String> resources = oairecord.getResources("//d:Resource","ref","mimeType");
+            if (resources.size()== 0) {
+                record.status = record.STATUSIMPORTEDERROR;
+                record.errormsg = "no files in repo";
+                ok=false;
+            } else {
+                for (String uri : resources.keySet()) {
+                    //check if already existing
+                    String origfile = uri.replaceAll("\\+", "%20");
+                    String filename = uri.substring(uri.lastIndexOf("/") + 1).replaceAll("\\+", " ");
+                    if (!record.existResource(importdirectory + record.repository.id + "/" + record.id + "/content/streams/" + filename)) {
+                        Resource resource = new Resource();
+                        resource.origFile = origfile;
 
-            for (String uri : resources.keySet()) {
-                //check if already existing
-                String origfile =  uri.replaceAll("\\+", "%20");
-                String filename = uri.substring(uri.lastIndexOf("/") + 1).replaceAll("\\+", " ");
-                if (!record.existResource(importdirectory + record.repository.id + "/" + record.id + "/content/streams/" + filename)) {
-                    Resource resource = new Resource();
-                    resource.origFile = origfile;
+                        resource.localFile = importdirectory + record.repository.id + "/" + record.id + "/content/streams/" + filename;
+                        resource.mime = resources.get(uri);
+                        resource.record = record;
+                        resource.save();
+                        record.resources.add(resource);
+                        ResourceUtils.getResource(resource.origFile, importdirectory + record.repository.id + "/" + record.id + "/content/streams/", filename);
 
-                    resource.localFile = importdirectory + record.repository.id + "/" + record.id + "/content/streams/" + filename;
-                    resource.mime = resources.get(uri);
-                    resource.record = record;
-                    resource.save();
-                    record.resources.add(resource);
-                    ResourceUtils.getResource(resource.origFile, importdirectory + record.repository.id + "/" + record.id + "/content/streams/", filename);
-
+                    }
                 }
+
+                record.logcreated = new Date();
+                record.logmodified = new Date();
+                record.status = record.STATUSIMPORTED;
+                ok = true;
             }
-
-            record.logcreated        = new Date();
-            record.logmodified      = new Date();
-            record.status = record.STATUSIMPORTED;
-
-            ok = true;
         } catch (OAIException e) {
             record.errormsg = e.getLocalizedMessage();
             record.status = record.STATUSIMPORTEDERROR;
