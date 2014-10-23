@@ -89,11 +89,7 @@
         });
         var $modal = $('.modal-content');
         $modal.on('click', '.update', function(){
-            auto_refresh = setInterval(
-              function()
-              {
-              $modal.load("@routes.RepositoryApp.monitor()").fadeIn('slow');
-              }, 1000);
+            $modal.load("@routes.RepositoryApp.monitor()").fadeIn('slow');
         });
         $modal.on('click', '.stop', function(){
             clearInterval(auto_refresh);
