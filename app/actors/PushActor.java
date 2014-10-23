@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.Vector;
 
 /**
  * Created by Ott Konstantin on 25.09.2014.
@@ -99,8 +100,11 @@ public class PushActor extends UntypedActor {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
+                ok = true;
+            } else {
+                ok = false;
             }
-            ok = true;
+
             sftpSession.disconnect();
         } catch (JSchException e) {
             Logger.error("moveError for: " + record.identifier + " - "+ e.getMessage());
@@ -141,7 +145,7 @@ public class PushActor extends UntypedActor {
         // Start copying files in the directory
         for (File curFile : list) {
             if (curFile.isDirectory()) {
-                copyFiles(sftpChannel,curFile);
+                if (!copyFiles(sftpChannel,curFile)) return false;
             } else {
                 try {
                     sftpChannel.put(curFile.getAbsolutePath(), curFile.getName(),ChannelSftp.OVERWRITE);
@@ -151,8 +155,14 @@ public class PushActor extends UntypedActor {
                 }
             }
         }
+
         try {
+            Vector remotefiles = sftpChannel.ls(".");
             sftpChannel.cd("..");
+            if (remotefiles.size()-2 != list.length) {
+                Logger.error("sftp not matching: Sent: " + list.length + " received: " + (remotefiles.size()-2));
+                return false;
+            }
         } catch (SftpException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
