@@ -1,12 +1,10 @@
 package controllers;
 
 import actors.CommandMessage;
-import actors.RootActor;
 import actors.RootActorSystem;
 import actors.StatusMessage;
 import akka.actor.ActorSelection;
 import akka.actor.ActorSystem;
-import akka.actor.Props;
 import models.Record;
 import models.Repository;
 import models.Resource;
@@ -21,9 +19,7 @@ import java.util.List;
 public class RecordApplication extends Controller {
     //static ActorSystem actorSystem = ActorSystem.create( "zbwSubApp" );
     static ActorSystem actorSystem = RootActorSystem.getInstance().getActorSystem();
-    static {
-        actorSystem.actorOf(Props.create(RootActor.class),"RootActor");
-    }
+
 
     public static Result index() {
         return ok(index.render("ZBW Hosting subapps"));
