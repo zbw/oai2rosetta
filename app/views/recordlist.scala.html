@@ -159,7 +159,7 @@
                     </li>
                 }
             </ul>
-
+            <div style="width:30%;">
             @helper.form(action = routes.RecordApplication.resetStatus()) {
                 <input type="hidden" name="repository_id" value="@repository.id">
                 <div class="form-group">
@@ -180,6 +180,7 @@
                 </div>
                 <button type="submit" id="searchsubmit" class="btn btn-default">Reset Status</button>
             }
+            </div>
         </div>
     }
 }
