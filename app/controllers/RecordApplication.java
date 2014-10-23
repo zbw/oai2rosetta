@@ -8,6 +8,7 @@ import akka.actor.ActorSystem;
 import models.Record;
 import models.Repository;
 import models.Resource;
+import play.data.DynamicForm;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -15,6 +16,8 @@ import views.html.index;
 import views.html.recordlist;
 
 import java.util.List;
+
+import static play.data.Form.form;
 
 public class RecordApplication extends Controller {
     //static ActorSystem actorSystem = ActorSystem.create( "zbwSubApp" );
@@ -55,6 +58,30 @@ public class RecordApplication extends Controller {
 
     @Security.Authenticated(Secured.class)
     public static Result reset(String id) {
+        resetRecord(id);
+        return show(id);
+    }
+
+    public static Result resetStatus() {
+        DynamicForm dynamicForm = form().bindFromRequest();
+        String repository_id = dynamicForm.get("repository_id");
+        int status = Integer.parseInt(dynamicForm.get("status"));
+        List<Record> records = Record.limit(repository_id,status, 100);
+        for (Record record:records) {
+            List<Resource> resources =record.getResources();
+            for (Resource resource: resources) {
+                resource.delete();
+            }
+            record.getResources().clear();
+            record.status = Record.STATUSNEW;
+            record.errormsg = "";
+            record.logcreated = null;
+            record.save();
+        }
+        return redirect(routes.RepositoryApp.getRecords(repository_id));
+    }
+
+    private static void resetRecord(String id) {
         Record record = Record.findByIdentifier(id);
         if (record.status < Record.STATUSINGESTED) {
             List<Resource> resources =record.getResources();
@@ -65,7 +92,6 @@ public class RecordApplication extends Controller {
             record.status = Record.STATUSNEW;
             record.save();
         }
-        return show(id);
     }
 
 

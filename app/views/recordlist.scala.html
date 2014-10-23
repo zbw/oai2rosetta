@@ -159,6 +159,27 @@
                     </li>
                 }
             </ul>
+
+            @helper.form(action = routes.RecordApplication.resetStatus()) {
+                <input type="hidden" name="repository_id" value="@repository.id">
+                <div class="form-group">
+                    <select class="form-control" name="status">
+                        <option value="1" @if(status == 1){selected}>@Messages("document.status.1")</option>
+                        <option value="2" @if(status == 2){selected}>@Messages("document.status.2")</option>
+                        <option value="3" @if(status == 3){selected}>@Messages("document.status.3")</option>
+                        <option value="4" @if(status == 4){selected}>@Messages("document.status.4")</option>
+                        <option value="5" @if(status == 5){selected}>@Messages("document.status.5")</option>
+                        <option value="6" @if(status == 6){selected}>@Messages("document.status.6")</option>
+                        <option value="7" @if(status == 7){selected}>@Messages("document.status.7")</option>
+                        <option value="8" @if(status == 8){selected}>@Messages("document.status.8")</option>
+                        <option value="9" @if(status == 9){selected}>@Messages("document.status.9")</option>
+                        <option value="10" @if(status == 10){selected}>@Messages("document.status.10")</option>
+                        <option value="11" @if(status == 11){selected}>@Messages("document.status.11")</option>
+
+                    </select>
+                </div>
+                <button type="submit" id="searchsubmit" class="btn btn-default">Reset Status</button>
+            }
         </div>
     }
 }
