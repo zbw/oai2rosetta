@@ -73,7 +73,12 @@ public class SipStatusActor extends UntypedActor {
                     record.repository.sipstatusWsdlEndpoint);
             SipStatusInfo sipStatusInfo = sipws.getSIPStatusInfo(""+record.sipId);
             String sipStatus = sipStatusInfo.getStage();
-            record.sipStatus = sipStatus;
+            if (sipStatus == null) {
+                record.sipStatus = "no rosetta status received";
+            } else {
+                record.sipStatus = sipStatus;
+            }
+
             if (!sipStatus.isEmpty() && sipStatus.equals("Finished")) {
                 record.status = Record.STATUSFINISHED;
             }
