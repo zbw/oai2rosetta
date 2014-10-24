@@ -31,7 +31,7 @@ public class RootActor extends UntypedActor {
         //sipStatusActor =    actorSystem.actorOf(Props.create(SipStatusActor.class),"SipStatusActor");
         fetchActor = getContext().actorOf(new RoundRobinPool(5).props(Props.create(FetchActor.class)),
                 "fetchrouter");
-        createActor = getContext().actorOf(new RoundRobinPool(3).props(Props.create(CreateIEActor.class)),
+        createActor = getContext().actorOf(new RoundRobinPool(5).props(Props.create(CreateIEActor.class)),
                 "createrouter");
         pushActor = getContext().actorOf(new RoundRobinPool(5).props(Props.create(PushActor.class)),
                 "pushrouter");
@@ -84,7 +84,7 @@ public class RootActor extends UntypedActor {
         if (cmd.getCommand().equals(StatusMessage.FETCHJOB)) {
             tellActor(fetchActor,cmd,5,"fetchrouter", FetchActor.class);
         } else if (cmd.getCommand().equals(StatusMessage.CREATEJOB)) {
-            tellActor(createActor, cmd, 3, "createrouter", CreateIEActor.class);
+            tellActor(createActor, cmd, 5, "createrouter", CreateIEActor.class);
         } else if (cmd.getCommand().equals(StatusMessage.PUSHJOB)) {
             tellActor(pushActor, cmd, 5, "pushrouter", PushActor.class);
         } else if (cmd.getCommand().equals(StatusMessage.DEPOSITJOB)) {
