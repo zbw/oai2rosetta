@@ -150,7 +150,7 @@ public class Global extends GlobalSettings {
         ActorSelection rootActor = actorSystem.actorSelection("user/RootActor");
         for (Repository repository:repositories) {
             if (repository.active) {
-                List<Record> records = Record.limit(repository.id, Record.STATUSCREATED, repository.joblimit);
+                List<Record> records = Record.limit(repository.id, Record.STATUSIECREATED, repository.joblimit);
                 for (Record record : records) {
                     CommandMessage msg = new CommandMessage(StatusMessage.PUSHJOB, false, record.identifier, 0);
                     rootActor.tell(msg, null);

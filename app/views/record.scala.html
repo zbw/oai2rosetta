@@ -34,7 +34,7 @@
         <div><a href="@routes.RecordApplication.sipstatus(record.identifier)">sipstatus</a></div>
     }
 
-    @if(record.status < Record.STATUSINGESTED) {
+    @if(record.status < Record.STATUSINGESTED || record.sipActive.equals("DECLINED")) {
         <div><a href="@routes.RecordApplication.reset(record.identifier)">reset @Record.STATUSINGESTED </a></div>
     }
 
