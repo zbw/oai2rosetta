@@ -107,11 +107,9 @@ public class PushActor extends UntypedActor {
 
             sftpSession.disconnect();
         } catch (JSchException e) {
-            Logger.error("moveError for: " + record.identifier + " - "+ e.getMessage());
-            e.printStackTrace();
+            Logger.error("moveError for: " + record.identifier + " - "+ e.getMessage(), e);
         } catch (SftpException e) {
-            Logger.error("moveError for: " + record.identifier + " - "+ e.getMessage());
-            e.printStackTrace();
+            Logger.error("moveError for: " + record.identifier + " - "+ e.getMessage(), e);
         }
 
         return ok;
