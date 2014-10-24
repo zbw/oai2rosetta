@@ -9,6 +9,7 @@ import oai.OAIClient;
 import oai.OAIException;
 import play.Logger;
 import play.libs.Json;
+import utils.CorruptFileException;
 import utils.ResourceUtils;
 
 import java.io.IOException;
@@ -111,17 +112,18 @@ public class FetchActor extends UntypedActor {
         } catch (OAIException e) {
             record.errormsg = e.getLocalizedMessage();
             record.status = record.STATUSIMPORTEDERROR;
-            e.printStackTrace();
             Logger.error("fetchError for: " + record.identifier + " - " + e.getMessage());
         } catch (IOException e) {
             Logger.error("fetchError for: " + record.identifier + " - "+ e.getMessage());
             record.errormsg = e.getLocalizedMessage();
             record.status = record.STATUSIMPORTEDERROR;
-            e.printStackTrace();
         } catch (URISyntaxException e) {
             record.errormsg = e.getLocalizedMessage();
             record.status = record.STATUSIMPORTEDERROR;
-            e.printStackTrace();
+            Logger.error("fetchError for: " + record.identifier + " - "+ e.getMessage());
+        } catch (CorruptFileException e) {
+            record.errormsg = e.getLocalizedMessage();
+            record.status = record.STATUSIMPORTEDERROR;
             Logger.error("fetchError for: " + record.identifier + " - "+ e.getMessage());
         }
         record.save();

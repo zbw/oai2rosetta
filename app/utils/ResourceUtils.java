@@ -9,7 +9,7 @@ import java.net.*;
 public class ResourceUtils {
 
 
-    public static void getResource(String url, String outdir, String filename) throws URISyntaxException, IOException {
+    public static void getResource(String url, String outdir, String filename) throws URISyntaxException, IOException, CorruptFileException {
         URI inputURI = new URI(url);
         URL inputURL = inputURI.toURL();
         URLConnection ucon = inputURL.openConnection();
@@ -20,19 +20,28 @@ public class ResourceUtils {
             outDir.mkdirs();
         }
         FileOutputStream outFileStream = new FileOutputStream(outDir + "/" + filename);
-        writeFile(binStream, outFileStream);
+        try {
+            writeFile(binStream, outFileStream);
+        } catch (CorruptFileException e) {
+            throw new CorruptFileException(filename+ " filesize is 0B");
+        }
     }
 
     private static void writeFile(InputStream in, OutputStream out)
-            throws IOException {
+            throws IOException, CorruptFileException {
         byte[] buffer = new byte[1024];
         int len;
-
+        int filesize=0;
         while ((len = in.read(buffer)) >= 0) {
             out.write(buffer, 0, len);
+            filesize += len;
         }
 
         in.close();
         out.close();
+        if (filesize == 0) {
+            throw new CorruptFileException("filesize is 0B");
+
+        }
     }
 }
