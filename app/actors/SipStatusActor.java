@@ -79,7 +79,7 @@ public class SipStatusActor extends UntypedActor {
                 record.sipStatus = sipStatus;
             }
 
-            if (!sipStatus.isEmpty() && sipStatus.equals("Finished")) {
+            if (!record.sipStatus.isEmpty() && record.sipStatus.equals("Finished")) {
                 record.status = Record.STATUSFINISHED;
             }
             record.sipActive = sipStatusInfo.getStatus();
