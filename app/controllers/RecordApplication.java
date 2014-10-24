@@ -83,7 +83,7 @@ public class RecordApplication extends Controller {
 
     private static void resetRecord(String id) {
         Record record = Record.findByIdentifier(id);
-        if (record.status < Record.STATUSINGESTED) {
+        if (record.status < Record.STATUSINGESTED || record.sipActive.equals("DECLINED")) {
             List<Resource> resources =record.getResources();
             for (Resource resource: resources) {
                 resource.delete();
