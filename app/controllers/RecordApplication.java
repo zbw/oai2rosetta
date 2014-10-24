@@ -102,7 +102,9 @@ public class RecordApplication extends Controller {
         List<Record> records = Record.limit(identifier, Record.STATUSNEW, repository.joblimit);
         for (Record record : records) {
             CommandMessage msg = new CommandMessage(StatusMessage.FETCHJOB,false, record.identifier,0);
-            startJob(msg);
+            //startJob(msg);
+            ActorSelection rootActor = actorSystem.actorSelection("user/RootFetchActor");
+            rootActor.tell(msg,null);
         }
         return ok();
     }
@@ -126,7 +128,9 @@ public class RecordApplication extends Controller {
         List<Record> records = Record.limit(identifier, Record.STATUSIMPORTED, repository.joblimit);
         for (Record record : records) {
             CommandMessage msg = new CommandMessage(StatusMessage.CREATEJOB,false, record.identifier,0);
-            startJob(msg);
+            //startJob(msg);
+            ActorSelection rootActor = actorSystem.actorSelection("user/RootCreateIEActor");
+            rootActor.tell(msg,null);
         }
         return ok();
     }
@@ -143,7 +147,9 @@ public class RecordApplication extends Controller {
         List<Record> records = Record.limit(identifier, Record.STATUSIECREATED, repository.joblimit);
         for (Record record : records) {
             CommandMessage msg = new CommandMessage(StatusMessage.PUSHJOB,false, record.identifier,0);
-            startJob(msg);
+            //startJob(msg);
+            ActorSelection rootActor = actorSystem.actorSelection("user/RootPushActor");
+            rootActor.tell(msg,null);
         }
         return ok();
     }
@@ -160,7 +166,9 @@ public class RecordApplication extends Controller {
         List<Record> records = Record.limit(identifier, Record.STATUSEXPORTED, repository.joblimit);
         for (Record record : records) {
             CommandMessage msg = new CommandMessage(StatusMessage.DEPOSITJOB,false, record.identifier,0);
-            startJob(msg);
+            //startJob(msg);
+            ActorSelection rootActor = actorSystem.actorSelection("user/RootDepositActor");
+            rootActor.tell(msg,null);
         }
         return ok();
     }
@@ -177,7 +185,9 @@ public class RecordApplication extends Controller {
         List<Record> records = Record.limit(identifier, Record.STATUSINGESTED, repository.joblimit);
         for (Record record : records) {
             CommandMessage msg = new CommandMessage(StatusMessage.SIPSTATUSJOB,false, record.identifier,0);
-            startJob(msg);
+            //startJob(msg);
+            ActorSelection rootActor = actorSystem.actorSelection("user/RootStatusActor");
+            rootActor.tell(msg,null);
         }
         return ok();
     }

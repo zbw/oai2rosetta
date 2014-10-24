@@ -32,6 +32,11 @@ public class Global extends GlobalSettings {
     static ActorSystem actorSystem = RootActorSystem.getInstance().getActorSystem();
     static {
         actorSystem.actorOf(Props.create(RootActor.class),"RootActor");
+        actorSystem.actorOf(Props.create(RootActor.class),"RootStatusActor");
+        actorSystem.actorOf(Props.create(RootActor.class),"RootFetchActor");
+        actorSystem.actorOf(Props.create(RootActor.class),"RootCreateIEActor");
+        actorSystem.actorOf(Props.create(RootActor.class),"RootPushActor");
+        actorSystem.actorOf(Props.create(RootActor.class),"RootDepositActor");
     }
 
     @Override
