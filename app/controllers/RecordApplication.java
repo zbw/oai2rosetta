@@ -28,8 +28,8 @@ public class RecordApplication extends Controller {
         return ok(index.render("ZBW Hosting subapps"));
     }
 
-    public static Result show(String identifier) {
-        Record record = Record.findByIdentifier(identifier);
+    public static Result show(int id) {
+        Record record = Record.findById(id);
         return ok(views.html.record.render(record));
     }
 
@@ -42,7 +42,7 @@ public class RecordApplication extends Controller {
      * @param filter Filter applied on record titles
      */
     @Security.Authenticated(Secured.class)
-    public static Result list(String id, int page, String sortBy, String order, String filter, int status) {
+    public static Result list(int id, int page, String sortBy, String order, String filter, int status) {
       Repository repository = Repository.findById(id);
       return ok(
               recordlist.render(
@@ -57,14 +57,14 @@ public class RecordApplication extends Controller {
     }
 
     @Security.Authenticated(Secured.class)
-    public static Result reset(String id) {
+    public static Result reset(int id) {
         resetRecord(id);
         return show(id);
     }
 
     public static Result resetStatus() {
         DynamicForm dynamicForm = form().bindFromRequest();
-        String repository_id = dynamicForm.get("repository_id");
+        int repository_id = Integer.parseInt(dynamicForm.get("repository_id"));
         int status = Integer.parseInt(dynamicForm.get("status"));
         List<Record> records = Record.limit(repository_id,status, 100);
         for (Record record:records) {
@@ -81,8 +81,8 @@ public class RecordApplication extends Controller {
         return redirect(routes.RepositoryApp.getRecords(repository_id));
     }
 
-    private static void resetRecord(String id) {
-        Record record = Record.findByIdentifier(id);
+    private static void resetRecord(int id) {
+        Record record = Record.findById(id);
         if (record.status < Record.STATUSINGESTED || record.sipActive.equals("DECLINED")) {
             List<Resource> resources =record.getResources();
             for (Resource resource: resources) {
@@ -97,11 +97,11 @@ public class RecordApplication extends Controller {
 
 
     @Security.Authenticated(Secured.class)
-    public static Result bfetchOAI(String identifier) {
-        Repository repository = Repository.findById(identifier);
-        List<Record> records = Record.limit(identifier, Record.STATUSNEW, repository.joblimit);
+    public static Result bfetchOAI(int repository_id) {
+        Repository repository = Repository.findById(repository_id);
+        List<Record> records = Record.limit(repository_id, Record.STATUSNEW, repository.joblimit);
         for (Record record : records) {
-            CommandMessage msg = new CommandMessage(StatusMessage.FETCHJOB,false, record.identifier,0);
+            CommandMessage msg = new CommandMessage(StatusMessage.FETCHJOB,false, record.recordId,0);
             //startJob(msg);
             ActorSelection rootActor = actorSystem.actorSelection("user/RootFetchActor");
             rootActor.tell(msg,null);
@@ -111,23 +111,23 @@ public class RecordApplication extends Controller {
 
 
     @Security.Authenticated(Secured.class)
-    public static Result fetchOAI(String identifier)  {
-        startJob(new CommandMessage(StatusMessage.FETCHJOB,false,identifier,0));
-        return show(identifier);
+    public static Result fetchOAI(int id)  {
+        startJob(new CommandMessage(StatusMessage.FETCHJOB,false,id,0));
+        return show(id);
     }
 
     @Security.Authenticated(Secured.class)
-    public static Result createIE(String identifier) {
-        startJob(new CommandMessage(StatusMessage.CREATEJOB,false,identifier,0));
-        return show(identifier);
+    public static Result createIE(int id) {
+        startJob(new CommandMessage(StatusMessage.CREATEJOB,false,id,0));
+        return show(id);
     }
 
     @Security.Authenticated(Secured.class)
-    public static Result bcreateIE(String identifier) {
+    public static Result bcreateIE(int identifier) {
         Repository repository = Repository.findById(identifier);
         List<Record> records = Record.limit(identifier, Record.STATUSIMPORTED, repository.joblimit);
         for (Record record : records) {
-            CommandMessage msg = new CommandMessage(StatusMessage.CREATEJOB,false, record.identifier,0);
+            CommandMessage msg = new CommandMessage(StatusMessage.CREATEJOB,false, record.recordId,0);
             //startJob(msg);
             ActorSelection rootActor = actorSystem.actorSelection("user/RootCreateIEActor");
             rootActor.tell(msg,null);
@@ -136,17 +136,17 @@ public class RecordApplication extends Controller {
     }
 
     @Security.Authenticated(Secured.class)
-    public static Result push(String identifier) {
+    public static Result push(int identifier) {
         startJob(new CommandMessage(StatusMessage.PUSHJOB, false, identifier, 0));
         return show(identifier);
     }
 
     @Security.Authenticated(Secured.class)
-    public static Result bpush(String identifier) {
+    public static Result bpush(int identifier) {
         Repository repository = Repository.findById(identifier);
         List<Record> records = Record.limit(identifier, Record.STATUSIECREATED, repository.joblimit);
         for (Record record : records) {
-            CommandMessage msg = new CommandMessage(StatusMessage.PUSHJOB,false, record.identifier,0);
+            CommandMessage msg = new CommandMessage(StatusMessage.PUSHJOB,false, record.recordId,0);
             //startJob(msg);
             ActorSelection rootActor = actorSystem.actorSelection("user/RootPushActor");
             rootActor.tell(msg,null);
@@ -155,17 +155,17 @@ public class RecordApplication extends Controller {
     }
 
     @Security.Authenticated(Secured.class)
-    public static Result deposit(String identifier) {
+    public static Result deposit(int identifier) {
         startJob(new CommandMessage(StatusMessage.DEPOSITJOB, false, identifier, 0));
         return show(identifier);
     }
 
     @Security.Authenticated(Secured.class)
-    public static Result bdeposit(String identifier) {
+    public static Result bdeposit(int identifier) {
         Repository repository = Repository.findById(identifier);
         List<Record> records = Record.limit(identifier, Record.STATUSEXPORTED, repository.joblimit);
         for (Record record : records) {
-            CommandMessage msg = new CommandMessage(StatusMessage.DEPOSITJOB,false, record.identifier,0);
+            CommandMessage msg = new CommandMessage(StatusMessage.DEPOSITJOB,false, record.recordId,0);
             //startJob(msg);
             ActorSelection rootActor = actorSystem.actorSelection("user/RootDepositActor");
             rootActor.tell(msg,null);
@@ -174,17 +174,17 @@ public class RecordApplication extends Controller {
     }
 
     @Security.Authenticated(Secured.class)
-    public static Result sipstatus(String identifier) {
+    public static Result sipstatus(int identifier) {
         startJob(new CommandMessage(StatusMessage.SIPSTATUSJOB, false, identifier, 0));
         return show(identifier);
     }
 
     @Security.Authenticated(Secured.class)
-    public static Result bsipstatus(String identifier) {
+    public static Result bsipstatus(int identifier) {
         Repository repository = Repository.findById(identifier);
         List<Record> records = Record.limit(identifier, Record.STATUSINGESTED, repository.joblimit);
         for (Record record : records) {
-            CommandMessage msg = new CommandMessage(StatusMessage.SIPSTATUSJOB,false, record.identifier,0);
+            CommandMessage msg = new CommandMessage(StatusMessage.SIPSTATUSJOB,false, record.recordId,0);
             //startJob(msg);
             ActorSelection rootActor = actorSystem.actorSelection("user/RootStatusActor");
             rootActor.tell(msg,null);

@@ -47,7 +47,7 @@ public class CreateIEActor extends UntypedActor {
         if (message instanceof Message) {
             statusMessage.setActive(true);
             Message myMessage = (Message) message;
-            String identifier = myMessage.getIdentifier();
+            int identifier = myMessage.getId();
             statusMessage.setStatus("Running");
             statusMessage.setCount(count);
             getSender().tell(statusMessage, getSelf());
@@ -64,8 +64,8 @@ public class CreateIEActor extends UntypedActor {
         }
     }
 
-    private void create (String identifier) {
-        Record record = Record.findByIdentifier(identifier);
+    private void create (int id) {
+        Record record = Record.findById(id);
         if (record != null) {
             record.status = record.STATUSIECREATING;
             record.save();

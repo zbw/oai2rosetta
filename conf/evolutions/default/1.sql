@@ -4,9 +4,10 @@
 # --- !Ups
 
 create table record (
-  identifier                varchar(255) not null,
+  record_id                 integer auto_increment not null,
+  identifier                varchar(255),
   id                        varchar(255),
-  repository_id             varchar(255),
+  repository_repository_id  integer,
   title                     varchar(255),
   metadata                  varchar(255),
   logcreated                datetime,
@@ -18,11 +19,12 @@ create table record (
   sip_modul                 varchar(255),
   sip_active                varchar(255),
   errormsg                  varchar(255),
-  constraint pk_record primary key (identifier))
+  constraint pk_record primary key (record_id))
 ;
 
 create table repository (
-  id                        varchar(255) not null,
+  repository_id             integer auto_increment not null,
+  id                        varchar(255),
   title                     varchar(255),
   oai_url                   varchar(255),
   oai_title                 varchar(255),
@@ -48,7 +50,7 @@ create table repository (
   ftp_max                   varchar(255),
   joblimit                  integer,
   active                    tinyint(1) default 0,
-  constraint pk_repository primary key (id))
+  constraint pk_repository primary key (repository_id))
 ;
 
 create table resource (
@@ -57,7 +59,7 @@ create table resource (
   local_file                varchar(255),
   description               varchar(255),
   mime                      varchar(255),
-  record_identifier         varchar(255),
+  record_record_id          integer,
   constraint pk_resource primary key (id))
 ;
 
@@ -68,10 +70,10 @@ create table user (
   constraint pk_user primary key (email))
 ;
 
-alter table record add constraint fk_record_repository_1 foreign key (repository_id) references repository (id) on delete restrict on update restrict;
-create index ix_record_repository_1 on record (repository_id);
-alter table resource add constraint fk_resource_record_2 foreign key (record_identifier) references record (identifier) on delete restrict on update restrict;
-create index ix_resource_record_2 on resource (record_identifier);
+alter table record add constraint fk_record_repository_1 foreign key (repository_repository_id) references repository (repository_id) on delete restrict on update restrict;
+create index ix_record_repository_1 on record (repository_repository_id);
+alter table resource add constraint fk_resource_record_2 foreign key (record_record_id) references record (record_id) on delete restrict on update restrict;
+create index ix_resource_record_2 on resource (record_record_id);
 
 
 

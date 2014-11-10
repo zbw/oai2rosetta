@@ -8,8 +8,8 @@
      <h2>@repository.title</h2>
      <div>
          <h3>@repository.records.size() Records</h3>
-         <a href="@routes.RepositoryApp.getRecords(repository.id)">Records holen</a>
-         <a href="@routes.RecordApplication.list(repository.id)">Records zeigen</a>
+         <a href="@routes.RepositoryApp.getRecords(repository.repository_id)">Records holen</a>
+         <a href="@routes.RecordApplication.list(repository.repository_id,0,null,null,null,0)">Records zeigen</a>
          <table class="table table-hover">
              <thead>
                  <th>Identifier</th>
@@ -20,11 +20,11 @@
              </thead>
          @for(record <- repository.records) {
              <tr>
-                 <td><a href="@routes.RecordApplication.show(record.identifier)">@record.identifier</a></td>
+                 <td><a href="@routes.RecordApplication.show(record.recordId)">@record.identifier</a></td>
                  <td>@record.sipId</td>
                  <td>@Messages.get("document.status."+record.status)</td>
                  <td>@record.sipStatus</td>
-                 <td><a href="@routes.RecordApplication.show(record.identifier)">show</a></td>
+                 <td><a href="@routes.RecordApplication.show(record.recordId)">show</a></td>
              </tr>
              }
          </table>

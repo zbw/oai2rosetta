@@ -31,13 +31,13 @@ public class RepositoryApp extends Controller {
     }
 
     @Security.Authenticated(Secured.class)
-    public static Result edit(String id) {
+    public static Result edit(int id) {
         Repository repository = Repository.findById(id);
         Form<Repository> repoForm  = form(Repository.class).fill(repository);
         return ok(views.html.repository.render(repoForm));
     }
     @Security.Authenticated(Secured.class)
-    public static Result delete(String id) {
+    public static Result delete(int id) {
         Repository repository = Repository.findById(id);
         repository.delete();
         return redirect(routes.RepositoryApp.list());
@@ -69,11 +69,12 @@ public class RepositoryApp extends Controller {
     }
 
     @Security.Authenticated(Secured.class)
-    public static Result getRecords(String id) {
-        Repository repository = Repository.findById(id);
+    public static Result getRecords(int repository_id) {
+        Repository repository = Repository.findById(repository_id);
+        String set = repository.id;
         OAIClient oaiClient = new OAIClient(repository.oaiUrl);
         try {
-            IdentifiersList identifiersList = oaiClient.listIdentifiers("oai_dc", null, null, id);
+            IdentifiersList identifiersList = oaiClient.listIdentifiers("oai_dc", null, null, set);
             ResumptionToken token = identifiersList.getResumptionToken();
             readList(identifiersList, repository);
             if (identifiersList.getResumptionToken() != null) {
@@ -83,7 +84,7 @@ public class RepositoryApp extends Controller {
             e.printStackTrace();
             Logger.error(e.getMessage());
         }
-        return redirect(routes.RecordApplication.list(id,0,null,null,null,-1));
+        return redirect(routes.RecordApplication.list(repository_id,0,null,null,null,-1));
     }
 
     private static void listIdentifiers( ResumptionToken resumptionToken,Repository repository,OAIClient oaiClient) throws OAIException {
@@ -98,7 +99,7 @@ public class RepositoryApp extends Controller {
         LinkedList<Header> headerlist = (LinkedList<Header>) identifiersList.asList();
         for (int i = 0;i<headerlist.size();i++ ) {
             String ident = headerlist.get(i).getIdentifier();
-            Record existrecord = Record.findByIdentifier(ident);
+            Record existrecord = Record.findByIdentifierAndRepos(ident,repository.repository_id);
             if (existrecord == null) {
                 Record record = new Record();
                 record.identifier = ident;
@@ -108,7 +109,7 @@ public class RepositoryApp extends Controller {
         }
     }
 
-    public static Result showRepository(String id) {
+    public static Result showRepository(int id) {
         Repository repository = Repository.findById(id);
         int count = repository.records.size();
         return ok(records.render(repository));
@@ -116,7 +117,7 @@ public class RepositoryApp extends Controller {
 
     @Security.Authenticated(Secured.class)
     public static Result monitor() {
-        Vector<Jobstatus> jobs = Utils.getJobMessages();
+        //Vector<Jobstatus> jobs = Utils.getJobMessages();
         // get Stats
         Map<String,Map<String,Integer>> stats = new HashMap<>();
         List<Repository> repositories = new Model.Finder(String.class, Repository.class).all();
@@ -129,8 +130,8 @@ public class RepositoryApp extends Controller {
             }
             stats.put(repository.title,reposStat);
         }
-
-        return ok(monitor.render(jobs,stats));
+        //return ok(monitor.render(jobs,stats));
+        return ok(monitor.render(stats));
     }
 
     @Security.Authenticated(Secured.class)

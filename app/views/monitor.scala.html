@@ -4,8 +4,11 @@
 @import actors.Jobstatus
 
 @import java.util.List
+@*********************
+* //@(jobs:Vector[Jobstatus], stats: Map[String,Map[String, Integer]])
+*********************@
 
-@(jobs:Vector[Jobstatus], stats: Map[String,Map[String, Integer]])
+@(stats: Map[String,Map[String, Integer]])
 <div class="modal-content">
 
     <div class="modal-header">
@@ -14,6 +17,7 @@
         <h4 class="modal-title" id="myModalLabel">Monitor</h4>
     </div>
     <div class="modal-body">
+        @*********************
         <h2>Jobs</h2>
         <table class="table table-hover">
             <thead>
@@ -38,7 +42,7 @@
 
             }
         </table>
-
+        *********************@
         <h2>Statistics</h2>
        @for((key,value) <- stats) {
            <div>

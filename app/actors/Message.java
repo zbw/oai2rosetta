@@ -9,11 +9,17 @@ public class Message implements Serializable {
 
     private boolean isBatch;
     private String identifier;
+    private int id;
     private int limit;
 
     public Message(boolean isBatch, String identifier, int limit) {
         this.isBatch = isBatch;
         this.identifier = identifier;
+        this.limit = limit;
+    }
+    public Message(boolean isBatch, int id, int limit) {
+        this.isBatch = isBatch;
+        this.id = id;
         this.limit = limit;
     }
 
@@ -40,4 +46,6 @@ public class Message implements Serializable {
     public void setLimit(int limit) {
         this.limit = limit;
     }
+
+    public int getId() {return id;}
 }

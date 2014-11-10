@@ -35,7 +35,7 @@ public class FetchActor extends UntypedActor {
         if (message instanceof Message) {
             statusMessage.setActive(true);
             Message myMessage = (Message) message;
-            String identifier = myMessage.getIdentifier();
+            int identifier = myMessage.getId();
             statusMessage.setStatus("Fetching");
             statusMessage.setCount(count);
             getSender().tell(statusMessage, getSelf());
@@ -53,8 +53,8 @@ public class FetchActor extends UntypedActor {
 
     }
 
-    private void fetch(String identifier) {
-        Record record = Record.findByIdentifier(identifier);
+    private void fetch(int identifier) {
+        Record record = Record.findById(identifier);
         fetchRecord(record);
     }
 

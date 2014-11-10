@@ -23,7 +23,7 @@
         }
 
         // Generate the link
-        routes.RecordApplication.list(repository.id,newPage,sortBy, order, currentFilter, status)
+        routes.RecordApplication.list(repository.repository_id,newPage,sortBy, order, currentFilter, status)
 
     }
 
@@ -76,16 +76,16 @@
         <div class="col-md-6">
             <div class="row btn-block">
                 <div class="col-md-6 ">
-                    <a class="btn btn-default" href="@routes.RepositoryApp.getRecords(repository.id)">Records holen</a>
+                    <a class="btn btn-default" href="@routes.RepositoryApp.getRecords(repository.repository_id)">Records holen</a>
                 </div>
             </div>
             <div class="row btn-block" >
                 <div class="col-md-12">
-                    <a id="fetcher" class="btn btn-default jobbutton" data-url="@routes.RecordApplication.bfetchOAI(repository.id)" href="">Fetch</a>
-                    <a id="creater" class="btn btn-default jobbutton" data-url="@routes.RecordApplication.bcreateIE(repository.id)" href="">CreateIE</a>
-                    <a id="pusher" class="btn btn-default jobbutton" data-url="@routes.RecordApplication.bpush(repository.id)" href="">Push</a>
-                    <a id="depositer" class="btn btn-default jobbutton" data-url="@routes.RecordApplication.bdeposit(repository.id)" href="">Deposit</a>
-                    <a id="sipper" class="btn btn-default jobbutton" data-url="@routes.RecordApplication.bsipstatus(repository.id)" href="">SipStatus</a>
+                    <a id="fetcher" class="btn btn-default jobbutton" data-url="@routes.RecordApplication.bfetchOAI(repository.repository_id)" href="">Fetch</a>
+                    <a id="creater" class="btn btn-default jobbutton" data-url="@routes.RecordApplication.bcreateIE(repository.repository_id)" href="">CreateIE</a>
+                    <a id="pusher" class="btn btn-default jobbutton" data-url="@routes.RecordApplication.bpush(repository.repository_id)" href="">Push</a>
+                    <a id="depositer" class="btn btn-default jobbutton" data-url="@routes.RecordApplication.bdeposit(repository.repository_id)" href="">Deposit</a>
+                    <a id="sipper" class="btn btn-default jobbutton" data-url="@routes.RecordApplication.bsipstatus(repository.repository_id)" href="">SipStatus</a>
                     <div class="alert alert-success fade in" data-url="" id="statusmessage" style="margin-top:20px;display:none;">
                         hello
                     </div>
@@ -118,7 +118,7 @@
             <tbody>
                 @for(record <-currentPage.getList) {
                     <tr>
-                        <td><a href="@routes.RecordApplication.show(record.identifier)">@record.identifier</a></td>
+                        <td><a href="@routes.RecordApplication.show(record.recordId)">@record.identifier</a></td>
                         <td>
                         @if(record.logcreated == null) {
                             <em>-</em>
@@ -129,7 +129,7 @@
                         <td>@record.sipId</td>
                         <td>@Messages("document.status."+record.status)</td>
                         <td>@record.sipStatus</td>
-                        <td><a href="@routes.RecordApplication.show(record.identifier)">show</a></td>
+                        <td><a href="@routes.RecordApplication.show(record.recordId)">show</a></td>
                     </tr>
                 }
             </tbody>
@@ -161,7 +161,7 @@
             </ul>
             <div style="width:30%;">
             @helper.form(action = routes.RecordApplication.resetStatus()) {
-                <input type="hidden" name="repository_id" value="@repository.id">
+                <input type="hidden" name="repository_id" value="@repository.repository_id">
                 <div class="form-group">
                     <select class="form-control" name="status">
                         <option value="1" @if(status == 1){selected}>@Messages("document.status.1")</option>

@@ -87,9 +87,9 @@ public class Global extends GlobalSettings {
         ActorSelection rootActor = actorSystem.actorSelection("user/RootActor");
         for (Repository repository:repositories) {
             if (repository.active) {
-                List<Record> records = Record.limit(repository.id, Record.STATUSNEW, repository.joblimit);
+                List<Record> records = Record.limit(repository.repository_id, Record.STATUSNEW, repository.joblimit);
                 for (Record record : records) {
-                    CommandMessage msg = new CommandMessage(StatusMessage.FETCHJOB, false, record.identifier, 0);
+                    CommandMessage msg = new CommandMessage(StatusMessage.FETCHJOB, false, record.recordId, 0);
                     Logger.info("fetching record: " + record.identifier);
                     rootActor.tell(msg, null);
                 }
@@ -122,9 +122,9 @@ public class Global extends GlobalSettings {
         ActorSelection rootActor = actorSystem.actorSelection("user/RootActor");
         for (Repository repository:repositories) {
             if (repository.active) {
-                List<Record> records = Record.limit(repository.id, Record.STATUSIMPORTED, repository.joblimit);
+                List<Record> records = Record.limit(repository.repository_id, Record.STATUSIMPORTED, repository.joblimit);
                 for (Record record : records) {
-                    CommandMessage msg = new CommandMessage(StatusMessage.CREATEJOB, false, record.identifier, 0);
+                    CommandMessage msg = new CommandMessage(StatusMessage.CREATEJOB, false, record.recordId, 0);
                     Logger.info("creating ie record: " + record.identifier);
                     rootActor.tell(msg, null);
                 }
@@ -155,9 +155,9 @@ public class Global extends GlobalSettings {
         ActorSelection rootActor = actorSystem.actorSelection("user/RootActor");
         for (Repository repository:repositories) {
             if (repository.active) {
-                List<Record> records = Record.limit(repository.id, Record.STATUSIECREATED, repository.joblimit);
+                List<Record> records = Record.limit(repository.repository_id, Record.STATUSIECREATED, repository.joblimit);
                 for (Record record : records) {
-                    CommandMessage msg = new CommandMessage(StatusMessage.PUSHJOB, false, record.identifier, 0);
+                    CommandMessage msg = new CommandMessage(StatusMessage.PUSHJOB, false, record.recordId, 0);
                     rootActor.tell(msg, null);
                 }
                 Logger.info("pushed: " + records.size() + " records");
@@ -187,9 +187,9 @@ public class Global extends GlobalSettings {
         ActorSelection rootActor = actorSystem.actorSelection("user/RootActor");
         for (Repository repository:repositories) {
             if (repository.active) {
-                List<Record> records = Record.limit(repository.id, Record.STATUSEXPORTED, repository.joblimit);
+                List<Record> records = Record.limit(repository.repository_id, Record.STATUSEXPORTED, repository.joblimit);
                 for (Record record : records) {
-                    CommandMessage msg = new CommandMessage(StatusMessage.DEPOSITJOB, false, record.identifier, 0);
+                    CommandMessage msg = new CommandMessage(StatusMessage.DEPOSITJOB, false, record.recordId, 0);
                     rootActor.tell(msg, null);
                 }
                 Logger.info("deposited: " + records.size() + " records");
@@ -219,9 +219,9 @@ public class Global extends GlobalSettings {
         ActorSelection rootActor = actorSystem.actorSelection("user/RootActor");
         for (Repository repository:repositories) {
             if (repository.active) {
-                List<Record> records = Record.limit(repository.id, Record.STATUSINGESTED, repository.joblimit);
+                List<Record> records = Record.limit(repository.repository_id, Record.STATUSINGESTED, repository.joblimit);
                 for (Record record : records) {
-                    CommandMessage msg = new CommandMessage(StatusMessage.SIPSTATUSJOB, false, record.identifier, 0);
+                    CommandMessage msg = new CommandMessage(StatusMessage.SIPSTATUSJOB, false, record.recordId, 0);
                     rootActor.tell(msg, null);
                 }
                 Logger.info("checked status for: " + records.size() + " records");

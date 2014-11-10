@@ -31,7 +31,7 @@ public class SipStatusActor extends UntypedActor {
         if (message instanceof Message) {
             statusMessage.setActive(true);
             Message myMessage = (Message) message;
-            String identifier = myMessage.getIdentifier();
+            int identifier = myMessage.getId();
             statusMessage.setStatus("Running");
             statusMessage.setCount(count);
             getSender().tell(statusMessage, getSelf());
@@ -48,8 +48,8 @@ public class SipStatusActor extends UntypedActor {
         }
     }
 
-    private void sipstatus(String identifier) {
-        Record record = Record.findByIdentifier(identifier);
+    private void sipstatus(int identifier) {
+        Record record = Record.findById(identifier);
         if (record != null) {
             getSipStatus(record);
         }

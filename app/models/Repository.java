@@ -18,6 +18,7 @@ public class Repository extends Model {
 
     @Constraints.Required
     @Id
+    public int repository_id;
     public String id;
     @Constraints.Required
     public String title;
@@ -52,11 +53,11 @@ public class Repository extends Model {
 
     public static Finder<String, Repository> find = new Finder<String, Repository>(String.class, Repository.class);
 
-    public static Repository findById(String id) {
-        return find.where().eq("id", id).findUnique();
+    public static Repository findById(int id) {
+        return find.where().eq("repository_id", id).findUnique();
     }
 
     public Integer countStatus(int status) {
-        return Record.countStatus(this.id, status);
+        return Record.countStatus(this.repository_id, status);
     }
 }

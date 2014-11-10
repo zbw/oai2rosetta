@@ -16,6 +16,7 @@ import java.util.List;
 public class Record extends Model {
 
     @Id
+    public int recordId;
     public String identifier;
     public String id;
 
@@ -77,15 +78,20 @@ public class Record extends Model {
     public static Record findByHandle(int handle) {
         return find.where().eq("handlepost", handle).findUnique();
     }
-    public static Record findByIdentifier(String identifier) {
-        return find.where().eq("identifier", identifier).findUnique();
+    public static Record findById(int id) {
+        return find.where().eq("record_id", id).findUnique();
+    }
+    public static Record findByIdentifierAndRepos(String identifier, int repos_id) {
+        return find.where()
+                    .eq("identifier", identifier)
+                    .eq("repository_repository_id", repos_id).findUnique();
     }
     public List<Resource> getResources() {
-      return Resource.find.where().eq("record_identifier",this.identifier).findList();
+      return Resource.find.where().eq("record_record_id",this.recordId).findList();
     }
 
-    public static Integer countStatus(String identifier, int status) {
-        return new Integer(find.where().eq("repository_id",identifier).eq("status", status).findRowCount());
+    public static Integer countStatus(int identifier, int status) {
+        return new Integer(find.where().eq("repository_repository_id",identifier).eq("status", status).findRowCount());
 
     }
     public boolean existResource(String origfile) {
@@ -131,10 +137,10 @@ public class Record extends Model {
         }
     }
 
-    public static List<Record> limit(String repository, int status, int limit) {
+    public static List<Record> limit(int repository, int status, int limit) {
         return
                 find.where()
-                        .eq("repository_id",repository)
+                        .eq("repository_repository_id",repository)
                         .eq("status",status)
                         .setMaxRows(limit).findList();
     }

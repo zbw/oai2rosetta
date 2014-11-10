@@ -6,7 +6,7 @@
 @main(record.repository.title) {
 
     <h2>@record.identifier @record.title</h2>
-    <div>in: <a href="@routes.RecordApplication.list(record.repository.id)">@record.repository.title</a></div>
+    <div>in: <a href="@routes.RecordApplication.list(record.repository.repository_id)">@record.repository.title</a></div>
     <div>Status: @Messages.get("document.status."+record.status)</div>
     <div>SIP ID: @record.sipId</div>
     <div>Last Error: @record.errormsg</div>
@@ -16,26 +16,26 @@
     <div>Resources: @record.resources.size()</div>
 
 
-    <a href="@routes.RecordApplication.show(record.identifier)">refresh</a>
+    <a href="@routes.RecordApplication.show(record.recordId)">refresh</a>
 
     @if(record.status < Record.STATUSIMPORTED) {
-    <div><a href="@routes.RecordApplication.fetchOAI(record.identifier)">fetch</a></div>
+    <div><a href="@routes.RecordApplication.fetchOAI(record.recordId)">fetch</a></div>
     }
     @if(record.status == Record.STATUSIMPORTED) {
-        <div><a href="@routes.RecordApplication.createIE(record.identifier)">createIE</a></div>
+        <div><a href="@routes.RecordApplication.createIE(record.recordId)">createIE</a></div>
     }
     @if(record.status == Record.STATUSIECREATED) {
-        <div><a href="@routes.RecordApplication.push(record.identifier)">push</a></div>
+        <div><a href="@routes.RecordApplication.push(record.recordId)">push</a></div>
     }
     @if(record.status == Record.STATUSEXPORTED) {
-        <div><a href="@routes.RecordApplication.deposit(record.identifier)">deposit</a></div>
+        <div><a href="@routes.RecordApplication.deposit(record.recordId)">deposit</a></div>
     }
     @if(record.status == Record.STATUSINGESTED) {
-        <div><a href="@routes.RecordApplication.sipstatus(record.identifier)">sipstatus</a></div>
+        <div><a href="@routes.RecordApplication.sipstatus(record.recordId)">sipstatus</a></div>
     }
 
     @if(record.status < Record.STATUSINGESTED || (record.sipActive != null && record.sipActive.equals("DECLINED"))) {
-        <div><a href="@routes.RecordApplication.reset(record.identifier)">reset @Record.STATUSINGESTED </a></div>
+        <div><a href="@routes.RecordApplication.reset(record.recordId)">reset @Record.STATUSINGESTED </a></div>
     }
 
 }

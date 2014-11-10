@@ -14,6 +14,10 @@ public class CommandMessage implements Serializable {
         this.command = command;
         this.message = new Message(isBatch,identifier,limit);
     }
+    public CommandMessage(String command,boolean isBatch, int id, int limit) {
+        this.command = command;
+        this.message = new Message(isBatch,id,limit);
+    }
 
     public String getCommand() {
         return command;

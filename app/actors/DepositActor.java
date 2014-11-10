@@ -35,7 +35,7 @@ public class DepositActor extends UntypedActor {
         if (message instanceof Message) {
             statusMessage.setActive(true);
             Message myMessage = (Message) message;
-            String identifier = myMessage.getIdentifier();
+            int identifier = myMessage.getId();
             statusMessage.setStatus("Running");
             statusMessage.setCount(count);
             getSender().tell(statusMessage, getSelf());
@@ -52,8 +52,8 @@ public class DepositActor extends UntypedActor {
         }
     }
 
-    private void deposit(String identifier) {
-        Record record = Record.findByIdentifier(identifier);
+    private void deposit(int identifier) {
+        Record record = Record.findById(identifier);
         if (record != null) {
             record.status = record.STATUSINGESTING;
             record.save();
@@ -118,13 +118,14 @@ public class DepositActor extends UntypedActor {
                 Thread.sleep(3000);//wait until deposit is in
                 if (depositResult.getIsError()) {
                     record.sipId = depositResult.getSipId();
-                    record.status = Record.STATUSEXPORTEDERROR;
+                    record.errormsg = depositResult.getMessageCode() + " " + depositResult.getMessageDesc();
+                    ok=false;
                 } else {
                     record.sipId = depositResult.getSipId();
-                    record.status = Record.STATUSEXPORTED;
+                    ok = true;
                 }
             }
-            ok = true;
+
 
         } catch (XmlException e) {
             e.printStackTrace();

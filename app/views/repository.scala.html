@@ -33,6 +33,7 @@
         @helper.checkbox(repoForm("active"))
         @helper.inputText(repoForm("joblimit"))
         <input type="hidden" value="@repoForm("id").value" name="id">
+        <input type="hidden" value="@repoForm("repository_id").value" name="repository_id">
         </fieldset>
         <button type="submit" class="btn btn-default">Save</button>
     }
