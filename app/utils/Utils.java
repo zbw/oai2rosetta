@@ -61,7 +61,7 @@ public class Utils {
 
     public static Vector<Jobstatus> getJobMessages() {
         Timeout timeout = new Timeout(Duration.create(10, "seconds"));
-        ActorSelection monitor = actorSystem.actorSelection("user/RootActor");
+        ActorSelection monitor = actorSystem.actorSelection("user/RootStatusActor");
         Future future = ask(monitor,"monitor",timeout);
 
         //Abfragen

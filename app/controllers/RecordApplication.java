@@ -185,6 +185,7 @@ public class RecordApplication extends Controller {
         List<Record> records = Record.statusAll(identifier, Record.STATUSINGESTED);
         for (Record record : records) {
             CommandMessage msg = new CommandMessage(StatusMessage.SIPSTATUSJOB,false, record.recordId,0);
+            msg.setThreadcount(50);
             //startJob(msg);
             ActorSelection rootActor = actorSystem.actorSelection("user/RootStatusActor");
             rootActor.tell(msg,null);

@@ -86,7 +86,7 @@ public class SipStatusActor extends UntypedActor {
             record.sipModul = sipStatusInfo.getModule();
             record.save();
             ok = true;
-            Logger.info("sipstatus for: " + record.sipId + " is " + record.sipStatus);
+            //Logger.info("sipstatus for: " + record.sipId + " is " + record.sipStatus);
         } catch (Exception e) {
             Logger.error("sipstatusError for: " + record.identifier + " - " + e.getMessage());
             e.printStackTrace();

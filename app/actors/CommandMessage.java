@@ -9,6 +9,7 @@ public class CommandMessage implements Serializable {
 
     private String command;
     private Message message;
+    private int threadcount = 5;
 
     public CommandMessage(String command,boolean isBatch, String identifier, int limit) {
         this.command = command;
@@ -33,5 +34,13 @@ public class CommandMessage implements Serializable {
 
     public void setMessage(Message message) {
         this.message = message;
+    }
+
+    public int getThreadcount() {
+        return threadcount;
+    }
+
+    public void setThreadcount(int threadcount) {
+        this.threadcount = threadcount;
     }
 }

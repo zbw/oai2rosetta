@@ -7,7 +7,9 @@ import akka.actor.UntypedActor;
 import akka.routing.RoundRobinPool;
 import play.Logger;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Vector;
 
 /**
@@ -15,30 +17,17 @@ import java.util.Vector;
  */
 public class RootActor extends UntypedActor {
     static ActorSystem actorSystem = RootActorSystem.getInstance().getActorSystem();
-    ActorRef fetchActor = null;
-    ActorRef createActor = null;
-    ActorRef pushActor = null;
-    ActorRef depositActor = null;
-    ActorRef sipStatusActor = null;
+    Map<String,Class> classmap = new HashMap<String, Class>();
+    Map<String, ActorRef> children = new HashMap<String, ActorRef>();
     Vector<Jobstatus> jobs = new Vector<>();
 
     @Override
     public void preStart() {
-        //fetchActor =        actorSystem.actorOf(Props.create(FetchActor.class),"FetchActor");
-        //createActor =       actorSystem.actorOf(Props.create(CreateIEActor.class),"CreateIEActor");
-        //pushActor =         actorSystem.actorOf(Props.create(PushActor.class),"PushActor");
-        //depositActor =      actorSystem.actorOf(Props.create(DepositActor.class),"DepositActor");
-        //sipStatusActor =    actorSystem.actorOf(Props.create(SipStatusActor.class),"SipStatusActor");
-        fetchActor = getContext().actorOf(new RoundRobinPool(5).props(Props.create(FetchActor.class)),
-                "fetchrouter");
-        createActor = getContext().actorOf(new RoundRobinPool(5).props(Props.create(CreateIEActor.class)),
-                "createrouter");
-        pushActor = getContext().actorOf(new RoundRobinPool(5).props(Props.create(PushActor.class)),
-                "pushrouter");
-        depositActor = getContext().actorOf(new RoundRobinPool(5).props(Props.create(DepositActor.class)),
-                "depositrouter");
-        sipStatusActor = getContext().actorOf(new RoundRobinPool(5).props(Props.create(SipStatusActor.class)),
-                "siprouter");
+        classmap.put(StatusMessage.FETCHJOB, FetchActor.class);
+        classmap.put(StatusMessage.CREATEJOB, CreateIEActor.class);
+        classmap.put(StatusMessage.PUSHJOB, PushActor.class);
+        classmap.put(StatusMessage.DEPOSITJOB, DepositActor.class);
+        classmap.put(StatusMessage.SIPSTATUSJOB, SipStatusActor.class);
     }
     @Override
     public void onReceive(Object message) throws Exception {
@@ -70,8 +59,11 @@ public class RootActor extends UntypedActor {
                 Iterator iter = getContext().getChildren().iterator();
                 while (iter.hasNext()) {
                     ActorRef actor = (ActorRef) iter.next();
-                    //System.out.println(actor.path() + " - terminated: " +actor.isTerminated());
-
+                    Logger.debug("Monitoring Call ("+self().path()+"): "+actor.path() + " - terminated: " +actor.isTerminated());
+                }
+                Logger.debug("Monitoring Call ("+self().path()+"): jobs: " + jobs.size());
+                for (Jobstatus job : jobs) {
+                   Logger.debug("Monitoring Call ("+self().path()+"): Job Type: "+ job.getType() + " worker: " + job.getWorker() + " count: " + job.getCount());
                 }
                 sender().tell(jobs,getSelf());
             }
@@ -81,38 +73,19 @@ public class RootActor extends UntypedActor {
     }
 
     private void startCommand(CommandMessage cmd) {
-        if (cmd.getCommand().equals(StatusMessage.FETCHJOB)) {
-            tellActor(fetchActor,cmd,5,"fetchrouter", FetchActor.class);
-        } else if (cmd.getCommand().equals(StatusMessage.CREATEJOB)) {
-            tellActor(createActor, cmd, 5, "createrouter", CreateIEActor.class);
-        } else if (cmd.getCommand().equals(StatusMessage.PUSHJOB)) {
-            tellActor(pushActor, cmd, 5, "pushrouter", PushActor.class);
-        } else if (cmd.getCommand().equals(StatusMessage.DEPOSITJOB)) {
-            tellActor(depositActor,cmd,5,"depositrouter", DepositActor.class);
-        } else if (cmd.getCommand().equals(StatusMessage.SIPSTATUSJOB)) {
-            tellActor(sipStatusActor,cmd,5,"siprouter", SipStatusActor.class);
-        } else if (cmd.getCommand().equals("stop"+StatusMessage.FETCHJOB)) {
-            actorSystem.stop(fetchActor);
-        } else if (cmd.getCommand().equals("stop"+StatusMessage.CREATEJOB)) {
-            actorSystem.stop(createActor);
-        } else if (cmd.getCommand().equals("stop"+StatusMessage.PUSHJOB)) {
-            actorSystem.stop(pushActor);
-        } else if (cmd.getCommand().equals("stop"+StatusMessage.DEPOSITJOB)) {
-            actorSystem.stop(depositActor);
-        } else if (cmd.getCommand().equals("stop"+StatusMessage.SIPSTATUSJOB)) {
-            actorSystem.stop(sipStatusActor);
+        if (classmap.containsKey(cmd.getCommand()))  {
+            ActorRef childActor = children.get(cmd.getCommand());
+            if (childActor == null || childActor.isTerminated()) {
+                childActor = createChild(cmd.getThreadcount(), cmd.getCommand(), classmap.get(cmd.getCommand()));
+                children.put(cmd.getCommand(), childActor);
+            }
+            childActor.tell(cmd.getMessage(), self());
         } else {
             Logger.info(cmd.getCommand() + " not implemented");
         }
     }
 
-    private void tellActor(ActorRef actor, CommandMessage msg,int pool, String name, Class actorclass) {
-        if (actor.isTerminated()) {
-            Jobstatus job = getJob(msg.getCommand());
-            actor = getContext().actorOf(new RoundRobinPool(pool).props(Props.create(actorclass)),name);
-        }
-        actor.tell(msg.getMessage(),self());
-    }
+
 
     private Jobstatus getJob(String type) {
         for (Jobstatus job : jobs) {
@@ -121,6 +94,10 @@ public class RootActor extends UntypedActor {
             }
         }
         return null;
+    }
+
+    private ActorRef createChild(int pool, String name, Class actorclass) {
+        return getContext().actorOf(new RoundRobinPool(pool).props(Props.create(actorclass)),name);
     }
 
 

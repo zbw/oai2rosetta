@@ -222,6 +222,7 @@ public class Global extends GlobalSettings {
                 List<Record> records = Record.limit(repository.repository_id, Record.STATUSINGESTED, repository.joblimit);
                 for (Record record : records) {
                     CommandMessage msg = new CommandMessage(StatusMessage.SIPSTATUSJOB, false, record.recordId, 0);
+                    msg.setThreadcount(50);
                     rootActor.tell(msg, null);
                 }
                 Logger.info("checked status for: " + records.size() + " records");
