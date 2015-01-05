@@ -182,7 +182,7 @@ public class RecordApplication extends Controller {
     @Security.Authenticated(Secured.class)
     public static Result bsipstatus(int identifier) {
         Repository repository = Repository.findById(identifier);
-        List<Record> records = Record.limit(identifier, Record.STATUSINGESTED, repository.joblimit);
+        List<Record> records = Record.statusAll(identifier, Record.STATUSINGESTED);
         for (Record record : records) {
             CommandMessage msg = new CommandMessage(StatusMessage.SIPSTATUSJOB,false, record.recordId,0);
             //startJob(msg);

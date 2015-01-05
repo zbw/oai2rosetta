@@ -83,8 +83,8 @@ public class Record extends Model {
     }
     public static Record findByIdentifierAndRepos(String identifier, int repos_id) {
         return find.where()
-                    .eq("identifier", identifier)
-                    .eq("repository_repository_id", repos_id).findUnique();
+                .eq("repository_repository_id", repos_id)
+                .eq("identifier", identifier).findUnique();
     }
     public List<Resource> getResources() {
       return Resource.find.where().eq("record_record_id",this.recordId).findList();
@@ -143,6 +143,13 @@ public class Record extends Model {
                         .eq("repository_repository_id",repository)
                         .eq("status",status)
                         .setMaxRows(limit).findList();
+    }
+
+    public static List<Record> statusAll(int repository, int status) {
+        return
+                find.where()
+                        .eq("repository_repository_id",repository)
+                        .eq("status",status).findList();
     }
 
     public String toString() {
