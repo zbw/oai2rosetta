@@ -21,6 +21,7 @@ public class StatusMessage implements Serializable {
     public static final String PUSHJOB =        "PushActor";
     public static final String DEPOSITJOB =     "DepositActor";
     public static final String SIPSTATUSJOB =   "SipStatusActor";
+    public static final String CLEANUPJOB =     "CleanupActor";
 
     public  StatusMessage() {
          this.exists= true;

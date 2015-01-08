@@ -27,6 +27,7 @@ GET         /record/deposit/:identifier           controllers.RecordApplication.
 GET         /record/bdeposit/:identifier          controllers.RecordApplication.bdeposit(identifier : Int)
 GET         /record/sipstatus/:identifier         controllers.RecordApplication.sipstatus(identifier : Int)
 GET         /record/bsipstatus/:identifier        controllers.RecordApplication.bsipstatus(identifier : Int)
+GET         /record/cleanup/:identifier           controllers.RecordApplication.cleanup(identifier : Int)
 GET         /record/reset/:identifier             controllers.RecordApplication.reset(identifier: Int)
 POST        /record/resetstatus                   controllers.RecordApplication.resetStatus()
 GET         /monitor                              controllers.RepositoryApp.monitor()

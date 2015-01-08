@@ -52,6 +52,7 @@ public class Record extends Model {
     public static final int STATUSINGESTED = 12;
     public static final int STATUSINGESTING = 13;
     public static final int STATUSFINISHED = 100;
+    public static final int STATUSCLEAN = 110;
     public static final int[] ALLSTATUS = {
             STATUSNEW,
             STATUSCREATED,
@@ -67,7 +68,8 @@ public class Record extends Model {
             STATUSINGESTEDERROR,
             STATUSINGESTED,
             STATUSINGESTING,
-            STATUSFINISHED
+            STATUSFINISHED,
+            STATUSCLEAN
     };
 
 

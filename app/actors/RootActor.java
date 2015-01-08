@@ -28,6 +28,7 @@ public class RootActor extends UntypedActor {
         classmap.put(StatusMessage.PUSHJOB, PushActor.class);
         classmap.put(StatusMessage.DEPOSITJOB, DepositActor.class);
         classmap.put(StatusMessage.SIPSTATUSJOB, SipStatusActor.class);
+        classmap.put(StatusMessage.CLEANUPJOB, CleanupActor.class);
     }
     @Override
     public void onReceive(Object message) throws Exception {

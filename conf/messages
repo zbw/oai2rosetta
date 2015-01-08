@@ -25,6 +25,7 @@ document.status.11=IngestError
 document.status.12=Ingested
 document.status.13=Ingesting
 document.status.100=Finished
+document.status.110=Finished and cleaned
 sets.newsets=%s neue Sets geladen
 logs.filter=Filtern
 logs.search=Suchen

@@ -37,6 +37,7 @@ public class Global extends GlobalSettings {
         actorSystem.actorOf(Props.create(RootActor.class),"RootCreateIEActor");
         actorSystem.actorOf(Props.create(RootActor.class),"RootPushActor");
         actorSystem.actorOf(Props.create(RootActor.class),"RootDepositActor");
+        actorSystem.actorOf(Props.create(RootActor.class),"RootCleanupActor");
     }
 
     @Override

@@ -193,7 +193,20 @@ public class RecordApplication extends Controller {
         return ok();
     }
 
-
+    @Security.Authenticated(Secured.class)
+    public static Result cleanup(int identifier) {
+        Repository repository = Repository.findById(identifier);
+        List<Record> records = Record.statusAll(identifier, Record.STATUSFINISHED);
+        for (Record record : records) {
+            CommandMessage msg = new CommandMessage(StatusMessage.CLEANUPJOB,false, record.recordId,0);
+            // dont start to much threads, because every thread opens a ssl connection and server
+            // might not be happy about it
+            msg.setThreadcount(5);
+            ActorSelection rootActor = actorSystem.actorSelection("user/RootCleanupActor");
+            rootActor.tell(msg,null);
+        }
+        return ok();
+    }
 
 
     private static void startJob(CommandMessage msg) {
