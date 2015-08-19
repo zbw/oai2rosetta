@@ -26,6 +26,11 @@ public class Repository extends Model {
     public String oaiUrl;
     public String oaiTitle;
     public String oaiMapping;
+    public String nomimetypes;
+    public String metadataPrefix;
+    public String resourcesPrefix;
+    public String cms;
+    public String cmsfield;
     public String pdsUrl;
     public String depositWsdlUrl;
     public String depositWsdlEndpoint;

@@ -51,3 +51,6 @@ table.records .header a {
 #pagination ul .current a {
     color: #666;
 }
+.field {
+    margin-bottom: 15px;
+}

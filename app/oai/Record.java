@@ -19,14 +19,13 @@
 
 package oai;
 
-import java.io.IOException;
-import java.util.Hashtable;
-import java.util.List;
-
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Node;
-import scala.collection.mutable.HashTable;
+
+import java.io.IOException;
+import java.util.Hashtable;
+import java.util.List;
 
 /**
  * Created by Ott Konstantin on 25.08.2014.
@@ -114,7 +113,21 @@ public class Record extends ResponseBase {
 
     }
 
-    public Hashtable<String, String> getResources (String expr, String ref, String mime) {
+    public String getMetadataField(String field, int count) {
+        XPathWrapper xpath = new XPathWrapper(metadata);
+        xpath.addNamespace(DIDL_NS_PREFIX, DIDL_NS_URI);
+        xpath.addNamespace(OAI_DC_PREFIX, OAI_DC_URI);
+        xpath.addNamespace(DC_PREFIX, DC_URI);
+        List<Node> metadataNodes = xpath.selectNodes(field);
+        String metadata = null;
+        if (metadataNodes.size()> count) {
+            metadata = metadataNodes.get(count).getStringValue();
+        }
+
+        return metadata;
+    }
+
+    public Hashtable<String, String> getResources (String expr, String ref, String mime, String nomime) {
         XPathWrapper xpath = new XPathWrapper(metadata);
         xpath.addNamespace(DIDL_NS_PREFIX, DIDL_NS_URI);
         xpath.addNamespace(OAI_DC_PREFIX, OAI_DC_URI);
@@ -125,7 +138,9 @@ public class Record extends ResponseBase {
             Element resource = (Element)resourcenodes.get(i);
             String uri = resource.attributeValue(ref);
             String mimetype = resource.attributeValue(mime);
-            resources.put(uri,mimetype);
+            if (uri!=null && mimetype != null && nomime.indexOf(mimetype)< 0) {
+                resources.put(uri, mimetype);
+            }
         }
         return resources;
     }
@@ -135,7 +150,10 @@ public class Record extends ResponseBase {
         xpath.addNamespace(OAI_DC_PREFIX, OAI_DC_URI);
         xpath.addNamespace(DC_PREFIX, DC_URI);
         Element item = xpath.selectSingleElement("//d:Item");
-        return item.attributeValue("id");
+        if (item!=null) {
+            return item.attributeValue("id");
+        }
+        return null;
     }
     /**
      * Get the information about this <code>Record</code>.

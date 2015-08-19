@@ -1,0 +1,23 @@
+@(elements: helper.FieldElements)
+
+@**************************************************
+* Generate input according twitter bootsrap rules *
+**************************************************@
+
+<div class="form-group@if(elements.hasErrors){ has-error}">
+    <div class="col-lg-10">
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" id="@elements.label" name="@elements.label"
+                value="true"
+                @if(elements.field.value == Some("true")){checked}> @elements.label.toString.capitalize
+            </label>
+        </div>
+        @if(elements.args.get('help)){
+            <p class="help-block">@elements.args.get('help)</p>
+        }
+        @if(elements.hasErrors){
+            <div class="help-block"><span class="glyphicon glyphicon-exclamation-sign"></span> @elements.errors.mkString(", ")</div>
+        }
+    </div>
+</div>

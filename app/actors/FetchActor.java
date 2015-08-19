@@ -1,6 +1,9 @@
 package actors;
 
 import akka.actor.UntypedActor;
+import com.exlibris.core.sdk.formatting.DublinCore;
+import com.exlibris.dps.sdk.deposit.IEParser;
+import com.exlibris.dps.sdk.deposit.IEParserFactory;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import models.Record;
@@ -8,7 +11,6 @@ import models.Resource;
 import oai.OAIClient;
 import oai.OAIException;
 import play.Logger;
-import play.libs.Json;
 import utils.CorruptFileException;
 import utils.ResourceUtils;
 
@@ -65,22 +67,69 @@ public class FetchActor extends UntypedActor {
         OAIClient oaiClient = new OAIClient(record.repository.oaiUrl);
         Config conf = ConfigFactory.load();
         String importdirectory = conf.getString("importdirectory");
+        String metadataPrefix = record.repository.metadataPrefix;
+        if (metadataPrefix == null) {
+            metadataPrefix = "didl";
+        }
         try {
-            oai.Record oairecord =oaiClient.getRecord(record.identifier, "didl");
+            oai.Record oairecord =oaiClient.getRecord(record.identifier, metadataPrefix);
             record.title = oairecord.getMetadataField(record.repository.oaiTitle);
             record.id = oairecord.getId();
+
+            // maybe the oai d:Item did not have an id, so construct it from the identifier
+            if (record.id == null) {
+                String handle = record.identifier.substring(record.identifier.lastIndexOf(":")+1);
+                handle = handle.replaceAll("/", "_");
+                record.id = "hdl_" + handle;
+            }
             record.save();
             String mapping = record.repository.oaiMapping;
             String[] mappings = mapping.split("\r\n");
-            Hashtable<String, String> metadata = new Hashtable<String,String>() ;
+
+            IEParser ie = IEParserFactory.create();
+            DublinCore dc = ie.getDublinCoreParser();
             for (int i=0;i<mappings.length;i++) {
+                // mapping: <iefield> <xpath in OAI> <countfield> <option [type|prefix]> <optionvalue>
                 String[] keyval = mappings[i].split(" ");
-                if (keyval.length==2)  {
-                    metadata.put(keyval[0], oairecord.getMetadataField(keyval[1]));
+                if (keyval.length > 1)  {
+                    String ieField = keyval[0];
+                    String xpathfield = keyval[1];
+                    int countfield = Integer.parseInt(keyval[2]) - 1;
+                    String option = "";
+                    String optionvalue = "";
+
+                    if (keyval.length == 5)  {
+                        option = keyval[3];
+                        optionvalue = keyval[4];
+                    }
+                    String value = oairecord.getMetadataField(xpathfield,countfield);
+                    if (option.equals("type") && optionvalue.equals("dcterms:URI")) {
+                        if (!value.startsWith("http")) {
+                            value=null;
+                        }
+                    }
+                    if (value != null) {
+                        if (option.equals("prefix")) {
+                            value = value.substring(value.indexOf(optionvalue) + optionvalue.length());
+                        }
+                        if (option.equals("type")) {
+                            ieField = ieField.substring(3);
+                            dc.addElement(dc.DC_NAMESPACE, ieField, optionvalue, value);
+                            //dc.addElement(ieField, value);
+                        } else {
+                            dc.addElement(ieField, value);
+                        }
+                    }
                 }
             }
-            record.metadata= Json.toJson(metadata).toString();
-            Hashtable<String, String> resources = oairecord.getResources("//d:Resource","ref","mimeType");
+            record.metadata = dc.toXml();
+            //maybe we need another record with another metadataprefix for getting the resources
+            if (!metadataPrefix.equals(record.repository.resourcesPrefix)
+                    && record.repository.resourcesPrefix != null
+                    && !record.repository.resourcesPrefix.equals("")) {
+                oairecord =oaiClient.getRecord(record.identifier, record.repository.resourcesPrefix);
+            }
+            Hashtable<String, String> resources = oairecord.getResources("//d:Resource","ref","mimeType",record.repository.nomimetypes);
             if (resources.size()== 0) {
                 record.status = record.STATUSIMPORTEDERROR;
                 record.errormsg = "no files in repo";
@@ -125,6 +174,8 @@ public class FetchActor extends UntypedActor {
             record.errormsg = e.getLocalizedMessage();
             record.status = record.STATUSIMPORTEDERROR;
             Logger.error("fetchError for: " + record.identifier + " - "+ e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         record.save();
         return ok;

@@ -3,39 +3,86 @@
 @import helper.twitterBootstrap._
 @import play.i18n._
 
-@main(record.repository.title) {
 
-    <h2>@record.identifier @record.title</h2>
-    <div>in: <a href="@routes.RecordApplication.list(record.repository.repository_id)">@record.repository.title</a></div>
-    <div>Status: @Messages.get("document.status."+record.status)</div>
-    <div>SIP ID: @record.sipId</div>
-    <div>Last Error: @record.errormsg</div>
-    <div>SipStatus: @record.sipStatus</div>
-    <div>SipActive: @record.sipActive</div>
-    <div>SipModul: @record.sipModul</div>
-    <div>Resources: @record.resources.size()</div>
+@main(record.repository.title, record.repository) {
+    <div class="row">
+        <div class="col-md-8">
+            <h2>@record.identifier @record.title</h2>
+        </div>
+        <div class="col-md-4">
+            <a class="btn btn-default" href="@routes.RecordApplication.list(record.repository.repository_id)">@record.repository.title</a>
+        </div>
+    </div>
 
+    <div class="row">
+         <div class="col-md-4">
+            <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Status</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div>Status: <strong>@Messages.get("document.status."+record.status)</strong></div>
+                        <div>SIP ID:<strong> @record.sipId</strong></div>
+                        <div>Last Error:<strong> @record.errormsg</strong></div>
+                        <div>SipStatus:<strong> @record.sipStatus</strong></div>
+                        <div>SipActive:<strong> @record.sipActive</strong></div>
+                        <div>SipModul:<strong> @record.sipModul</strong></div>
 
-    <a href="@routes.RecordApplication.show(record.recordId)">refresh</a>
+                    </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">MetaData in XML</h3>
+                </div>
+                <div class="panel-body">
+                    <pre>@record.metadata</pre>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Resources</h3>
+                </div>
+                <div class="panel-body">
+                @for(resource <- record.resources) {
+                    <div><small>@resource.origFile - @resource.mime</small></div>
+                }
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+    <div class="col-md-12">
+    <a class="btn btn-default pull-left" href="@routes.RecordApplication.show(record.recordId)">refresh</a>
 
     @if(record.status < Record.STATUSIMPORTED) {
-    <div><a href="@routes.RecordApplication.fetchOAI(record.recordId)">fetch</a></div>
+        <div><a class="btn btn-default pull-left" href="@routes.RecordApplication.fetchOAI(record.recordId)">fetch</a></div>
+        <div><a class="btn btn-default pull-left" href="@routes.RecordApplication.deleteRecord(record.recordId)">delete</a></div>
     }
     @if(record.status == Record.STATUSIMPORTED) {
-        <div><a href="@routes.RecordApplication.createIE(record.recordId)">createIE</a></div>
+        <div><a class="btn btn-default pull-left" href="@routes.RecordApplication.createIE(record.recordId)">createIE</a></div>
     }
     @if(record.status == Record.STATUSIECREATED) {
-        <div><a href="@routes.RecordApplication.push(record.recordId)">push</a></div>
+        <div><a class="btn btn-default pull-left" href="@routes.RecordApplication.push(record.recordId)">push</a></div>
     }
     @if(record.status == Record.STATUSEXPORTED) {
-        <div><a href="@routes.RecordApplication.deposit(record.recordId)">deposit</a></div>
+        <div><a class="btn btn-default pull-left" href="@routes.RecordApplication.deposit(record.recordId)">deposit</a></div>
     }
     @if(record.status == Record.STATUSINGESTED) {
-        <div><a href="@routes.RecordApplication.sipstatus(record.recordId)">sipstatus</a></div>
+        <div><a class="btn btn-default pull-left" href="@routes.RecordApplication.sipstatus(record.recordId)">sipstatus</a></div>
     }
 
     @if(record.status < Record.STATUSINGESTED || (record.sipActive != null && record.sipActive.equals("DECLINED"))) {
-        <div><a href="@routes.RecordApplication.reset(record.recordId)">reset @Record.STATUSINGESTED </a></div>
+        <div><a class="btn btn-default pull-left" href="@routes.RecordApplication.reset(record.recordId)">reset </a></div>
     }
-
+    </div>
+   </div>
 }

@@ -3,13 +3,13 @@ package actors;
 import akka.actor.UntypedActor;
 import com.exlibris.core.sdk.consts.Enum;
 import com.exlibris.core.sdk.formatting.DublinCore;
+import com.exlibris.core.sdk.formatting.DublinCoreFactory;
 import com.exlibris.core.sdk.utils.FileUtil;
 import com.exlibris.digitool.common.dnx.DnxDocument;
 import com.exlibris.digitool.common.dnx.DnxDocumentFactory;
 import com.exlibris.digitool.common.dnx.DnxDocumentHelper;
 import com.exlibris.dps.sdk.deposit.IEParser;
 import com.exlibris.dps.sdk.deposit.IEParserFactory;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import gov.loc.mets.FileType;
@@ -19,14 +19,12 @@ import models.Record;
 import models.Resource;
 import org.apache.xmlbeans.XmlOptions;
 import play.Logger;
-import play.libs.Json;
 
 import java.io.File;
 import java.net.FileNameMap;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Hashtable;
 import java.util.List;
 
 /**
@@ -86,12 +84,7 @@ public class CreateIEActor extends UntypedActor {
         String IEfullFileName =  importdirectory+record.repository.id+"/"+record.id+"/content/ie1.xml";
         try {
             IEParser ie = IEParserFactory.create();
-            DublinCore dc = ie.getDublinCoreParser();
-            JsonNode json = Json. parse(record.metadata);
-            Hashtable<String, String> metadata = Json.fromJson(json,Hashtable.class);
-            for (String meta : metadata.keySet()) {
-                dc.addElement(meta,metadata.get(meta));
-            }
+            DublinCore dc = DublinCoreFactory.getInstance().createDocument(record.metadata);
             ie.setIEDublinCore(dc);
             List<MetsType.FileSec.FileGrp> fGrpList = new ArrayList<MetsType.FileSec.FileGrp>();
             // add fileGrp
@@ -131,6 +124,20 @@ public class CreateIEActor extends UntypedActor {
             //CMS mit dem anderen dh geht es steht dann aber an der falschen stelle...
             DnxDocument ieDnx = DnxDocumentFactory.getInstance().createDnxDocument();
             DnxDocumentHelper ieDnxHelper = new DnxDocumentHelper(ieDnx);
+            boolean isCMS = false;
+            if (record.repository.cms != null && record.repository.cmsfield != null) {
+                if (dc.getDcValue(record.repository.cmsfield) != null) {
+                    isCMS = true;
+                }
+            }
+            if (isCMS) {
+                DnxDocumentHelper.CMS cms = ieDnxHelper. new CMS();
+                cms.setSystem(record.repository.cms);
+                cms.setRecordId(dc.getDcValue(record.repository.cmsfield));
+                cms.setMId("CMS"+ dc.getDcValue(record.repository.cmsfield));
+                ieDnxHelper.setCMS(cms);
+                ie.setIeDnx(ieDnxHelper.getDocument());
+            }
             MetsDocument metsDoc = MetsDocument.Factory.parse(ie.toXML());
             //insert IE created in content directory
             File ieXML = new File(IEfullFileName);

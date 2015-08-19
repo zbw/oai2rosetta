@@ -1,16 +1,38 @@
-@(repoForm: Form[Repository])
+@(repoForm:Form[Repository])
 @import helper._
-@import helper.twitterBootstrap._
-@main("zbw subapp") {
+
+    @mappinghelp = {
+        <div class="alert alert-info" role="alert">
+            <small><code> &lt;iefield&gt; &lt;xpath in OAI&gt; &lt;countfield&gt; &lt;option [type|prefix]&gt; &lt;optionvalue&gt; </code></small>
+            <div>dc:creator //dc:creator 1 </div>
+            <div>dc:creator //dc:creator 2  </div>
+            <div>dc:creator //dc:creator 3  </div>
+            <div>dc:title //dc:title 1   </div>
+            <div>dc:identifier //dc:identifier[starts-with(text(),'http')] 1 type dcterms:URI </div>
+            <div>dc:date //dc:date 1 </div>
+            <div>dc:identifier //dc:identifier[starts-with(text(),'ppn')] 1 prefix ppn: </div>
+        </div>
+    }
+
+    @implicitField = @{FieldConstructor(bootstrapInput.f)}
+
+@main("zbw subapp", null) {
 
     @helper.form(action = routes.RepositoryApp.submit(), 'id -> "repoForm") {
         <fieldset>
 
             <legend>Repository (@repoForm("id").valueOr("New"))</legend>
         @helper.inputText(repoForm("title"), '_label -> "Titel")
-        @helper.inputText(repoForm("oaiUrl"),'size -> 50)
-        @helper.inputText(repoForm("oaiTitle"),'size -> 50)
-        @helper.textarea(repoForm("oaiMapping"),'rows -> 10, 'cols->50)
+        @helper.inputText(repoForm("oaiUrl"),'size -> 50, 'help ->"e.g. http://pub.zbw.eu/dspace-oai/request")
+        @helper.inputText(repoForm("oaiTitle"),'size -> 50, 'help -> "xpath of title e.g. //dc:title")
+
+        @helper.textarea(repoForm("oaiMapping"),'rows -> 10, 'cols->50, 'help ->mappinghelp)(FieldConstructor(views.html.bootstrapTextarea.f), null)
+
+        @helper.textarea(repoForm("nomimetypes"),'rows -> 3, 'cols->50, 'help ->"we dont want theses mimes")(FieldConstructor(views.html.bootstrapTextarea.f), null)
+        @helper.inputText(repoForm("metadataPrefix"),'size -> 50, 'help ->"OAI Prefix for the Metadata e.g. oai_dc")
+        @helper.inputText(repoForm("resourcesPrefix"),'size -> 50, 'help -> "OAI Prefix for the resources if different e.g. didl")
+        @helper.inputText(repoForm("cms"),'size -> 50, 'help -> "Name of the CMS to use in Rosetta")
+        @helper.inputText(repoForm("cmsfield"),'size -> 50, 'help -> "field to use for CMS Enrichment")
         @helper.inputText(repoForm("pdsUrl"),'size -> 50)
         @helper.inputText(repoForm("depositWsdlUrl"),'size -> 50)
         @helper.inputText(repoForm("depositWsdlEndpoint"),'size -> 50)
@@ -30,8 +52,8 @@
         @helper.inputText(repoForm("ftpDir"))
         @helper.inputText(repoForm("ftpKey"))
         @helper.inputText(repoForm("ftpMax"))
-        @helper.checkbox(repoForm("active"))
         @helper.inputText(repoForm("joblimit"))
+        @helper.checkbox(repoForm("active"))(FieldConstructor(views.html.bootstrapCheckbox.f), null)
         <input type="hidden" value="@repoForm("id").value" name="id">
         <input type="hidden" value="@repoForm("repository_id").value" name="repository_id">
         </fieldset>
