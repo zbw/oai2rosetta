@@ -23,6 +23,7 @@ public class RootActor extends UntypedActor {
 
     @Override
     public void preStart() {
+        classmap.put(StatusMessage.GETRECORDJOB, GetRecordActor.class);
         classmap.put(StatusMessage.FETCHJOB, FetchActor.class);
         classmap.put(StatusMessage.CREATEJOB, CreateIEActor.class);
         classmap.put(StatusMessage.PUSHJOB, PushActor.class);

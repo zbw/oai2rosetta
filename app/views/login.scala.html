@@ -1,7 +1,7 @@
 @(form: Form[User])
 @import helper.twitterBootstrap._
 
-@main("zbw subapp") {
+@main("zbw subapp", null) {
     @helper.form(routes.Application.authenticate) {
 <h1>Sign in</h1>
         @if(form.hasGlobalErrors) {

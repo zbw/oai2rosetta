@@ -1,7 +1,11 @@
 package controllers;
 
+import actors.CommandMessage;
 import actors.Jobstatus;
+import actors.RootActorSystem;
 import actors.StatusMessage;
+import akka.actor.ActorSelection;
+import akka.actor.ActorSystem;
 import models.Record;
 import models.Repository;
 import oai.*;
@@ -25,6 +29,7 @@ import static play.libs.Json.toJson;
  */
 
 public class RepositoryApp extends Controller {
+    static ActorSystem actorSystem = RootActorSystem.getInstance().getActorSystem();
 
     public static Result list() {
         return ok(views.html.repositories.render(""));
@@ -68,46 +73,14 @@ public class RepositoryApp extends Controller {
         return ok(toJson(repositories));
     }
 
-    @Security.Authenticated(Secured.class)
     public static Result getRecords(int repository_id) {
-        Repository repository = Repository.findById(repository_id);
-        String set = repository.id;
-        OAIClient oaiClient = new OAIClient(repository.oaiUrl);
-        try {
-            IdentifiersList identifiersList = oaiClient.listIdentifiers("oai_dc", null, null, set);
-            ResumptionToken token = identifiersList.getResumptionToken();
-            readList(identifiersList, repository);
-            if (identifiersList.getResumptionToken() != null) {
-                listIdentifiers(identifiersList.getResumptionToken(), repository, oaiClient);
-            }
-        } catch (OAIException e) {
-            e.printStackTrace();
-            Logger.error(e.getMessage());
-        }
-        return redirect(routes.RecordApplication.list(repository_id,0,null,null,null,-1));
+        CommandMessage msg = new CommandMessage(StatusMessage.GETRECORDJOB,false, repository_id,0);
+        ActorSelection rootActor = actorSystem.actorSelection("user/RootGetRecordActor");
+        rootActor.tell(msg,null);
+        return ok();
     }
 
-    private static void listIdentifiers( ResumptionToken resumptionToken,Repository repository,OAIClient oaiClient) throws OAIException {
-        IdentifiersList identifiersList = oaiClient.listIdentifiers(resumptionToken);
-        readList(identifiersList, repository);
-        if (identifiersList.getResumptionToken() != null) {
-           listIdentifiers(identifiersList.getResumptionToken(), repository, oaiClient);
-        }
-    }
 
-    private static void readList(IdentifiersList identifiersList,Repository repository)  {
-        LinkedList<Header> headerlist = (LinkedList<Header>) identifiersList.asList();
-        for (int i = 0;i<headerlist.size();i++ ) {
-            String ident = headerlist.get(i).getIdentifier();
-            Record existrecord = Record.findByIdentifierAndRepos(ident,repository.repository_id);
-            if (existrecord == null) {
-                Record record = new Record();
-                record.identifier = ident;
-                record.repository = repository;
-                record.save();
-            }
-        }
-    }
 
     public static Result showRepository(int id) {
         Repository repository = Repository.findById(id);
@@ -116,7 +89,24 @@ public class RepositoryApp extends Controller {
     }
 
     @Security.Authenticated(Secured.class)
-    public static Result monitor() {
+    public static Result monitor(int repository_id) {
+        Repository repository = Repository.findById(repository_id);
+        Map<String,Map<String,Integer>> stats = new HashMap<>();
+
+        HashMap<String, Integer> reposStat = new HashMap<>();
+        for (int i = 0; i < Record.ALLSTATUS.length; i++) {
+            Integer count = repository.countStatus(Record.ALLSTATUS[i]);
+            if (count>0)
+            reposStat.put("" + Record.ALLSTATUS[i],count);
+        }
+        stats.put(repository.title,reposStat);
+
+        //return ok(monitor.render(jobs,stats));
+        return ok(monitor.render(stats));
+    }
+
+    @Security.Authenticated(Secured.class)
+    public static Result monitorAll() {
         //Vector<Jobstatus> jobs = Utils.getJobMessages();
         // get Stats
         Map<String,Map<String,Integer>> stats = new HashMap<>();
@@ -126,7 +116,7 @@ public class RepositoryApp extends Controller {
             for (int i = 0; i < Record.ALLSTATUS.length; i++) {
                 Integer count = repository.countStatus(Record.ALLSTATUS[i]);
                 if (count>0)
-                reposStat.put("" + Record.ALLSTATUS[i],count);
+                    reposStat.put("" + Record.ALLSTATUS[i],count);
             }
             stats.put(repository.title,reposStat);
         }

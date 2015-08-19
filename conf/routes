@@ -17,6 +17,7 @@ GET         /repository/show/:id                  controllers.RepositoryApp.show
 GET         /repository/identifiers/:id           controllers.RepositoryApp.getRecords(id: Int)
 GET         /repository/bfetch/:identifier        controllers.RecordApplication.bfetchOAI(identifier: Int)
 GET         /record/show/:identifier              controllers.RecordApplication.show(identifier: Int)
+GET         /record/delete/:identifier            controllers.RecordApplication.deleteRecord(identifier: Int)
 GET         /record/list/:identifier              controllers.RecordApplication.list(identifier: Int,p:Int ?= 0, s ?= "logcreated", o ?= "desc", f ?= "", status:Int ?= 0)
 GET         /record/fetch/:identifier             controllers.RecordApplication.fetchOAI(identifier: Int)
 GET         /record/createie/:identifier          controllers.RecordApplication.createIE(identifier: Int)
@@ -30,7 +31,8 @@ GET         /record/bsipstatus/:identifier        controllers.RecordApplication.
 GET         /record/cleanup/:identifier           controllers.RecordApplication.cleanup(identifier : Int)
 GET         /record/reset/:identifier             controllers.RecordApplication.reset(identifier: Int)
 POST        /record/resetstatus                   controllers.RecordApplication.resetStatus()
-GET         /monitor                              controllers.RepositoryApp.monitor()
+GET         /monitor                              controllers.RepositoryApp.monitor(id: Int)
+GET         /monitorAll                           controllers.RepositoryApp.monitorAll()
 GET         /stop/:type                           controllers.RepositoryApp.stop(type:String)
 
 # Map static resources from the /public folder to the /assets URL path

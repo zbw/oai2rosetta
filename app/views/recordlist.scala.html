@@ -36,7 +36,7 @@
     </th>
 }
 
-@main(repository.title) {
+@main(repository.title, repository) {
     <script type="text/javascript" src='@routes.Assets.at("js/jobs.js")'></script>
     <div class="row">
         <div class="col-md-6">
@@ -77,7 +77,7 @@
         <div class="col-md-6">
             <div class="row btn-block">
                 <div class="col-md-6 ">
-                    <a class="btn btn-default" href="@routes.RepositoryApp.getRecords(repository.repository_id)">Records holen</a>
+                    <a class="btn btn-default jobbutton" href="" data-url="@routes.RepositoryApp.getRecords(repository.repository_id)">Records holen</a>
                 </div>
             </div>
             <div class="row btn-block" >

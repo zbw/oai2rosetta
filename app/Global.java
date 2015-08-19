@@ -38,6 +38,7 @@ public class Global extends GlobalSettings {
         actorSystem.actorOf(Props.create(RootActor.class),"RootPushActor");
         actorSystem.actorOf(Props.create(RootActor.class),"RootDepositActor");
         actorSystem.actorOf(Props.create(RootActor.class),"RootCleanupActor");
+        actorSystem.actorOf(Props.create(RootActor.class),"RootGetRecordActor");
     }
 
     @Override
@@ -69,9 +70,39 @@ public class Global extends GlobalSettings {
     }
 
     // Fetch Schedules
-    private void scheduleFetch() {
+    private void scheduleGetRecords() {
         Akka.system().scheduler().schedule(
                 Duration.create(nextExecutionInSeconds(23, 00), TimeUnit.SECONDS),
+                Duration.create(24, TimeUnit.HOURS),
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        Logger.info("GetRecords Schedule---    " + new Date());
+                        runGetRecords();
+                    }
+                },
+                Akka.system().dispatcher()
+        );
+    }
+
+    private void runGetRecords() {
+        List<Repository> repositories = new Model.Finder(String.class, Repository.class).all();
+        ActorSelection rootActor = actorSystem.actorSelection("user/RootActor");
+        for (Repository repository:repositories) {
+            if (repository.active) {
+                CommandMessage msg =  new CommandMessage(StatusMessage.GETRECORDJOB,false, repository.repository_id,0);
+                rootActor.tell(msg, null);
+                Logger.info("repository: " + repository.title + " getting records");
+            } else {
+                Logger.info("repository: " + repository.title + " not active");
+            }
+        }
+    }
+
+    // Fetch Schedules
+    private void scheduleFetch() {
+        Akka.system().scheduler().schedule(
+                Duration.create(nextExecutionInSeconds(23, 59), TimeUnit.SECONDS),
                 Duration.create(24, TimeUnit.HOURS),
                 new Runnable() {
                     @Override
@@ -106,7 +137,7 @@ public class Global extends GlobalSettings {
     // Create Schedules
     private void scheduleCreate() {
         Akka.system().scheduler().schedule(
-                Duration.create(nextExecutionInSeconds(23, 57), TimeUnit.SECONDS),
+                Duration.create(nextExecutionInSeconds(1, 00), TimeUnit.SECONDS),
                 Duration.create(24, TimeUnit.HOURS),
                 new Runnable() {
                     @Override
@@ -139,7 +170,7 @@ public class Global extends GlobalSettings {
     // Push Schedules
     private void schedulePush() {
         Akka.system().scheduler().schedule(
-                Duration.create(nextExecutionInSeconds(0, 57), TimeUnit.SECONDS),
+                Duration.create(nextExecutionInSeconds(3, 00), TimeUnit.SECONDS),
                 Duration.create(24, TimeUnit.HOURS),
                 new Runnable() {
                     @Override
@@ -171,7 +202,7 @@ public class Global extends GlobalSettings {
     // Deposit Schedules
     private void scheduleDeposit() {
         Akka.system().scheduler().schedule(
-                Duration.create(nextExecutionInSeconds(1, 57), TimeUnit.SECONDS),
+                Duration.create(nextExecutionInSeconds(4, 57), TimeUnit.SECONDS),
                 Duration.create(24, TimeUnit.HOURS),
                 new Runnable() {
                     @Override

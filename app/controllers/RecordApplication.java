@@ -78,9 +78,17 @@ public class RecordApplication extends Controller {
             record.logcreated = null;
             record.save();
         }
-        return redirect(routes.RepositoryApp.getRecords(repository_id));
+        return redirect(routes.RecordApplication.list(repository_id,0,null,null,null,0));
     }
 
+    public static Result deleteRecord(int id) {
+        Record record = Record.findById(id);
+        int repository_id = record.repository.repository_id;
+        if (record.status < Record.STATUSINGESTED) {
+            record.delete();
+        }
+        return redirect(routes.RecordApplication.list(repository_id,0,null,null,null,0));
+    }
     private static void resetRecord(int id) {
         Record record = Record.findById(id);
         if (record.status < Record.STATUSINGESTED || record.sipActive.equals("DECLINED")) {
@@ -90,6 +98,9 @@ public class RecordApplication extends Controller {
             }
             record.getResources().clear();
             record.status = Record.STATUSNEW;
+            record.metadata = "";
+            record.errormsg = "";
+
             record.save();
         }
     }

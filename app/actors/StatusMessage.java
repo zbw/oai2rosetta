@@ -16,6 +16,7 @@ public class StatusMessage implements Serializable {
     private Date started;
     private Date finished;
 
+    public static final String GETRECORDJOB =   "GetRecordActor";
     public static final String FETCHJOB =       "FetchActor";
     public static final String CREATEJOB =      "CreateieActor";
     public static final String PUSHJOB =        "PushActor";
