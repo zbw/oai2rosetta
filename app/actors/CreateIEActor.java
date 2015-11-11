@@ -13,14 +13,22 @@ import com.exlibris.dps.sdk.deposit.IEParserFactory;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import gov.loc.mets.FileType;
+import gov.loc.mets.MdSecType;
 import gov.loc.mets.MetsDocument;
 import gov.loc.mets.MetsType;
 import models.Record;
 import models.Resource;
+import oai.OAIClient;
+import oai.OAIException;
+import org.apache.xmlbeans.XmlException;
+import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptions;
+import org.xml.sax.SAXException;
 import play.Logger;
 
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
+import java.io.IOException;
 import java.net.FileNameMap;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -138,6 +146,22 @@ public class CreateIEActor extends UntypedActor {
                 ieDnxHelper.setCMS(cms);
                 ie.setIeDnx(ieDnxHelper.getDocument());
             }
+            // attach Source MD
+            if (record.repository.source_mdformat!=null && !record.repository.source_mdformat.equals("")) {
+                XmlObject xml = getMods(record);
+                if (record.repository.source_mdformat.equals("mods")) {
+                    ie.setIeSourceMd(gov.loc.mets.MdSecType.MdWrap.MDTYPE.MODS, xml);
+                } else if (record.repository.source_mdformat.equals("oai_dc")) {
+                    ie.setIeSourceMd(MdSecType.MdWrap.MDTYPE.DC, xml);
+                } else if (record.repository.source_mdformat.equals("marc")) {
+                    ie.setIeSourceMd(MdSecType.MdWrap.MDTYPE.MARC, xml);
+                } else {
+                    ie.setIeSourceMd(MdSecType.MdWrap.MDTYPE.OTHER, xml);
+                }
+                DnxDocument modsDnx = ie.getIeDnx();
+                DnxDocumentHelper documentModsHelper = new DnxDocumentHelper(modsDnx);
+                ie.setIeDnx(modsDnx);
+            }
             MetsDocument metsDoc = MetsDocument.Factory.parse(ie.toXML());
             //insert IE created in content directory
             File ieXML = new File(IEfullFileName);
@@ -150,5 +174,13 @@ public class CreateIEActor extends UntypedActor {
             Logger.error("createIEError for: " + record.identifier + " - " + e.getMessage());
         }
         return ok;
+    }
+
+    private static XmlObject getMods(Record record) throws XmlException, ParserConfigurationException, SAXException, IOException, OAIException {
+        OAIClient oaiClient = new OAIClient(record.repository.oaiUrl);
+        oai.Record oairecord =oaiClient.getRecord(record.identifier, record.repository.source_mdformat);
+        String ddd = oairecord.getMetadataAsString();
+        return XmlObject.Factory.parse(oairecord.getMetadataAsString());
+
     }
 }

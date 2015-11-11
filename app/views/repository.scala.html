@@ -22,6 +22,7 @@
         <fieldset>
 
             <legend>Repository (@repoForm("id").valueOr("New"))</legend>
+        @helper.inputText(repoForm("id"), '_label -> "ID of root institution or collection",'help ->"e.g. com_123456789_1 or root for everything")
         @helper.inputText(repoForm("title"), '_label -> "Titel")
         @helper.inputText(repoForm("oaiUrl"),'size -> 50, 'help ->"e.g. http://pub.zbw.eu/dspace-oai/request")
         @helper.inputText(repoForm("oaiTitle"),'size -> 50, 'help -> "xpath of title e.g. //dc:title")
@@ -33,6 +34,21 @@
         @helper.inputText(repoForm("resourcesPrefix"),'size -> 50, 'help -> "OAI Prefix for the resources if different e.g. didl")
         @helper.inputText(repoForm("cms"),'size -> 50, 'help -> "Name of the CMS to use in Rosetta")
         @helper.inputText(repoForm("cmsfield"),'size -> 50, 'help -> "field to use for CMS Enrichment")
+
+            <div class="form-group">
+                <label for="source_mdformat" class="col-md-12 control-label">Source_mdformat @repoForm("source_mdformat").value</label>
+                <div class="col-md-6 field">
+                    <select class="form-control" id="sel1" name="source_mdformat">
+                        <option value="" @if(repoForm("source_mdformat").value.equals("")) {selected}>No SourceMD attached</option>
+                        <option value="oai_dc" @if(repoForm("source_mdformat").value.equals("oai_dc")) {selected}>oai_dc</option>
+                        <option value="mods" @if(repoForm("source_mdformat").value.equals("mods")) {selected}>mods</option>
+                        <option value="marc" @if(repoForm("source_mdformat").value.equals("marc")) {selected}>marc</option>
+                    </select>
+                </div>
+                <div class="col-md-6 help-block">
+                    if this field is filled, source MD with specified format will be included to METS
+                </div>
+            </div>
         @helper.inputText(repoForm("pdsUrl"),'size -> 50)
         @helper.inputText(repoForm("depositWsdlUrl"),'size -> 50)
         @helper.inputText(repoForm("depositWsdlEndpoint"),'size -> 50)

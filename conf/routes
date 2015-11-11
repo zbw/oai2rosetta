@@ -12,6 +12,7 @@ GET         /repositories                         controllers.RepositoryApp.getR
 GET         /repositorylist                       controllers.RepositoryApp.list()
 GET         /repository/submit                    controllers.RepositoryApp.submit()
 GET         /repository/:id                       controllers.RepositoryApp.edit(id: Int)
+GET         /repository/copy/:id                  controllers.RepositoryApp.copyRepository(id: Int)
 GET         /repository/delete/:id                controllers.RepositoryApp.delete(id: Int)
 GET         /repository/show/:id                  controllers.RepositoryApp.showRepository(id: Int)
 GET         /repository/identifiers/:id           controllers.RepositoryApp.getRecords(id: Int)

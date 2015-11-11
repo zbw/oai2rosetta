@@ -28,6 +28,7 @@ public class RecordApplication extends Controller {
         return ok(index.render("ZBW Hosting subapps"));
     }
 
+    @Security.Authenticated(Secured.class)
     public static Result show(int id) {
         Record record = Record.findById(id);
         return ok(views.html.record.render(record));
@@ -62,6 +63,7 @@ public class RecordApplication extends Controller {
         return show(id);
     }
 
+    @Security.Authenticated(Secured.class)
     public static Result resetStatus() {
         DynamicForm dynamicForm = form().bindFromRequest();
         int repository_id = Integer.parseInt(dynamicForm.get("repository_id"));
@@ -81,6 +83,7 @@ public class RecordApplication extends Controller {
         return redirect(routes.RecordApplication.list(repository_id,0,null,null,null,0));
     }
 
+    @Security.Authenticated(Secured.class)
     public static Result deleteRecord(int id) {
         Record record = Record.findById(id);
         int repository_id = record.repository.repository_id;

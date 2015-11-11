@@ -46,6 +46,7 @@ public class GetRecordActor extends UntypedActor {
     private void getRecords(int identifier) {
         Repository repository = Repository.findById(identifier);
         String set = repository.id;
+        if (set.equals("root")) {set=null;}
         OAIClient oaiClient = new OAIClient(repository.oaiUrl);
         try {
             IdentifiersList identifiersList = oaiClient.listIdentifiers("oai_dc", null, null, set);

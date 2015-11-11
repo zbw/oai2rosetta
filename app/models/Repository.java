@@ -18,7 +18,7 @@ public class Repository extends Model {
 
     @Constraints.Required
     @Id
-    public int repository_id;
+    public Integer repository_id;
     public String id;
     @Constraints.Required
     public String title;
@@ -52,6 +52,7 @@ public class Repository extends Model {
     public String ftpMax;
     public int joblimit;
     public boolean active;
+    public String source_mdformat;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "repository")   @JsonBackReference
     public List<Record> records;
 

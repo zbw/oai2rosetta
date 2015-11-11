@@ -9,6 +9,7 @@ import akka.actor.ActorSystem;
 import models.Record;
 import models.Repository;
 import oai.*;
+import org.springframework.beans.BeanUtils;
 import play.Logger;
 import play.data.Form;
 import play.db.ebean.Model;
@@ -68,11 +69,25 @@ public class RepositoryApp extends Controller {
         return redirect(routes.RepositoryApp.list());
     }
 
+    @Security.Authenticated(Secured.class)
+    public static Result copyRepository(int id) {
+        Repository repository = Repository.findById(id);
+
+        Repository newRepo = new Repository();
+        BeanUtils.copyProperties(repository, newRepo);
+        newRepo.repository_id = null;
+        newRepo.title += "_COPY";
+        newRepo.save();
+        return list();
+    }
+
+    @Security.Authenticated(Secured.class)
     public static Result getRepositories() {
         List<Repository> repositories = new Model.Finder(String.class, Repository.class).all();
         return ok(toJson(repositories));
     }
 
+    @Security.Authenticated(Secured.class)
     public static Result getRecords(int repository_id) {
         CommandMessage msg = new CommandMessage(StatusMessage.GETRECORDJOB,false, repository_id,0);
         ActorSelection rootActor = actorSystem.actorSelection("user/RootGetRecordActor");
@@ -81,7 +96,7 @@ public class RepositoryApp extends Controller {
     }
 
 
-
+    @Security.Authenticated(Secured.class)
     public static Result showRepository(int id) {
         Repository repository = Repository.findById(id);
         int count = repository.records.size();
