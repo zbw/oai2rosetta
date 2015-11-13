@@ -1,5 +1,7 @@
 package controllers;
 
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import models.User;
 import play.data.Form;
 import play.mvc.Controller;
@@ -12,7 +14,9 @@ import static play.data.Form.form;
 public class Application extends Controller {
 
     public static Result index() {
-        return ok(index.render("ZBW Hosting subapps"));
+        Config conf = ConfigFactory.load();
+        String appname = conf.getString("institution.appname");
+        return ok(index.render(appname));
     }
 
     public static Result login() {

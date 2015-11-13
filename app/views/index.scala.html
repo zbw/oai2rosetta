@@ -1,7 +1,14 @@
 @(message: String)
 
-@main("zbw subapp", null) {
-     <h2>@message</h2>
+@main("", null) {
+    <div class="row">
+        <div class="col-md-8"><h2>@message</h2></div>
+    </div>
 
+    <div class="row">
+        <div class="col-md-8">
+            <img src="@routes.Assets.at("images/dspace_submissionapp_schema.png")" style="width:800px;"/>
+        </div>
+    </div>
 
 }

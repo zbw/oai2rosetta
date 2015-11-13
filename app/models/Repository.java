@@ -56,6 +56,9 @@ public class Repository extends Model {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "repository")   @JsonBackReference
     public List<Record> records;
 
+    public Repository() {
+        source_mdformat="";
+    }
 
     public static Finder<String, Repository> find = new Finder<String, Repository>(String.class, Repository.class);
 

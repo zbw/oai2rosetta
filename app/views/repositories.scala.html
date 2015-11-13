@@ -1,18 +1,43 @@
-@(message: String)
+@(message: String, repositories: List[Repository])
 
-@main("zbw subapp", null) {
-    <script type="text/javascript" src='@routes.Assets.at("js/index.js")'></script>
+@main("Repository List", null) {
+
+
+
     <h2>@message</h2>
-    <table id="repositories" class="table table-hover"></table>
+    <table id="repositories" class="table table-hover">
+    @for(repository <- repositories) {
+        <tr>
+            <td>@repository.title</td>
+            <td> @repository.id</td>
+            <td><a href='/repository/@repository.repository_id'> edit</a></td>
+            <td><a href='/record/list/@repository.repository_id'> show</a></td>
+            <td><a href='/repository/copy/@repository.repository_id' data-confirm='Are you sure you want to copy?'> copy</a></td>
+            <td><a href='/repository/delete/@repository.repository_id' data-confirm='Are you sure you want to delete?'> delete</a></td>
+        </tr>
+    }
+    </table>
 
-    <form action="@routes.RepositoryApp.addRepository()" method="post" role="form">
-        <div class="form-group">
-        <label for="title">Title</label> <input type="text" class="form-control" name="title" />
-        </div>
-        <div class="form-group">
-        <label for="id">Handle (com_10836_1) for root institution/collection or "root" for all</label> <input type="text" class="form-control" name="id" />
-        </div>
-        <button type="submit" class="btn btn-default">Add Repository</button>
-    </form>
 
+        <div class="form-group">
+            <a href="@routes.RepositoryApp.edit(0)" class="btn btn-default">Add Repository</a>
+        </div>
+
+    <script>
+    $(document).ready(function() {
+    $('a[data-confirm]').click(function(ev) {
+
+    var href = $(this).attr('href');
+    if (!$('#dataConfirmModal').length) {
+    $('body').append('<div id="dataConfirmModal" class="modal fade" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h3 id="dataConfirmLabel">Please Confirm</h3></div><div class="modal-body"></div><div class="modal-footer"><button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button><a class="btn btn-primary" id="dataConfirmOK">OK</a></div></div></div></div>');
+    } else {
+    $('#dataConfirmModal').replaceWith('<div id="dataConfirmModal" class="modal fade" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h3 id="dataConfirmLabel">Please Confirm</h3></div><div class="modal-body"></div><div class="modal-footer"><button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button><a class="btn btn-primary" id="dataConfirmOK">OK</a></div></div></div></div>');
+    }
+    $('#dataConfirmModal').find('.modal-body').text($(this).attr('data-confirm'));
+    $('#dataConfirmOK').attr('href', href);
+    $('#dataConfirmModal').modal({show:true});
+    return false;
+    });
+    });
+    </script>
 }

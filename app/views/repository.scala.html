@@ -16,12 +16,12 @@
 
     @implicitField = @{FieldConstructor(bootstrapInput.f)}
 
-@main("zbw subapp", null) {
+@main("Edit Repository", null) {
 
     @helper.form(action = routes.RepositoryApp.submit(), 'id -> "repoForm") {
         <fieldset>
 
-            <legend>Repository (@repoForm("id").valueOr("New"))</legend>
+            <legend>Repository (@repoForm("title").valueOr("New"))</legend>
         @helper.inputText(repoForm("id"), '_label -> "ID of root institution or collection",'help ->"e.g. com_123456789_1 or root for everything")
         @helper.inputText(repoForm("title"), '_label -> "Titel")
         @helper.inputText(repoForm("oaiUrl"),'size -> 50, 'help ->"e.g. http://pub.zbw.eu/dspace-oai/request")

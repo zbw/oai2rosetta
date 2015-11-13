@@ -33,12 +33,14 @@ public class RepositoryApp extends Controller {
     static ActorSystem actorSystem = RootActorSystem.getInstance().getActorSystem();
 
     public static Result list() {
-        return ok(views.html.repositories.render(""));
+        List<Repository> repositories = new Model.Finder(String.class, Repository.class).all();
+        return ok(views.html.repositories.render("",repositories));
     }
 
     @Security.Authenticated(Secured.class)
     public static Result edit(int id) {
         Repository repository = Repository.findById(id);
+        if (repository == null) repository = new Repository();
         Form<Repository> repoForm  = form(Repository.class).fill(repository);
         return ok(views.html.repository.render(repoForm));
     }
@@ -64,9 +66,10 @@ public class RepositoryApp extends Controller {
 
     @Security.Authenticated(Secured.class)
     public static Result addRepository() {
-        Repository repository = Form.form(Repository.class).bindFromRequest().get();
-        repository.save();
-        return redirect(routes.RepositoryApp.list());
+        //Repository repository = Form.form(Repository.class).bindFromRequest().get();
+        //repository.save();
+        //return redirect(routes.RepositoryApp.list());
+        return edit(0);
     }
 
     @Security.Authenticated(Secured.class)
@@ -78,7 +81,7 @@ public class RepositoryApp extends Controller {
         newRepo.repository_id = null;
         newRepo.title += "_COPY";
         newRepo.save();
-        return list();
+        return edit(newRepo.repository_id);
     }
 
     @Security.Authenticated(Secured.class)
