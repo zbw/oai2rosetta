@@ -148,9 +148,11 @@ public class CreateIEActor extends UntypedActor {
             }
             // attach Source MD
             if (record.repository.source_mdformat!=null && !record.repository.source_mdformat.equals("")) {
-                XmlObject xml = getMods(record);
+                XmlObject xml = getSourceMD(record);
+
                 if (record.repository.source_mdformat.equals("mods")) {
                     ie.setIeSourceMd(gov.loc.mets.MdSecType.MdWrap.MDTYPE.MODS, xml);
+
                 } else if (record.repository.source_mdformat.equals("oai_dc")) {
                     ie.setIeSourceMd(MdSecType.MdWrap.MDTYPE.DC, xml);
                 } else if (record.repository.source_mdformat.equals("marc")) {
@@ -176,11 +178,12 @@ public class CreateIEActor extends UntypedActor {
         return ok;
     }
 
-    private static XmlObject getMods(Record record) throws XmlException, ParserConfigurationException, SAXException, IOException, OAIException {
+    private static XmlObject getSourceMD(Record record) throws XmlException, ParserConfigurationException, SAXException, IOException, OAIException {
         OAIClient oaiClient = new OAIClient(record.repository.oaiUrl);
         oai.Record oairecord =oaiClient.getRecord(record.identifier, record.repository.source_mdformat);
-        String ddd = oairecord.getMetadataAsString();
-        return XmlObject.Factory.parse(oairecord.getMetadataAsString());
-
+        XmlObject xo = XmlObject.Factory.parse(oairecord.getMetadataAsString());
+        return xo;
     }
+
+
 }

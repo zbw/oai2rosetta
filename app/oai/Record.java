@@ -103,6 +103,7 @@ public class Record extends ResponseBase {
         return XMLUtils.xmlToString(getMetadata());
     }
 
+
     public String getMetadataField(String field) {
         XPathWrapper xpath = new XPathWrapper(metadata);
         xpath.addNamespace(DIDL_NS_PREFIX, DIDL_NS_URI);
