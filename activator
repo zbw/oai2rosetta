@@ -300,7 +300,8 @@ declare -r app_version="1.2.8"
 
 declare -r app_launcher="${activator_home}/activator-launch-${app_version}.jar"
 declare -r script_name=activator
-declare -r java_cmd=$(get_java_cmd)
+### declare -r java_cmd=$(get_java_cmd)
+java_cmd=$(get_java_cmd)
 declare -r java_opts=( "${ACTIVATOR_OPTS[@]}" "${SBT_OPTS[@]}" "${JAVA_OPTS[@]}" "${java_opts[@]}" )
 userhome="$HOME"
 if is_cygwin; then
