@@ -15,3 +15,4 @@ dist
 /.settings
 
 application-log-*
+projectFilesBackup/*
