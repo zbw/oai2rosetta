@@ -60,14 +60,17 @@ public class Application extends Controller {
     }
 
     private static boolean validIP(String ip) {
+        Logger.info("validating IP: " + ip);
         Config conf = ConfigFactory.load();
         String iprange = conf.getString("ip.range");
         if (iprange== null || iprange.equals("")) {
+            Logger.info("validating IP: not range given");
             return true;
         } else {
             StringTokenizer st = new StringTokenizer(iprange);
             while (st.hasMoreElements()) {
                 String checkIP = st.nextToken();
+                Logger.info("validating IP: checking- " + checkIP);
                 if (checkIP.indexOf("/")>0) {
                     //CIDR Notation
                     try {
