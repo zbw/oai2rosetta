@@ -8,6 +8,7 @@ import play.Logger;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Security;
 import views.html.index;
 import views.html.login;
 
@@ -17,6 +18,7 @@ import static play.data.Form.form;
 
 public class Application extends Controller {
 
+    @Security.Authenticated(Secured.class)
     public static Result index() {
         Config conf = ConfigFactory.load();
         String appname = conf.getString("institution.appname");
