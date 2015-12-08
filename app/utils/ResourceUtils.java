@@ -9,21 +9,25 @@ import java.net.*;
 public class ResourceUtils {
 
 
-    public static void getResource(String url, String outdir, String filename) throws URISyntaxException, IOException, CorruptFileException {
+    public static void getResource(String url, String outdir, String filename) throws URISyntaxException, IOException, CorruptFileException,FileNotFoundException {
         URI inputURI = new URI(url);
         URL inputURL = inputURI.toURL();
         URLConnection ucon = inputURL.openConnection();
-        InputStream inStream = ucon.getInputStream();
-        BufferedInputStream binStream = new BufferedInputStream(inStream);
-        File outDir = new File(outdir);
-        if (!outDir.exists()) {
-            outDir.mkdirs();
-        }
-        FileOutputStream outFileStream = new FileOutputStream(outDir + "/" + filename);
         try {
+            InputStream inStream = ucon.getInputStream();
+            BufferedInputStream binStream = new BufferedInputStream(inStream);
+            File outDir = new File(outdir);
+            if (!outDir.exists()) {
+                outDir.mkdirs();
+            }
+            FileOutputStream outFileStream = new FileOutputStream(outDir + "/" + filename);
+
             writeFile(binStream, outFileStream);
         } catch (CorruptFileException e) {
             throw new CorruptFileException(filename+ " filesize is 0B");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            throw e;
         }
     }
 

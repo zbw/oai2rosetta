@@ -14,6 +14,7 @@ import play.Logger;
 import utils.CorruptFileException;
 import utils.ResourceUtils;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Date;
@@ -137,7 +138,8 @@ public class FetchActor extends UntypedActor {
             } else {
                 for (String uri : resources.keySet()) {
                     //check if already existing
-                    String origfile = uri.replaceAll("\\+", "%20");
+                    //String origfile = uri.replaceAll("\\+", "%20");
+                    String origfile = uri;
                     String filename = uri.substring(uri.lastIndexOf("/") + 1).replaceAll("\\+", " ");
                     if (!record.existResource(importdirectory + record.repository.id + "/" + record.id + "/content/streams/" + filename)) {
                         Resource resource = new Resource();
@@ -159,12 +161,13 @@ public class FetchActor extends UntypedActor {
                 ok = true;
             }
         } catch (OAIException e) {
-            record.errormsg = e.getLocalizedMessage();
+            record.errormsg = e.getMessage();
             record.status = record.STATUSIMPORTEDERROR;
             Logger.error("fetchError for: " + record.identifier + " - " + e.getMessage());
-        } catch (IOException e) {
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
             Logger.error("fetchError for: " + record.identifier + " - "+ e.getMessage());
-            record.errormsg = e.getLocalizedMessage();
+            record.errormsg = "file not found: " + e.getMessage();
             record.status = record.STATUSIMPORTEDERROR;
         } catch (URISyntaxException e) {
             record.errormsg = e.getLocalizedMessage();
@@ -174,7 +177,13 @@ public class FetchActor extends UntypedActor {
             record.errormsg = e.getLocalizedMessage();
             record.status = record.STATUSIMPORTEDERROR;
             Logger.error("fetchError for: " + record.identifier + " - "+ e.getMessage());
+        } catch (IOException e) {
+            record.errormsg = e.getLocalizedMessage();
+            record.status = record.STATUSIMPORTEDERROR;
+            Logger.error("fetchError for: " + record.identifier + " - "+ e.getMessage());
         } catch (Exception e) {
+            record.errormsg = e.getLocalizedMessage();
+            record.status = record.STATUSIMPORTEDERROR;
             e.printStackTrace();
         }
         record.save();
