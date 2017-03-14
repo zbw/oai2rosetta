@@ -14,6 +14,7 @@ public class ResourceUtils {
         URL inputURL = inputURI.toURL();
         URLConnection ucon = inputURL.openConnection();
         try {
+
             InputStream inStream = ucon.getInputStream();
             BufferedInputStream binStream = new BufferedInputStream(inStream);
             File outDir = new File(outdir);
@@ -29,6 +30,13 @@ public class ResourceUtils {
             e.printStackTrace();
             throw e;
         }
+    }
+
+    public static boolean existSource(String url) throws IOException {
+        URL u = new URL(url);
+        HttpURLConnection huc =  (HttpURLConnection)  u.openConnection();
+        huc.setRequestMethod("HEAD");
+        return (huc.getResponseCode() == HttpURLConnection.HTTP_OK);
     }
 
     private static void writeFile(InputStream in, OutputStream out)

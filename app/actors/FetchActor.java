@@ -62,7 +62,7 @@ public class FetchActor extends UntypedActor {
     }
 
     public static boolean fetchRecord(Record record) {
-        boolean ok = false;
+        boolean ok = true;
         record.status = record.STATUSIMPORTING;
         record.save();
         OAIClient oaiClient = new OAIClient(record.repository.oaiUrl);
@@ -104,7 +104,7 @@ public class FetchActor extends UntypedActor {
                         optionvalue = keyval[4];
                     }
                     String value = oairecord.getMetadataField(xpathfield,countfield);
-                    if (option.equals("type") && optionvalue.equals("dcterms:URI")) {
+                    if (value!=null && option.equals("type") && optionvalue.equals("dcterms:URI")) {
                         if (!value.startsWith("http")) {
                             value=null;
                         }
@@ -120,51 +120,61 @@ public class FetchActor extends UntypedActor {
                         } else {
                             dc.addElement(ieField, value);
                         }
+                    } else {
+                        record.errormsg = "No mapping for: " + mappings[i];
+                        record.status = record.STATUSIMPORTEDERROR;
+                        ok=false;
+                        break;
                     }
+
                 }
             }
-            record.metadata = dc.toXml();
-            //maybe we need another record with another metadataprefix for getting the resources
-            if (!metadataPrefix.equals(record.repository.resourcesPrefix)
-                    && record.repository.resourcesPrefix != null
-                    && !record.repository.resourcesPrefix.equals("")) {
-                oairecord =oaiClient.getRecord(record.identifier, record.repository.resourcesPrefix);
-            }
-            Hashtable<String, String> resources = oairecord.getResources("//d:Resource","ref","mimeType",record.repository.nomimetypes);
-            if (resources.size()== 0) {
-                record.status = record.STATUSIMPORTEDERROR;
-                record.errormsg = "no files in repo";
-                ok=false;
-            } else {
-                for (String uri : resources.keySet()) {
-                    //check if already existing
-                    String origfile = uri.replaceAll("\\+", "%20");
-                    //String origfile = uri;
-                    // somehow urls are handled different if sent throught bitstream/handle
-                    // noticed on urlencoded filenames. So its better to take bitstream/handle...
-                    // this is actually a workaround, it has to be fixed in OAI-PMH didl resource
-                    if (origfile.indexOf("bitstream/handle")<0) {
-                        origfile = origfile.replaceFirst("bitstream","bitstream/handle");
-                    }
-                    String filename = uri.substring(uri.lastIndexOf("/") + 1).replaceAll("\\+", " ");
-                    if (!record.existResource(importdirectory + record.repository.id + "/" + record.id + "/content/streams/" + filename)) {
-                        Resource resource = new Resource();
-                        resource.origFile = origfile;
-
-                        resource.localFile = importdirectory + record.repository.id + "/" + record.id + "/content/streams/" + filename;
-                        resource.mime = resources.get(uri);
-                        resource.record = record;
-                        resource.save();
-                        record.resources.add(resource);
-                        ResourceUtils.getResource(resource.origFile, importdirectory + record.repository.id + "/" + record.id + "/content/streams/", filename);
-
-                    }
+            if (ok) {
+                record.metadata = dc.toXml();
+                //maybe we need another record with another metadataprefix for getting the resources
+                if (!metadataPrefix.equals(record.repository.resourcesPrefix)
+                        && record.repository.resourcesPrefix != null
+                        && !record.repository.resourcesPrefix.equals("")) {
+                    oairecord = oaiClient.getRecord(record.identifier, record.repository.resourcesPrefix);
                 }
+                Hashtable<String, String> resources = oairecord.getResources("//d:Resource", "ref", "mimeType", record.repository.nomimetypes);
+                if (resources.size() == 0) {
+                    record.status = record.STATUSIMPORTEDERROR;
+                    record.errormsg = "no files in repo";
+                    ok = false;
+                } else {
+                    for (String uri : resources.keySet()) {
+                        //check if already existing
+                        String origfile = uri.replaceAll("\\+", "%20");
+                        //String origfile = uri;
+                        // somehow urls are handled different if sent throught bitstream/handle
+                        // noticed on urlencoded filenames. So its better to take bitstream/handle...
+                        // this is actually a workaround, it has to be fixed in OAI-PMH didl resource
+                        boolean exist = ResourceUtils.existSource(origfile);
+                        if (!exist && origfile.indexOf("bitstream/handle") < 0) {
+                            origfile = origfile.replaceFirst("bitstream", "bitstream/handle");
+                        }
 
-                record.logcreated = new Date();
-                record.logmodified = new Date();
-                record.status = record.STATUSIMPORTED;
-                ok = true;
+                        String filename = uri.substring(uri.lastIndexOf("/") + 1).replaceAll("\\+", " ");
+                        if (!record.existResource(importdirectory + record.repository.id + "/" + record.id + "/content/streams/" + filename)) {
+                            Resource resource = new Resource();
+                            resource.origFile = origfile;
+
+                            resource.localFile = importdirectory + record.repository.id + "/" + record.id + "/content/streams/" + filename;
+                            resource.mime = resources.get(uri);
+                            resource.record = record;
+                            resource.save();
+                            record.resources.add(resource);
+                            ResourceUtils.getResource(resource.origFile, importdirectory + record.repository.id + "/" + record.id + "/content/streams/", filename);
+
+                        }
+                    }
+
+                    record.logcreated = new Date();
+                    record.logmodified = new Date();
+                    record.status = record.STATUSIMPORTED;
+                    ok = true;
+                }
             }
         } catch (OAIException e) {
             record.errormsg = e.getMessage();
