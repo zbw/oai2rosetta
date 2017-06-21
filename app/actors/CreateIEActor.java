@@ -93,6 +93,8 @@ public class CreateIEActor extends UntypedActor {
         try {
             IEParser ie = IEParserFactory.create();
             DublinCore dc = DublinCoreFactory.getInstance().createDocument(record.metadata);
+            // add the ingested dc fields
+
             ie.setIEDublinCore(dc);
             List<MetsType.FileSec.FileGrp> fGrpList = new ArrayList<MetsType.FileSec.FileGrp>();
             // add fileGrp

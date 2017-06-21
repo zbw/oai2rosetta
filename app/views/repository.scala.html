@@ -14,6 +14,14 @@
         </div>
     }
 
+    @dcingesthelp = {
+        <div class="alert alert-info" role="alert">
+            <div>DC tags that will be ingested in every IE. Key and value are seperated by space and every line is an own entry </div>
+            <small><code> &lt;key&gt; &lt;value&gt; </code></small>
+            <div>dc:creator ZBW </div>
+            <div>dcterms:license templicense  </div>
+        </div>
+    }
     @implicitField = @{FieldConstructor(bootstrapInput.f)}
 
 @main("Edit Repository", null) {
@@ -28,7 +36,7 @@
         @helper.inputText(repoForm("oaiTitle"),'size -> 50, 'help -> "xpath of title e.g. //dc:title")
 
         @helper.textarea(repoForm("oaiMapping"),'rows -> 10, 'cols->50, 'help ->mappinghelp)(FieldConstructor(views.html.bootstrapTextarea.f), null)
-
+        @helper.textarea(repoForm("dcingest"),'rows -> 10, 'cols->50, 'help ->dcingesthelp)(FieldConstructor(views.html.bootstrapTextarea.f), null)
         @helper.textarea(repoForm("nomimetypes"),'rows -> 3, 'cols->50, 'help ->"we dont want theses mimes")(FieldConstructor(views.html.bootstrapTextarea.f), null)
         @helper.inputText(repoForm("metadataPrefix"),'size -> 50, 'help ->"OAI Prefix for the Metadata e.g. oai_dc")
         @helper.inputText(repoForm("resourcesPrefix"),'size -> 50, 'help -> "OAI Prefix for the resources if different e.g. didl")

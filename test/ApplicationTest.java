@@ -33,7 +33,7 @@ public class ApplicationTest {
     public void testDB() {
         running(fakeApplication(), new Runnable() {
             public void run() {
-                Repository repos = Repository.findById("com_10836_1");
+                Repository repos = Repository.findById(1);
                 assertThat(repos.title).contains("EIU");
                 assertThat(repos.records.size()).isGreaterThan(0);
                 //create testrecord

@@ -10,6 +10,7 @@ create table record (
   repository_repository_id  integer,
   title                     varchar(255),
   metadata                  varchar(255),
+  dcingest                  varchar(255),
   logcreated                datetime,
   logmodified               datetime,
   loguser                   varchar(255),

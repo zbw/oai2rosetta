@@ -129,6 +129,14 @@ public class FetchActor extends UntypedActor {
 
                 }
             }
+            // ingest the global dc
+            String[] dcingests = record.repository.dcingest.split("\r\n");
+            for (int i=0;i<dcingests.length;i++) {
+                String[] keyval = dcingests[i].split(" ");
+                if (keyval.length ==2) {
+                    dc.addElement(keyval[0], keyval[1]);
+                }
+            }
             if (ok) {
                 record.metadata = dc.toXml();
                 //maybe we need another record with another metadataprefix for getting the resources

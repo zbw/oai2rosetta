@@ -1,0 +1,2 @@
+ALTER TABLE  `record` ADD  `errormsg` VARCHAR( 255 ) NULL DEFAULT NULL
+
