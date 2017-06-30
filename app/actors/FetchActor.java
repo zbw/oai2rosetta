@@ -94,6 +94,11 @@ public class FetchActor extends UntypedActor {
                 String[] keyval = mappings[i].split(" ");
                 if (keyval.length > 1)  {
                     String ieField = keyval[0];
+                    boolean optional = false;
+                    if (ieField.endsWith("?")) {
+                        ieField = ieField.substring(0, ieField.length()-1);
+                        optional=true;
+                    }
                     String xpathfield = keyval[1];
                     int countfield = Integer.parseInt(keyval[2]) - 1;
                     String option = "";
@@ -120,6 +125,8 @@ public class FetchActor extends UntypedActor {
                         } else {
                             dc.addElement(ieField, value);
                         }
+                    } else if (optional){
+                        ok=true;
                     } else {
                         record.errormsg = "No mapping for: " + mappings[i];
                         record.status = record.STATUSIMPORTEDERROR;

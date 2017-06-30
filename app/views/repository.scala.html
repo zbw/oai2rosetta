@@ -3,10 +3,11 @@
 
     @mappinghelp = {
         <div class="alert alert-info" role="alert">
-            <small><code> &lt;iefield&gt; &lt;xpath in OAI&gt; &lt;countfield&gt; &lt;option [type|prefix]&gt; &lt;optionvalue&gt; </code></small>
+            <small><code> &lt;iefield&gt;&lt?&gt; &lt;xpath in OAI&gt; &lt;countfield&gt; &lt;option [type|prefix]&gt; &lt;optionvalue&gt; </code></small>
             <div>dc:creator //dc:creator 1 </div>
             <div>dc:creator //dc:creator 2  </div>
             <div>dc:creator //dc:creator 3  </div>
+            <div>dc:creator? //dc:creator 4  - this field is optional.</div>
             <div>dc:title //dc:title 1   </div>
             <div>dc:identifier //dc:identifier[starts-with(text(),'http')] 1 type dcterms:URI </div>
             <div>dc:date //dc:date 1 </div>
