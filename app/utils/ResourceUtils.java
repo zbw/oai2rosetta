@@ -10,8 +10,8 @@ public class ResourceUtils {
 
 
     public static void getResource(String url, String outdir, String filename) throws URISyntaxException, IOException, CorruptFileException,FileNotFoundException {
-        URI inputURI = new URI(url);
-        URL inputURL = inputURI.toURL();
+        //URI inputURI = new URI(url);
+        URL inputURL = getCleanURL(url);
         URLConnection ucon = inputURL.openConnection();
         try {
 
@@ -33,12 +33,18 @@ public class ResourceUtils {
     }
 
     public static boolean existSource(String url) throws IOException {
-        URL u = new URL(url);
+        URL u = getCleanURL(url);
         HttpURLConnection huc =  (HttpURLConnection)  u.openConnection();
         huc.setRequestMethod("HEAD");
-        return (huc.getResponseCode() == HttpURLConnection.HTTP_OK);
+        huc.setInstanceFollowRedirects(true);
+        int status = huc.getResponseCode();
+        return (status == HttpURLConnection.HTTP_OK);
     }
-
+    private static URL getCleanURL(String url) throws MalformedURLException {
+        //maybe we need some cleening here
+        URL cleanurl = new URL(url);
+        return cleanurl;
+    }
     private static void writeFile(InputStream in, OutputStream out)
             throws IOException, CorruptFileException {
         byte[] buffer = new byte[1024];
