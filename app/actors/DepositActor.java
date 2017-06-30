@@ -54,7 +54,7 @@ public class DepositActor extends UntypedActor {
 
     private void deposit(int identifier) {
         Record record = Record.findById(identifier);
-        if (record != null) {
+        if (record != null && record.status == record.STATUSEXPORTED) {
             record.status = record.STATUSINGESTING;
             record.save();
             if (deposit(record)) {
