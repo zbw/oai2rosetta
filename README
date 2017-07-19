@@ -1,4 +1,13 @@
-This is your new Play application
-=================================
+Dspace Subapp
 
-This file will be packaged with your application, when using `activator dist`.
+Deploying:
+  - push to prod server
+  - on prod server: hostingsubapp update
+
+System.d
+    - dspacesubapp.service in /etc/systemd/system/
+    - systemctl daemon-reload
+    - systemctl start dspacesubapp
+    - systemctl status dspacesubapp
+    - systemctl stop dspacesubapp
+    - systemctl enable dspacesubapp

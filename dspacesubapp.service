@@ -1,0 +1,19 @@
+[Unit]
+Description=DSpace hosting submission application
+After=network.target
+
+[Service]
+# Type=forking
+
+PIDFile=/opt/play-apps/23/hostingsubapp/target/universal/stage/RUNNING_PID
+WorkingDirectory=/opt/play-apps/23/hostingsubapp/target/universal/stage
+ExecStart=/opt/play-apps/23/hostingsubapp/target/universal/stage/bin/dspacesubapp -Dhttp.port=9020 -Dconfig.file=/opt/play-apps/23/hostingsubapp/target/universal/stage/conf/prod.conf
+Restart=on-failure
+User=ottk
+Group=ottk
+
+# See http://serverfault.com/a/695863
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target
