@@ -2,8 +2,6 @@ package utils;
 
 import java.io.*;
 import java.net.*;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Ott Konstantin on 26.08.2014.
@@ -47,9 +45,7 @@ public class ResourceUtils {
         huc.setInstanceFollowRedirects(false);
         huc.setRequestProperty("Accept-Charset", "UTF-8");
         int status = huc.getResponseCode();
-        for (Map.Entry<String, List<String>> header : huc.getHeaderFields().entrySet()) {
-            System.out.println(header.getKey() + "=" + header.getValue());
-        }
+        
         if (status == HttpURLConnection.HTTP_OK) {
             return url;
         } else if (status == HttpURLConnection.HTTP_MOVED_PERM) {

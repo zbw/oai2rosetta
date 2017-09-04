@@ -4,12 +4,10 @@ import akka.actor.UntypedActor;
 import com.exlibris.dps.SipStatusInfo;
 import com.exlibris.dps.SipWebServices;
 import com.exlibris.dps.SipWebServices_Service;
-import com.exlibris.dps.sdk.pds.PdsClient;
 import models.Record;
 import play.Logger;
 
 import javax.xml.namespace.QName;
-import javax.xml.ws.BindingProvider;
 import java.net.URL;
 import java.util.Date;
 
@@ -57,20 +55,13 @@ public class SipStatusActor extends UntypedActor {
 
    public static boolean getSipStatus(Record record) {
         boolean ok = false;
-        PdsClient pds = PdsClient.getInstance();
-        pds.init(record.repository.pdsUrl, false);
         String producerId = record.repository.producerId;
-        String pdsHandle;
         try {
-            pdsHandle = pds.login(record.repository.institution,record.repository.userName,record.repository.password);
             SipWebServices sipws = new SipWebServices_Service(
                     new URL(record.repository.sipstatusWsdlUrl),
                     new QName("http://dps.exlibris.com/", "SipWebServices")).
                     getSipWebServicesPort();
-            BindingProvider bindingProvider = (BindingProvider) sipws;
-            bindingProvider.getRequestContext().put(
-                    BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-                    record.repository.sipstatusWsdlEndpoint);
+            
             SipStatusInfo sipStatusInfo = sipws.getSIPStatusInfo(""+record.sipId);
             String sipStatus = sipStatusInfo.getStage();
             if (sipStatus == null) {

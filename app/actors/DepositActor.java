@@ -4,15 +4,15 @@ import akka.actor.UntypedActor;
 import com.exlibris.digitool.deposit.service.xmlbeans.DepData;
 import com.exlibris.digitool.deposit.service.xmlbeans.DepositDataDocument;
 import com.exlibris.digitool.deposit.service.xmlbeans.DepositResultDocument;
-import com.exlibris.dps.*;
-import com.exlibris.dps.sdk.pds.PdsClient;
+import com.exlibris.dps.DepositWebServices_Service;
+import com.exlibris.dps.ProducerWebServices;
+import com.exlibris.dps.ProducerWebServices_Service;
+import com.exlibris.dps.sdk.pds.HeaderHandlerResolver;
 import models.Record;
 import org.apache.xmlbeans.XmlException;
 import play.Logger;
 
 import javax.xml.namespace.QName;
-import javax.xml.ws.BindingProvider;
-import java.lang.Exception;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
@@ -68,21 +68,14 @@ public class DepositActor extends UntypedActor {
 
    private boolean deposit(Record record) {
         boolean ok = false;
-        PdsClient pds = PdsClient.getInstance();
-        pds.init(record.repository.pdsUrl, false);
+
         String producerId = record.repository.producerId;
-        String pdsHandle;
+
         try {
-            pdsHandle = pds.login(record.repository.institution,record.repository.userName,record.repository.password);
             ProducerWebServices pws = new ProducerWebServices_Service(
                     new URL(record.repository.producerWsdlUrl),
                     new QName("http://dps.exlibris.com/", "ProducerWebServices")).
                     getProducerWebServicesPort();
-            // change the endpoint
-            BindingProvider bindingProvider = (BindingProvider) pws;
-            bindingProvider.getRequestContext().put(
-                    BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-                    record.repository.producerWsdlEndpoint);
             String producerAgentId = pws.getInternalUserIdByExternalId(record.repository.userName);
             String xmlReply = pws.getProducersOfProducerAgent(producerAgentId);
             DepositDataDocument depositDataDocument = DepositDataDocument.Factory.parse(xmlReply);
@@ -98,17 +91,11 @@ public class DepositActor extends UntypedActor {
             if (!isValidProducer) {
                 return false;
             }
-            // Getting Deposit webservice handle
-            DepositWebServices dpws = new DepositWebServices_Service(new URL(record.repository.depositWsdlUrl),new QName("http://dps.exlibris.com/", "DepositWebServices")).getDepositWebServicesPort();
-            BindingProvider dep_bindingProvider = (BindingProvider) dpws;
-            dep_bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, record.repository.depositWsdlEndpoint);
+            DepositWebServices_Service dpws = new DepositWebServices_Service(new URL(record.repository.depositWsdlUrl),new QName("http://dps.exlibris.com/", "DepositWebServices"));
+            dpws.setHandlerResolver(new HeaderHandlerResolver(record.repository.userName, record.repository.password, record.repository.institution));
 
-            // Getting Sip webservice handle
-            SipWebServices sipws = new SipWebServices_Service(new URL(record.repository.sipstatusWsdlUrl),new QName("http://dps.exlibris.com/", "SipWebServices")).getSipWebServicesPort();
-            BindingProvider sip_bindingProvider = (BindingProvider) sipws;
-            sip_bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, record.repository.sipstatusWsdlEndpoint);
 
-            String retval = dpws.submitDepositActivity(pdsHandle,
+            String retval = dpws.getDepositWebServicesPort().submitDepositActivity(null,
                     record.repository.materialFlowId,
                     record.id, producerId,
                     record.repository.depositSetId);

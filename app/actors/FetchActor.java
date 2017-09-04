@@ -165,7 +165,7 @@ public class FetchActor extends UntypedActor {
                         // somehow urls are handled different if sent throught bitstream/handle
                         // noticed on urlencoded filenames. So its better to take bitstream/handle...
                         // this is actually a workaround, it has to be fixed in OAI-PMH didl resource
-                        origfile = ResourceUtils.cleanUrl(uri);
+                        origfile = ResourceUtils.cleanUrl(origfile);
                         if (origfile == null) {
                             record.status = record.STATUSIMPORTEDERROR;
                             record.errormsg = "file " + uri +" not found";
