@@ -129,7 +129,9 @@
                         }
                         </td>
                         <td>@record.sipId</td>
-                        <td>@Messages("document.status."+record.status)</td>
+                        <td>
+                        <a href="#" data-toggle="tooltip" title="@record.errormsg">@Messages("document.status."+record.status)</a>
+                        </td>
                         <td>@record.sipStatus</td>
                         <td><a href="@routes.RecordApplication.show(record.recordId)">show</a></td>
                     </tr>
