@@ -108,13 +108,13 @@
 
         <table class="records table table-hover">
             <thead>
-                <tr>
+                <tr>   
                     @header("identifier", "Identifier")
                     @header("logcreated", "Date")
                     @header("sipId", "SIP ID")
                     @header("status", "Status")
                     @header("sipStatus", "SipStatus")
-                    <th></th>
+                    <th>Message</th>
                 </tr>
             </thead>
             <tbody>
@@ -130,10 +130,10 @@
                         </td>
                         <td>@record.sipId</td>
                         <td>
-                        <a href="#" data-toggle="tooltip" title="@record.errormsg">@Messages("document.status."+record.status)</a>
+                        @Messages("document.status."+record.status)
                         </td>
                         <td>@record.sipStatus</td>
-                        <td><a href="@routes.RecordApplication.show(record.recordId)">show</a></td>
+                        <td>@record.errormsg</td>
                     </tr>
                 }
             </tbody>
