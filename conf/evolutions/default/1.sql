@@ -35,6 +35,8 @@ create table repository (
   resources_prefix          varchar(255),
   cms                       varchar(255),
   cmsfield                  varchar(255),
+  mastercollection          varchar(255),
+  completecollectionpath    tinyint(1) default 0,
   pds_url                   varchar(255),
   deposit_wsdl_url          varchar(255),
   deposit_wsdl_endpoint     varchar(255),

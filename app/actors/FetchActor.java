@@ -117,7 +117,8 @@ public class FetchActor extends UntypedActor {
                             } else {
                                 value = oairecord.getHeader().getSetSpecs().get(countfield);
                             }
-                        }
+                        }                      
+
                     } else {
                         value = oairecord.getMetadataField(xpathfield, countfield);
                         if (value != null && option.equals("type") && optionvalue.equals("dcterms:URI")) {
@@ -148,6 +149,31 @@ public class FetchActor extends UntypedActor {
                     }
 
                 }
+            }
+            // collections
+            if (!record.repository.mastercollection.equals("")) {
+                String[] keyval = record.repository.collectionxpath.split(" ");
+                String ieField = keyval[0];
+                String xpathfield = keyval[1];
+                int countfield = 0;
+                String value="";
+                if (keyval.length>2) {
+                    countfield =  Integer.parseInt(keyval[2]) - 1;
+                }
+                if (record.repository.completecollectionpath) {
+                    for (String spec : oairecord.getHeader().getSetSpecs()) {
+                        value = value + "/" + spec ;
+                    }
+                } else {
+                    if (countfield<0) {
+                        //if count < 0 then take the last field
+                        value= "/" +oairecord.getHeader().getSetSpecs().get(oairecord.getHeader().getSetSpecs().size()-1);
+                    } else {
+                        value = "/" +oairecord.getHeader().getSetSpecs().get(countfield);
+                    }
+                }
+                value = record.repository.mastercollection + value;
+                dc.addElement(ieField, value);
             }
             // ingest the global dc
             String[] dcingests = record.repository.dcingest.split("\r\n");

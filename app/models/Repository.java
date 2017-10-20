@@ -32,6 +32,9 @@ public class Repository extends Model {
     public String resourcesPrefix;
     public String cms;
     public String cmsfield;
+    public String mastercollection;
+    public boolean completecollectionpath;
+    public String collectionxpath;
     public String pdsUrl;
     public String depositWsdlUrl;
     public String depositWsdlEndpoint;

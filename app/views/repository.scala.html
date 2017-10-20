@@ -43,7 +43,9 @@
         @helper.inputText(repoForm("resourcesPrefix"),'size -> 50, 'help -> "OAI Prefix for the resources if different e.g. didl")
         @helper.inputText(repoForm("cms"),'size -> 50, 'help -> "Name of the CMS to use in Rosetta")
         @helper.inputText(repoForm("cmsfield"),'size -> 50, 'help -> "field to use for CMS Enrichment")
-
+        @helper.inputText(repoForm("mastercollection"),'size -> 50, 'help -> "if not empty this is the mastercollection")
+        @helper.inputText(repoForm("collectionxpath"),'size -> 50, 'help -> "xpath for collection ((//setSpec)[last()])")
+        @helper.checkbox(repoForm("completecollectionpath"))(FieldConstructor(views.html.bootstrapCheckbox.f), null)
             <div class="form-group">
                 <label for="source_mdformat" class="col-md-12 control-label">Source_mdformat @repoForm("source_mdformat").value</label>
                 <div class="col-md-6 field">
