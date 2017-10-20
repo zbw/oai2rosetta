@@ -108,11 +108,24 @@ public class FetchActor extends UntypedActor {
                         option = keyval[3];
                         optionvalue = keyval[4];
                     }
-                    String value = oairecord.getMetadataField(xpathfield,countfield);
-                    if (value!=null && option.equals("type") && optionvalue.equals("dcterms:URI")) {
-                        if (!value.startsWith("http")) {
-                            value=null;
+                    String value = null;
+                    if (xpathfield.equals("//setSpec")) {
+                        if (countfield<0 || oairecord.getHeader().getSetSpecs().size()<=countfield) {
+                            if (countfield<0) {
+                                //if count < 0 then take the last field
+                                value= oairecord.getHeader().getSetSpecs().get(oairecord.getHeader().getSetSpecs().size()-1);
+                            } else {
+                                value = oairecord.getHeader().getSetSpecs().get(countfield);
+                            }
                         }
+                    } else {
+                        value = oairecord.getMetadataField(xpathfield, countfield);
+                        if (value != null && option.equals("type") && optionvalue.equals("dcterms:URI")) {
+                            if (!value.startsWith("http")) {
+                                value = null;
+                            }
+                        }
+                       
                     }
                     if (value != null) {
                         if (option.equals("prefix")) {
