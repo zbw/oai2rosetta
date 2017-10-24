@@ -30,6 +30,7 @@ public class Repository extends Model {
     public String nomimetypes;
     public String metadataPrefix;
     public String resourcesPrefix;
+    public boolean xmlRedirect;
     public String cms;
     public String cmsfield;
     public String mastercollection;

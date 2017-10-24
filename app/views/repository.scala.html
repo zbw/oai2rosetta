@@ -34,6 +34,7 @@
         @helper.inputText(repoForm("id"), '_label -> "ID of root institution or collection",'help ->"e.g. com_123456789_1 or root for everything")
         @helper.inputText(repoForm("title"), '_label -> "Titel")
         @helper.inputText(repoForm("oaiUrl"),'size -> 50, 'help ->"e.g. http://pub.zbw.eu/dspace-oai/request")
+        @helper.checkbox(repoForm("xmlRedirect"), 'help ->"Dspace xmlui redirects from bitstream to handle/bitstream but encodes wrong")(FieldConstructor(views.html.bootstrapCheckbox.f), null)
         @helper.inputText(repoForm("oaiTitle"),'size -> 50, 'help -> "xpath of title e.g. //dc:title")
 
         @helper.textarea(repoForm("oaiMapping"),'rows -> 10, 'cols->50, 'help ->mappinghelp)(FieldConstructor(views.html.bootstrapTextarea.f), null)
@@ -45,7 +46,7 @@
         @helper.inputText(repoForm("cmsfield"),'size -> 50, 'help -> "field to use for CMS Enrichment")
         @helper.inputText(repoForm("mastercollection"),'size -> 50, 'help -> "if not empty this is the mastercollection")
         @helper.inputText(repoForm("collectionxpath"),'size -> 50, 'help -> "xpath for collection ((//setSpec)[last()])")
-        @helper.checkbox(repoForm("completecollectionpath"))(FieldConstructor(views.html.bootstrapCheckbox.f), null)
+        @helper.checkbox(repoForm("completecollectionpath"), 'help -> "only parent collection or whole path")(FieldConstructor(views.html.bootstrapCheckbox.f), null)
             <div class="form-group">
                 <label for="source_mdformat" class="col-md-12 control-label">Source_mdformat @repoForm("source_mdformat").value</label>
                 <div class="col-md-6 field">
