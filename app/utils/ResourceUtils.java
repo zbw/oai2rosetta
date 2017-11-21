@@ -1,7 +1,15 @@
 package utils;
 
+import play.Logger;
+
 import java.io.*;
 import java.net.*;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * Created by Ott Konstantin on 26.08.2014.
@@ -82,5 +90,45 @@ public class ResourceUtils {
             throw new CorruptFileException("filesize is 0B");
 
         }
+    }
+
+    public static List<String> unzip(String path, String zipFileName) throws IOException, CorruptFileException {
+        return unzip(path, zipFileName, null);
+    }
+ 
+    public static List<String> unzip(String path, String zipFileName, String cp) throws IOException, CorruptFileException {
+        ZipFile zipFile;
+        List<String> resources = new ArrayList();
+        try {
+            if (cp==null) {
+                zipFile = new ZipFile(path+zipFileName);
+            } else {
+                zipFile = new ZipFile(path + zipFileName, Charset.forName("Cp437"));
+            }
+            Enumeration entriesEnum = zipFile.entries();
+            while (entriesEnum.hasMoreElements()) {
+                ZipEntry entry = (ZipEntry) entriesEnum.nextElement();
+                if (entry.isDirectory()) {
+                    Logger.error(entry.getName() + "is directory. create it!");
+                    File zipdir = new File(path + entry.getName());
+                    if (!zipdir.exists()) {
+                        zipdir.mkdirs();
+                    }
+                } else {
+                    writeFile(zipFile.getInputStream(entry), new BufferedOutputStream(new FileOutputStream(path + entry.getName())));
+                    resources.add(entry.getName());
+                }                 
+            }
+        }   catch (IllegalArgumentException e) {
+            Logger.error("unzip error: " +  e.getMessage());
+            if (cp==null) {
+                Logger.error("try again with codepage 437 when not done before");
+                return unzip(path, zipFileName, "Cp437");
+            } else {
+                throw e;
+            }
+        }
+
+        return resources;
     }
 }

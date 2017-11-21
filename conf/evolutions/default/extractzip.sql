@@ -1,0 +1,1 @@
+ALTER TABLE  `repository` ADD  `extract_zip` TINYINT( 1 ) NULL DEFAULT  '0' AFTER  `oai_url` ;

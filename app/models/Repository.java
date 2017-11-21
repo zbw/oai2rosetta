@@ -30,6 +30,7 @@ public class Repository extends Model {
     public String nomimetypes;
     public String metadataPrefix;
     public String resourcesPrefix;
+    public boolean extractZip;
     public boolean xmlRedirect;
     public String cms;
     public String cmsfield;
@@ -56,6 +57,7 @@ public class Repository extends Model {
     public String ftpKey;
     public String ftpMax;
     public int joblimit;
+
     public boolean active;
     public String source_mdformat;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "repository")   @JsonBackReference

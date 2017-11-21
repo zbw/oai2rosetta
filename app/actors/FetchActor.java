@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
 
 /**
  * Created by Ott Konstantin on 25.09.2014.
@@ -219,15 +220,27 @@ public class FetchActor extends UntypedActor {
 
                         String filename = uri.substring(uri.lastIndexOf("/") + 1).replaceAll("\\+", " ");
                         if (!record.existResource(importdirectory + record.repository.id + "/" + record.id + "/content/streams/" + filename)) {
-                            Resource resource = new Resource();
-                            resource.origFile = origfile;
-
-                            resource.localFile = importdirectory + record.repository.id + "/" + record.id + "/content/streams/" + filename;
-                            resource.mime = resources.get(uri);
-                            resource.record = record;
-                            resource.save();
-                            record.resources.add(resource);
-                            ResourceUtils.getResource(resource.origFile, importdirectory + record.repository.id + "/" + record.id + "/content/streams/", filename);
+                            ResourceUtils.getResource(origfile, importdirectory + record.repository.id + "/" + record.id + "/content/streams/", filename);
+                            if (record.repository.extractZip && filename.endsWith("zip")) {
+                                List<String> zips = ResourceUtils.unzip(importdirectory + record.repository.id + "/" + record.id + "/content/streams/" , filename);
+                                for (String zipfilename: zips) {
+                                    Resource resource = new Resource();
+                                    resource.origFile = origfile;
+                                    resource.localFile = importdirectory + record.repository.id + "/" + record.id + "/content/streams/" + zipfilename;
+                                    resource.mime = resources.get(uri);
+                                    resource.record = record;
+                                    resource.save();
+                                    record.resources.add(resource);
+                                }
+                            } else {
+                                Resource resource = new Resource();
+                                resource.origFile = origfile;
+                                resource.localFile = importdirectory + record.repository.id + "/" + record.id + "/content/streams/" + filename;
+                                resource.mime = resources.get(uri);
+                                resource.record = record;
+                                resource.save();
+                                record.resources.add(resource);
+                            }
 
                         }
                     }

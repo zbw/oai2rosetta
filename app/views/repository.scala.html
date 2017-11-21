@@ -36,7 +36,7 @@
         @helper.inputText(repoForm("oaiUrl"),'size -> 50, 'help ->"e.g. http://pub.zbw.eu/dspace-oai/request")
         @helper.checkbox(repoForm("xmlRedirect"), 'help ->"Dspace xmlui redirects from bitstream to handle/bitstream but encodes wrong")(FieldConstructor(views.html.bootstrapCheckbox.f), null)
         @helper.inputText(repoForm("oaiTitle"),'size -> 50, 'help -> "xpath of title e.g. //dc:title")
-
+        @helper.checkbox(repoForm("extractZip"), 'help ->"Extract Zip Files?")(FieldConstructor(views.html.bootstrapCheckbox.f), null)
         @helper.textarea(repoForm("oaiMapping"),'rows -> 10, 'cols->50, 'help ->mappinghelp)(FieldConstructor(views.html.bootstrapTextarea.f), null)
         @helper.textarea(repoForm("dcingest"),'rows -> 10, 'cols->50, 'help ->dcingesthelp)(FieldConstructor(views.html.bootstrapTextarea.f), null)
         @helper.textarea(repoForm("nomimetypes"),'rows -> 3, 'cols->50, 'help ->"we dont want theses mimes")(FieldConstructor(views.html.bootstrapTextarea.f), null)
