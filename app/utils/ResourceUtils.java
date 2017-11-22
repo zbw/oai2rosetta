@@ -111,21 +111,23 @@ public class ResourceUtils {
             }
             ZipEntry ze = zis.getNextEntry();
             while(ze!=null){
-
                 String fileName = ze.getName();
                 File newFile = new File(path + File.separator + fileName);
+                if (ze.isDirectory()) {
+                    newFile.mkdirs();
+                } else {
+                    new File(newFile.getParent()).mkdirs();
 
-                new File(newFile.getParent()).mkdirs();
+                    FileOutputStream fos = new FileOutputStream(newFile);
 
-                FileOutputStream fos = new FileOutputStream(newFile);
+                    int len;
+                    while ((len = zis.read(buffer)) > 0) {
+                        fos.write(buffer, 0, len);
+                    }
 
-                int len;
-                while ((len = zis.read(buffer)) > 0) {
-                    fos.write(buffer, 0, len);
+                    fos.close();
+                    resources.add(fileName);
                 }
-
-                fos.close();
-                resources.add(fileName);
                 ze = zis.getNextEntry();
             }
             zis.closeEntry();
@@ -149,7 +151,10 @@ public class ResourceUtils {
                 throw e;
             }
         } catch (Exception e) {
+            zis.closeEntry();
+            zis.close();
              e.printStackTrace();
+             throw e;
         } 
 
         return resources;
