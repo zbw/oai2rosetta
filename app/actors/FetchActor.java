@@ -269,6 +269,7 @@ public class FetchActor extends UntypedActor {
             record.status = record.STATUSIMPORTEDERROR;
             Logger.error("fetchError for: " + record.identifier + " - "+ e.getMessage());
         } catch (IOException e) {
+            e.printStackTrace();
             record.errormsg = e.getLocalizedMessage();
             record.status = record.STATUSIMPORTEDERROR;
             Logger.error("fetchError for: " + record.identifier + " - "+ e.getMessage());

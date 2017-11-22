@@ -5,11 +5,11 @@ import play.Logger;
 import java.io.*;
 import java.net.*;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 
 /**
  * Created by Ott Konstantin on 26.08.2014.
@@ -95,40 +95,65 @@ public class ResourceUtils {
     public static List<String> unzip(String path, String zipFileName) throws IOException, CorruptFileException {
         return unzip(path, zipFileName, null);
     }
- 
+
     public static List<String> unzip(String path, String zipFileName, String cp) throws IOException, CorruptFileException {
-        ZipFile zipFile;
         List<String> resources = new ArrayList();
+        ZipInputStream zis = null;
+        byte[] buffer = new byte[1024];
         try {
             if (cp==null) {
-                zipFile = new ZipFile(path+zipFileName);
+                zis =
+                        new ZipInputStream(new FileInputStream(path+zipFileName));
             } else {
-                zipFile = new ZipFile(path + zipFileName, Charset.forName("Cp437"));
+                zis =
+                        new ZipInputStream(new FileInputStream(path+zipFileName), Charset.forName("Cp437"));
+                
             }
-            Enumeration entriesEnum = zipFile.entries();
-            while (entriesEnum.hasMoreElements()) {
-                ZipEntry entry = (ZipEntry) entriesEnum.nextElement();
-                if (entry.isDirectory()) {
-                    Logger.error(entry.getName() + "is directory. create it!");
-                    File zipdir = new File(path + entry.getName());
-                    if (!zipdir.exists()) {
-                        zipdir.mkdirs();
-                    }
-                } else {
-                    writeFile(zipFile.getInputStream(entry), new BufferedOutputStream(new FileOutputStream(path + entry.getName())));
-                    resources.add(entry.getName());
-                }                 
+            ZipEntry ze = zis.getNextEntry();
+            while(ze!=null){
+
+                String fileName = ze.getName();
+                File newFile = new File(path + File.separator + fileName);
+
+                new File(newFile.getParent()).mkdirs();
+
+                FileOutputStream fos = new FileOutputStream(newFile);
+
+                int len;
+                while ((len = zis.read(buffer)) > 0) {
+                    fos.write(buffer, 0, len);
+                }
+
+                fos.close();
+                resources.add(fileName);
+                ze = zis.getNextEntry();
             }
-        }   catch (IllegalArgumentException e) {
+            zis.closeEntry();
+            zis.close();
+            //System.gc();
+            File delFile = new File(path+zipFileName);
+            try {
+                Files.delete(delFile.toPath());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            
+        } catch (IllegalArgumentException e) {
             Logger.error("unzip error: " +  e.getMessage());
             if (cp==null) {
                 Logger.error("try again with codepage 437 when not done before");
+                zis.closeEntry();
+                zis.close();
                 return unzip(path, zipFileName, "Cp437");
             } else {
                 throw e;
             }
-        }
+        } catch (Exception e) {
+             e.printStackTrace();
+        } 
 
         return resources;
     }
+
+
 }
