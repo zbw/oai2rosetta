@@ -111,10 +111,12 @@ public class ResourceUtils {
             }
             ZipEntry ze = zis.getNextEntry();
             while(ze!=null){
-                String fileName = ze.getName();
-                File newFile = new File(path + File.separator + fileName);
+                String name = ze.getName().replaceAll("/","-");
+
+                File newFile = new File(path + File.separator + name);
                 if (ze.isDirectory()) {
-                    newFile.mkdirs();
+                    // we dont need dirs. we have files flat
+                    //newFile.mkdirs();
                 } else {
                     new File(newFile.getParent()).mkdirs();
 
@@ -126,7 +128,7 @@ public class ResourceUtils {
                     }
 
                     fos.close();
-                    resources.add(fileName);
+                    resources.add(name);
                 }
                 ze = zis.getNextEntry();
             }
