@@ -152,7 +152,7 @@ public class FetchActor extends UntypedActor {
                 }
             }
             // collections
-            if (!record.repository.mastercollection.equals("")) {
+            if (record.repository.mastercollection !=null && !record.repository.mastercollection.equals("")) {
                 String[] keyval = record.repository.collectionxpath.split(" ");
                 String ieField = keyval[0];
                 String xpathfield = keyval[1];

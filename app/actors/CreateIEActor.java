@@ -23,10 +23,12 @@ import oai.OAIException;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptions;
+import org.apache.xmlbeans.impl.piccolo.io.IllegalCharException;
 import org.xml.sax.SAXException;
 import play.Logger;
 
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.CharConversionException;
 import java.io.File;
 import java.io.IOException;
 import java.net.FileNameMap;
@@ -174,17 +176,26 @@ public class CreateIEActor extends UntypedActor {
             FileUtil.writeFile(ieXML, metsDoc.xmlText(opt));
             ok= true;
         } catch (Exception e) {
+            record.errormsg = e.getLocalizedMessage().substring(0,100);
             e.printStackTrace();
             Logger.error("createIEError for: " + record.identifier + " - " + e.getMessage());
         }
         return ok;
     }
 
-    private static XmlObject getSourceMD(Record record) throws XmlException, ParserConfigurationException, SAXException, IOException, OAIException {
+    private static XmlObject getSourceMD(Record record) throws XmlException, ParserConfigurationException, SAXException, OAIException, IOException {
         OAIClient oaiClient = new OAIClient(record.repository.oaiUrl);
         oai.Record oairecord =oaiClient.getRecord(record.identifier, record.repository.source_mdformat);
-        XmlObject xo = XmlObject.Factory.parse(oairecord.getMetadataAsString());
-        return xo;
+        XmlOptions options = new XmlOptions();
+        options.setCharacterEncoding("UTF-8");
+        try {
+            String md = oairecord.getMetadataAsString();
+            return XmlObject.Factory.parse(md, options);
+        } catch (XmlException ice) {
+            String md = oairecord.getMetadataAsString();
+            md = new String(md.getBytes("UTF-8"),"ISO-8859-1");
+            return XmlObject.Factory.parse(md, options);
+        }
     }
 
 
