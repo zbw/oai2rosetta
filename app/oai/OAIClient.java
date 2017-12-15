@@ -18,9 +18,11 @@
 */
 package oai;
 
-import java.net.URL;
 import org.dom4j.Document;
 import org.dom4j.io.SAXReader;
+
+import java.io.InputStream;
+import java.net.URL;
 
 /**
  * Created by Ott Konstantin on 25.08.2014.
@@ -66,7 +68,9 @@ public class OAIClient {
     public Record getRecord(String identifier, String metadataPrefix) throws OAIException {
         try {
             String query = builder.buildGetRecordQuery(identifier, metadataPrefix);
-            Document document = reader.read(query);
+            InputStream is =  new URL(query).openStream();
+            reader.setEncoding("UTF-8");
+            Document document = reader.read(is);
             return new Record(document);
         } catch (ErrorResponseException e) {
             throw e;

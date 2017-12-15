@@ -23,12 +23,11 @@ import oai.OAIException;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptions;
-import org.apache.xmlbeans.impl.piccolo.io.IllegalCharException;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 import play.Logger;
 
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.CharConversionException;
 import java.io.File;
 import java.io.IOException;
 import java.net.FileNameMap;
@@ -176,7 +175,11 @@ public class CreateIEActor extends UntypedActor {
             FileUtil.writeFile(ieXML, metsDoc.xmlText(opt));
             ok= true;
         } catch (Exception e) {
-            record.errormsg = e.getLocalizedMessage().substring(0,100);
+            if (e.getLocalizedMessage().length() > 100) {
+                record.errormsg = e.getLocalizedMessage().substring(0, 100);
+            } else {
+                record.errormsg = e.getLocalizedMessage();
+            }
             e.printStackTrace();
             Logger.error("createIEError for: " + record.identifier + " - " + e.getMessage());
         }
@@ -188,15 +191,50 @@ public class CreateIEActor extends UntypedActor {
         oai.Record oairecord =oaiClient.getRecord(record.identifier, record.repository.source_mdformat);
         XmlOptions options = new XmlOptions();
         options.setCharacterEncoding("UTF-8");
+        String md = oairecord.getMetadataAsString();
+        //md = basic(md);
         try {
-            String md = oairecord.getMetadataAsString();
             return XmlObject.Factory.parse(md, options);
-        } catch (XmlException ice) {
-            String md = oairecord.getMetadataAsString();
-            md = new String(md.getBytes("UTF-8"),"ISO-8859-1");
-            return XmlObject.Factory.parse(md, options);
+        } catch (Exception ice) {
+            throw new XmlException("invalid chars: "+ basic(md));
         }
     }
 
+    /**
+     * There were some Supplementary Characters in a dataset and the parser does not like them,
+     * so get them out of here...
+     * this one filters them out in a lambda way
+     * http://www.oracle.com/us/technologies/java/supplementary-142654.html
+     * @param s
+     * @return
+     */
+    private static String basic1 (String s) {
+        return s.codePoints().filter(cp -> cp < 0x10000)
+                .collect(StringBuilder::new,
+                        StringBuilder::appendCodePoint,
+                        StringBuilder::append)
+                .toString();
+    }
 
+    /**
+     * and this one looks for surrogates
+     * @param s
+     * @return
+     */
+    private static String basic(String s) {
+        StringBuilder sb = new StringBuilder();
+        String out="";
+        for (char ch : s.toCharArray()) {
+            if (!Character.isLowSurrogate(ch) && !Character.isHighSurrogate(ch)) {
+                sb.append(ch);
+            } else {
+                System.out.println(ch + " " + Character.getNumericValue(ch));
+                System.out.println( "\\u" + Integer.toHexString(ch | 0x10000).substring(1) );
+                out +=   "\\u" + Integer.toHexString(ch | 0x10000).substring(1) + " ";
+            }
+
+        }
+        //return sb.length() == s.length() ? s : sb.toString();
+        return out;
+    }
 }
