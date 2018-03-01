@@ -94,13 +94,16 @@ public class RecordApplication extends Controller {
     }
     private static void resetRecord(int id) {
         Record record = Record.findById(id);
-        if (record.status < Record.STATUSINGESTED || record.sipActive.equals("DECLINED")) {
+        if (record.status < Record.STATUSINGESTED || record.sipActive.equals("DECLINED") || record.sipActive.equals("DELETED")) {
             List<Resource> resources =record.getResources();
             for (Resource resource: resources) {
                 resource.delete();
             }
             record.getResources().clear();
             record.status = Record.STATUSNEW;
+            record.sipActive = "";
+            record.sipModul = "";
+            record.sipStatus = "";
             record.metadata = "";
             record.errormsg = "";
 
