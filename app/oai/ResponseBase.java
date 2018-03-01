@@ -36,6 +36,9 @@ public abstract class ResponseBase {
     public static final String OAI_DC_URI = "http://www.openarchives.org/OAI/2.0/oai_dc/";
     public static final String DC_PREFIX = "dc";
     public static final String DC_URI = "http://purl.org/dc/elements/1.1/";
+    public static final String MD_PREFIX = "md";
+    public static final String MD_URI = "http://www.lyncode.com/xoai";
+
     private static final String RESPONSE_DATE_XPATH = "oai:responseDate";
     private static final String RESUMPTION_TOKEN_XPATH = "*/oai:resumptionToken";
     private static final String ERROR_XPATH = "oai:error";

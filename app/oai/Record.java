@@ -104,21 +104,28 @@ public class Record extends ResponseBase {
     }
 
 
-    public String getMetadataField(String field) {
+    public String getMetadataField(String field, String prefix) {
         XPathWrapper xpath = new XPathWrapper(metadata);
+        xpath.addNamespace(OAI_NS_PREFIX, OAI_NS_URI);
         xpath.addNamespace(DIDL_NS_PREFIX, DIDL_NS_URI);
         xpath.addNamespace(OAI_DC_PREFIX, OAI_DC_URI);
         xpath.addNamespace(DC_PREFIX, DC_URI);
+        if (prefix.equals("xoai")) {
+            xpath.addNamespace(MD_PREFIX, MD_URI);
+        }
         Element element = xpath.selectSingleElement(field);
         return xpath.valueOf(field);
 
     }
 
-    public String getMetadataField(String field, int count) {
+    public String getMetadataField(String field, int count, String prefix) {
         XPathWrapper xpath = new XPathWrapper(metadata);
         xpath.addNamespace(DIDL_NS_PREFIX, DIDL_NS_URI);
         xpath.addNamespace(OAI_DC_PREFIX, OAI_DC_URI);
         xpath.addNamespace(DC_PREFIX, DC_URI);
+        if (prefix.equals("xoai")) {
+            xpath.addNamespace(MD_PREFIX, MD_URI);
+        }
         List<Node> metadataNodes = xpath.selectNodes(field);
         String metadata = null;
         if (metadataNodes.size()> count) {
@@ -133,6 +140,7 @@ public class Record extends ResponseBase {
         xpath.addNamespace(DIDL_NS_PREFIX, DIDL_NS_URI);
         xpath.addNamespace(OAI_DC_PREFIX, OAI_DC_URI);
         xpath.addNamespace(DC_PREFIX, DC_URI);
+        xpath.addNamespace(MD_PREFIX, MD_URI);
         List<Node> resourcenodes = xpath.selectNodes(expr);
         Hashtable<String, String> resources = new Hashtable<String, String>();
         for (int i=0;i<resourcenodes.size();i++) {
@@ -150,6 +158,7 @@ public class Record extends ResponseBase {
         xpath.addNamespace(DIDL_NS_PREFIX, DIDL_NS_URI);
         xpath.addNamespace(OAI_DC_PREFIX, OAI_DC_URI);
         xpath.addNamespace(DC_PREFIX, DC_URI);
+        xpath.addNamespace(MD_PREFIX, MD_URI);
         Element item = xpath.selectSingleElement("//d:Item");
         if (item!=null) {
             return item.attributeValue("id");

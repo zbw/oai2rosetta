@@ -75,7 +75,7 @@ public class FetchActor extends UntypedActor {
         }
         try {
             oai.Record oairecord =oaiClient.getRecord(record.identifier, metadataPrefix);
-            record.title = oairecord.getMetadataField(record.repository.oaiTitle);
+            record.title = oairecord.getMetadataField(record.repository.oaiTitle,metadataPrefix);
             record.id = oairecord.getId();
 
             // maybe the oai d:Item did not have an id, so construct it from the identifier
@@ -121,7 +121,7 @@ public class FetchActor extends UntypedActor {
                         }                      
 
                     } else {
-                        value = oairecord.getMetadataField(xpathfield, countfield);
+                        value = oairecord.getMetadataField(xpathfield, countfield,metadataPrefix);
                         if (value != null && option.equals("type") && optionvalue.equals("dcterms:URI")) {
                             if (!value.startsWith("http")) {
                                 value = null;

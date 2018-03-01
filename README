@@ -11,3 +11,14 @@ System.d
     - systemctl status dspacesubapp
     - systemctl stop dspacesubapp
     - systemctl enable dspacesubapp
+
+Development on windows intellij
+seit einem Update versagt sbt an dem UserPfad mit leerzeichen.
+Deswegen mit der idea.bat starten!
+Anpassungen:
+- idea.bat
+SET COMMON_JVM_ARGS="-XX:ErrorFile=%USERPROFILE%\java_error_in_IDEA_%%p.log" "-XX:HeapDumpPath=%USERPROFILE%\java_error_in_IDEA.hprof" "-Xbootclasspath/a:%IDE_HOME%/lib/boot.jar" -Didea.paths.selector=IntelliJIdea2017.3  %IDE_PROPERTIES_PROPERTY% -Duser.home="d:\java.user.home"
+das Verzeichis enthält die intellij einstellungen und caches
+-   Edit Configuration von Play Run:
+jvm path: -Xms512M -Xmx1024M -Xss1M -XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=256M -Duser.home=d:/java.user.home -Dsbt.global.base=d:\Benutzer\ottkonstantin\AppData\Local\Temp\sbt-global-pluginstub
+dieser Pfad ist leider nicht von user.home übernommen worden. Deswegen hier ein symbolischer link ohne Leerstell auf das Homeverzeichnis
