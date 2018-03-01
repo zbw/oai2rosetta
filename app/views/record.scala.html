@@ -89,7 +89,7 @@
         <div><a class="btn btn-default pull-left" href="@routes.RecordApplication.sipstatus(record.recordId)">sipstatus</a></div>
     }
 
-    @if(record.status < Record.STATUSINGESTED || (record.sipActive != null && record.sipActive.equals("DECLINED"))) {
+    @if(record.status < Record.STATUSINGESTED || (record.sipActive != null && (record.sipActive.equals("DECLINED") || record.sipActive.equals("DELETED")))) {
         <div><a class="btn btn-default pull-left" href="@routes.RecordApplication.reset(record.recordId)">reset </a></div>
     }
     </div>
