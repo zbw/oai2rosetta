@@ -66,7 +66,7 @@ public class Global extends GlobalSettings {
         scheduleCreate();
         schedulePush();
         scheduleDeposit();
-
+        scheduleGetRecords();
     }
 
     // Fetch Schedules
@@ -92,7 +92,7 @@ public class Global extends GlobalSettings {
             if (repository.active) {
                 CommandMessage msg =  new CommandMessage(StatusMessage.GETRECORDJOB,false, repository.repository_id,0);
                 rootActor.tell(msg, null);
-                Logger.info("repository: " + repository.title + " getting records");
+                Logger.info("repository: " +repository.title + " - "+ repository.title + " getting records");
             } else {
                 Logger.info("repository: " + repository.title + " not active");
             }
@@ -125,7 +125,7 @@ public class Global extends GlobalSettings {
                     Logger.info("fetching record: " + record.identifier);
                     rootActor.tell(msg, null);
                 }
-                Logger.info("fetched: " + records.size() + " records");
+                Logger.info("fetched: " +repository.title + " - "+ records.size() + " records");
             } else {
                 Logger.info("repository: " + repository.title + " not active");
             }
@@ -160,7 +160,7 @@ public class Global extends GlobalSettings {
                     Logger.info("creating ie record: " + record.identifier);
                     rootActor.tell(msg, null);
                 }
-                Logger.info("created: " + records.size() + " records");
+                Logger.info("created: " +repository.title + " - "+ records.size() + " records");
             } else {
                 Logger.info("repository: " + repository.title + " not active");
             }
@@ -192,7 +192,7 @@ public class Global extends GlobalSettings {
                     CommandMessage msg = new CommandMessage(StatusMessage.PUSHJOB, false, record.recordId, 0);
                     rootActor.tell(msg, null);
                 }
-                Logger.info("pushed: " + records.size() + " records");
+                Logger.info("pushed: " +repository.title + " - "+ records.size() + " records");
             } else {
                 Logger.info("repository: " + repository.title + " not active");
             }
@@ -224,7 +224,7 @@ public class Global extends GlobalSettings {
                     CommandMessage msg = new CommandMessage(StatusMessage.DEPOSITJOB, false, record.recordId, 0);
                     rootActor.tell(msg, null);
                 }
-                Logger.info("deposited: " + records.size() + " records");
+                Logger.info("deposited: " +repository.title + " - "+ records.size() + " records");
             } else {
                 Logger.info("repository: " + repository.title + " not active");
             }
@@ -257,9 +257,9 @@ public class Global extends GlobalSettings {
                     msg.setThreadcount(50);
                     rootActor.tell(msg, null);
                 }
-                Logger.info("checked status for: " + records.size() + " records");
+                Logger.info("checked status for: " +repository.title + " - "+ records.size() + " records");
             } else {
-                Logger.info("repository: " + repository.title + " not active");
+                Logger.info("checked status for: " + repository.title + " not active");
             }
         }
     }
