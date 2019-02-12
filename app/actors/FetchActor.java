@@ -201,13 +201,7 @@ public class FetchActor extends UntypedActor {
                     for (String uri : resources.keySet()) {
                         //check if already existing
                         String origfile = uri.replaceAll("\\+", "%20");
-                        //String origfile = uri;
-                        // somehow urls are handled different if sent throught bitstream/handle
-                        // noticed on urlencoded filenames. So its better to take bitstream/handle...
-                        // this is actually a workaround, it has to be fixed in OAI-PMH didl resource
-                        if ( record.repository.xmlRedirect && origfile.indexOf("bitstream/handle")<0) {
-                            origfile = origfile.replaceFirst("bitstream","bitstream/handle");
-                        }
+
                         origfile = ResourceUtils.cleanUrl(origfile);
                         if (origfile == null) {
                             record.status = record.STATUSIMPORTEDERROR;
