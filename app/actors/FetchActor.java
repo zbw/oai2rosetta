@@ -200,9 +200,9 @@ public class FetchActor extends UntypedActor {
                 } else {
                     for (String uri : resources.keySet()) {
                         //check if already existing
-                        String origfile = uri.replaceAll("\\+", "%20");
+                        //String origfile = uri.replaceAll("\\+", "%20");
 
-                        origfile = ResourceUtils.cleanUrl(origfile);
+                        String origfile = ResourceUtils.cleanUrl(uri);
                         if (origfile == null) {
                             record.status = record.STATUSIMPORTEDERROR;
                             record.errormsg = "file " + uri +" not found";
@@ -212,7 +212,7 @@ public class FetchActor extends UntypedActor {
 
                         }
 
-                        String filename = uri.substring(uri.lastIndexOf("/") + 1).replaceAll("\\+", " ");
+                        String filename = java.net.URLDecoder.decode(uri.substring(uri.lastIndexOf("/") + 1), "UTF-8");
                         if (!record.existResource(importdirectory + record.repository.id + "/" + record.id + "/content/streams/" + filename)) {
                             ResourceUtils.getResource(origfile, importdirectory + record.repository.id + "/" + record.id + "/content/streams/", filename);
                             if (record.repository.extractZip && filename.endsWith("zip")) {
