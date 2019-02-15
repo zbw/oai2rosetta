@@ -200,9 +200,9 @@ public class FetchActor extends UntypedActor {
                 } else {
                     for (String uri : resources.keySet()) {
                         //check if already existing
-                        //String origfile = uri.replaceAll("\\+", "%20");
+                        String origfile = uri.replaceAll("\\+", "%20");
 
-                        String origfile = ResourceUtils.cleanUrl(uri);
+                        origfile = ResourceUtils.cleanUrl(origfile);
                         if (origfile == null) {
                             record.status = record.STATUSIMPORTEDERROR;
                             record.errormsg = "file " + uri +" not found";
