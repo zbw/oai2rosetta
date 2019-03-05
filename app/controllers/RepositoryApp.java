@@ -12,7 +12,7 @@ import oai.*;
 import org.springframework.beans.BeanUtils;
 import play.Logger;
 import play.data.Form;
-import play.db.ebean.Model;
+import com.avaje.ebean.Model;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;

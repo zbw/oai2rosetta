@@ -16,7 +16,7 @@ import org.joda.time.Seconds;
 import play.Application;
 import play.GlobalSettings;
 import play.Logger;
-import play.db.ebean.Model;
+import com.avaje.ebean.Model;
 import play.libs.Akka;
 import play.libs.Yaml;
 import scala.concurrent.duration.Duration;
