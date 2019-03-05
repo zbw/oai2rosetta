@@ -39,7 +39,8 @@ public class Application extends Controller {
         );
     }
     public static Result authenticate() {
-        Form<User> userForm = form(User.class).bindFromRequest();
+        Form<User> userForm = Form.form(User.class);
+        User user = userForm.bindFromRequest().get();
         String ip = request().remoteAddress();
         if (request().getHeader("X-Forwarded-For")!=null) {
             ip = request().getHeader("X-Forwarded-For");
@@ -54,7 +55,7 @@ public class Application extends Controller {
         } else {
             flash("success", "You've been logged in");
             session().clear();
-            session("email", userForm.get().email);
+            session("email", user.email);
             return redirect(
                     routes.Application.index()
             );

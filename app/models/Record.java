@@ -1,14 +1,14 @@
 package models;
 
 import com.avaje.ebean.Expr;
-import com.avaje.ebean.Page;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import play.db.ebean.Model;
+import com.avaje.ebean.Model;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
-
+import com.avaje.ebean.PagedList;
 /**
  * Created by Ott Konstantin on 21.08.2014.
  */
@@ -116,16 +116,14 @@ public class Record extends Model {
      * @param order Sort order (either or asc or desc)
      * @param filter Filter applied on the name column
      */
-    public static Page<Record> page(Repository repository,int page, int pageSize, String sortBy, String order, String filter, int status) {
+    public static PagedList<Record> page(Repository repository,int page, int pageSize, String sortBy, String order, String filter, int status) {
         if (status == -1) {
             return
                     find.where()
                             .eq("repository", repository)
                             .or(Expr.ilike("identifier", "%" + filter + "%"), Expr.ilike("sipId", "%" + filter + "%"))
                             .orderBy(sortBy + " " + order)
-                            .findPagingList(pageSize)
-                            .setFetchAhead(false)
-                            .getPage(page);
+                            .findPagedList(page,pageSize);
         } else {
             return
                     find.where()
@@ -133,9 +131,7 @@ public class Record extends Model {
                             .eq("status", status)
                             .or(Expr.ilike("identifier", "%" + filter + "%"), Expr.ilike("sipId", "%" + filter + "%"))
                             .orderBy(sortBy + " " + order)
-                            .findPagingList(pageSize)
-                            .setFetchAhead(false)
-                            .getPage(page);
+                            .findPagedList(page,pageSize);
         }
     }
 

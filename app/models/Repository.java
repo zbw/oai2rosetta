@@ -2,7 +2,7 @@ package models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import play.data.validation.Constraints;
-import play.db.ebean.Model;
+import com.avaje.ebean.Model;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;

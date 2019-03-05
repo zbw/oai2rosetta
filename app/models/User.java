@@ -1,6 +1,6 @@
 package models;
 
-import play.db.ebean.Model;
+import com.avaje.ebean.Model;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -37,5 +37,6 @@ public class User extends Model {
         return find.where().eq("email", email)
                 .eq("password", password).findUnique();
     }
+
 
 }
