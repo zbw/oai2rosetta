@@ -16,3 +16,7 @@ dist
 
 application-log-*
 projectFilesBackup/*
+/conf/id_rosetta
+/conf/id_rosetta.ppk
+/conf/id_tib
+/conf/id_tib.pub
