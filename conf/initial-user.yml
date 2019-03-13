@@ -1,11 +1,6 @@
 users:
 
     - !!models.User
-        email:      k.ott@zbw.eu
-        name:       Konstantin Ott
+        email:      firstuser@example.com
+        name:       First User
         password:   1234
-
-    - !!models.User
-            email:      y.friese@zbw.eu
-            name:       Yvonne Friese
-            password:   asdf
