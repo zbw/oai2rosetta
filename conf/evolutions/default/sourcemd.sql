@@ -1,1 +1,0 @@
-ALTER TABLE  `repository` ADD  `source_mdformat` VARCHAR( 255 ) NOT NULL;

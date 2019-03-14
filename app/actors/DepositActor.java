@@ -123,6 +123,8 @@ public class DepositActor extends UntypedActor {
         } catch (Exception e) {
             e.printStackTrace();
             Logger.error("depositError for: " + record.identifier + " - "+ e.getMessage());
+            record.errormsg = ("depositError for: " + record.identifier + " - "+ e.getMessage());
+            record.save();
         }
         return ok;
     }

@@ -25,6 +25,7 @@ public class Record extends Model {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "record")   @JsonBackReference
     public List<Resource> resources;
     public String title;
+    @Column(columnDefinition = "TEXT")
     public String metadata;
 
     public Date logcreated;

@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import play.data.validation.Constraints;
 import com.avaje.ebean.Model;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.List;
 
 /**
@@ -16,7 +13,6 @@ import java.util.List;
 @Entity
 public class Repository extends Model {
 
-    @Constraints.Required
     @Id
     public Integer repository_id;
     public String id;
@@ -25,6 +21,7 @@ public class Repository extends Model {
 
     public String oaiUrl;
     public String oaiTitle;
+    @Column(columnDefinition = "TEXT")
     public String oaiMapping;
     public String dcingest;
     public String nomimetypes;

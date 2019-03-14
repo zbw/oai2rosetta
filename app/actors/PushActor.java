@@ -81,6 +81,8 @@ public class PushActor extends UntypedActor {
                 jsch.addIdentity(keyFile.getAbsolutePath(), "");
             } else {
                 Logger.info("keyfile not found: " + record.repository.ftpKey);
+                record.errormsg= "keyfile not found: " + record.repository.ftpKey;
+                record.save();
                 return false;
             }
             sftpSession.connect();

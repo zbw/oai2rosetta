@@ -16,6 +16,7 @@ public class User extends Model {
     public String name;
     public String password;
 
+    public User(){}
     public User(String email, String name, String password) {
         this.email = email;
         this.name = name;

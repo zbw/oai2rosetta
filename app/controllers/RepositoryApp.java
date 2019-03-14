@@ -59,7 +59,11 @@ public class RepositoryApp extends Controller {
             return badRequest(views.html.repository.render(repoForm));
         }
         Repository repos = repoForm.get();
-        repos.update();
+        if (repos.repository_id == null) {
+            repos.save();
+        } else {
+            repos.update();
+        }
         flash("success", String.format("%s erfolgreich gespeichert.",repos.title));
         return list();
     }

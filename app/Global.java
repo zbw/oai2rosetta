@@ -21,10 +21,7 @@ import play.libs.Akka;
 import play.libs.Yaml;
 import scala.concurrent.duration.Duration;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class Global extends GlobalSettings {
@@ -52,11 +49,16 @@ public class Global extends GlobalSettings {
             }
         };
 
+
         if (User.find.findRowCount() == 0) {
             Map users = (Map) Yaml.load("initial-user.yml");
-            System.out.println(users);
-            Ebean.save((Collection) (users.get("users")));
-            Ebean.save(users.get("users"));
+            ArrayList<User> initialusers = (ArrayList<User>) users.get("users");
+            for (User user: initialusers
+                 ) {
+                System.out.println("initialuser:"+user.name);
+                user.save();
+            }
+
         }
 
 

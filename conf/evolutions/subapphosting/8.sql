@@ -1,1 +1,0 @@
-ALTER TABLE  `repository` ADD  `dcingest` VARCHAR( 255 ) NOT NULL;

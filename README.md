@@ -13,6 +13,8 @@ Configuring is done in the `conf/application.conf` file. Especially interesting 
 * `db.default.url`
 * `importdirectory`
 ## Initial Run
+If the database schema is not installed yet set `play.evolutions.enabled=true´ and follow the intstruction in the browser.
+
 in `conf/initial-user.yml` is an initial user that is inserted in an empty db.
 ## Deployment
 `./sbt universal:packageZipTarball` will create a tgz. Copy it into your target environment and unpack it. Execute bin/dspacesubapp and the application will run.
