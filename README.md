@@ -14,6 +14,8 @@ Configuring is done in the `conf/application.conf` file. Especially interesting 
 If the database schema is not installed yet set `play.evolutions.enabled=true´ and follow the intstruction in the browser.
 
 in `conf/initial-user.yml` is an initial user that is inserted in an empty db.
+
+Users are for basic authentification, but there is no usermanagement. So users have to be added manually in the DB.
 ## Deployment
 
 * `./sbt dist` will build a zip package in target/universal
