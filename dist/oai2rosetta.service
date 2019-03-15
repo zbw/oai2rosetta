@@ -1,0 +1,19 @@
+[Unit]
+Description=OAI submission application
+After=network.target
+
+[Service]
+# Type=forking
+
+PIDFile=/pathToPid/RUNNING_PID
+WorkingDirectory=/<pathToApplication>/oai2rosetta-1.0
+ExecStart=/<pathToApplication>/oai2rosetta-1.0/bin/oai2rosetta -Dhttp.port=9000 -Dconfig.file=/<pathToApplication>/oai2rosetta-1.0/conf/<target-conf>
+Restart=on-failure
+User=<runUser>
+Group=<runGroup>
+
+# See http://serverfault.com/a/695863
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target
