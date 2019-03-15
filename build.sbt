@@ -23,3 +23,7 @@ libraryDependencies ++= Seq(
   "dom4j" % "dom4j" % "1.6",
   "com.jcraft" % "jsch" % "0.1.55"
 )
+
+sources in (Compile, doc) := Seq.empty
+
+publishArtifact in (Compile, packageDoc) := false
