@@ -9,6 +9,9 @@ javaOptions in Universal ++= Seq(
   s"-Dpidfile.path=/var/run/${packageName.value}/play.pid"
 )
 
+sources in (Compile, doc) := Seq.empty
+
+publishArtifact in (Compile, packageDoc) := false
 
 scalaVersion := "2.11.11"
 routesGenerator := StaticRoutesGenerator
@@ -24,6 +27,3 @@ libraryDependencies ++= Seq(
   "com.jcraft" % "jsch" % "0.1.55"
 )
 
-sources in (Compile, doc) := Seq.empty
-
-publishArtifact in (Compile, packageDoc) := false
