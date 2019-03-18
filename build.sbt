@@ -5,10 +5,6 @@ version := "1.0"
 lazy val root = (project in file(".")).enablePlugins(PlayJava, PlayEbean, JavaServerAppPackaging)
 
 
-javaOptions in Universal ++= Seq(
-  s"-Dpidfile.path=/var/run/${packageName.value}/play.pid"
-)
-
 sources in (Compile, doc) := Seq.empty
 
 publishArtifact in (Compile, packageDoc) := false
