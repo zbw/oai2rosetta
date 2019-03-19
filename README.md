@@ -19,9 +19,7 @@ Users are for basic authentification, but there is no usermanagement. So users h
 ## Deployment
 
 * `./sbt dist` will build a zip package in target/universal
-* `./sbt universal:packageZipTarball` will build a gz package in target/universal
-* `./sbt universal:packageZipTarball` will create a tgz. Copy it into your target environment and unpack it. Execute bin/dspacesubapp and the application will run.
-* `./sbt dist` will build a zip package in target/universal
+* `./sbt universal:packageZipTarball` will create a gz package in target/universal. Copy it into your target environment and unpack it. Execute bin/dspacesubapp and the application will run.
 * You can also build a deb or rpm package with `debian:packageBin` [see](https://www.scala-sbt.org/sbt-native-packager/archetypes/java_server/index.html)
 
 You can add a special config file into config. It will overwrite settings made in `application.conf`. To use it execute `bin/dspacesubapp -Dconfig.resource=prod.conf`
