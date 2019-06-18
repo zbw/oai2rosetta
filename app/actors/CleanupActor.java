@@ -90,6 +90,7 @@ public class CleanupActor extends UntypedActor {
                    }
                }
            } catch (IOException e) {
+               ok=false;
                e.printStackTrace();
            }
            sshSession.disconnect();
@@ -97,6 +98,7 @@ public class CleanupActor extends UntypedActor {
        } catch (JSchException e) {
            Logger.error("SSL Connection error for:" + record.id + " - " + e.getMessage());
            e.printStackTrace();
+           ok=false;
        }
        return ok;
    }
