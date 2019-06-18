@@ -99,6 +99,7 @@ public class ResourceUtils {
     public static List<String> unzip(String path, String zipFileName, String cp) throws IOException, CorruptFileException {
         List<String> resources = new ArrayList();
         ZipInputStream zis = null;
+        FileOutputStream fos = null;
         byte[] buffer = new byte[1024];
         try {
             if (cp==null) {
@@ -120,7 +121,7 @@ public class ResourceUtils {
                 } else {
                     new File(newFile.getParent()).mkdirs();
 
-                    FileOutputStream fos = new FileOutputStream(newFile);
+                    fos = new FileOutputStream(newFile);
 
                     int len;
                     while ((len = zis.read(buffer)) > 0) {
@@ -159,6 +160,9 @@ public class ResourceUtils {
              throw e;
         } finally {
             zis.close();
+            if (fos!=null) {
+                fos.close();
+            }
         }
 
         return resources;

@@ -80,7 +80,9 @@ public class OAIClient {
             throw new OAIException(e);
         } finally {
             try {
-                is.close();
+                if (is!=null) {
+                    is.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
