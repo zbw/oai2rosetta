@@ -21,6 +21,7 @@ package oai;
 import org.dom4j.Document;
 import org.dom4j.io.SAXReader;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
@@ -66,9 +67,10 @@ public class OAIClient {
      * @throws OAIException
      */
     public Record getRecord(String identifier, String metadataPrefix) throws OAIException {
+        InputStream is = null;
         try {
             String query = builder.buildGetRecordQuery(identifier, metadataPrefix);
-            InputStream is =  new URL(query).openStream();
+            is =  new URL(query).openStream();
             reader.setEncoding("UTF-8");
             Document document = reader.read(is);
             return new Record(document);
@@ -76,6 +78,12 @@ public class OAIClient {
             throw e;
         } catch (Exception e) {
             throw new OAIException(e);
+        } finally {
+            try {
+                is.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

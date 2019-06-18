@@ -133,9 +133,7 @@ public class PushActor extends UntypedActor {
             }
             //Logger.info("permissions for: " + src.getName() + " : " + sftpChannel.lstat(src.getName()));
         } catch (SftpException e) {
-            if (!overwrite) {
                 return false;
-            }
         }
         try {
             sftpChannel.cd(src.getName());

@@ -157,7 +157,9 @@ public class ResourceUtils {
             zis.close();
              e.printStackTrace();
              throw e;
-        } 
+        } finally {
+            zis.close();
+        }
 
         return resources;
     }
