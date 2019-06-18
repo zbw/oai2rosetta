@@ -117,7 +117,6 @@ public class PushActor extends UntypedActor {
         return ok;
     }
     private static boolean copyFiles(ChannelSftp sftpChannel, File src) {
-        boolean overwrite = true;
         File[] list = src.listFiles();
         if(list==null){
             return false;

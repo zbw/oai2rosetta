@@ -127,7 +127,7 @@ public class ResourceUtils {
                             fos.write(buffer, 0, len);
                         }
 
-                        fos.close();
+                        
                         resources.add(name);
                     }
                 }
