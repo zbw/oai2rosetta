@@ -23,3 +23,6 @@ libraryDependencies ++= Seq(
   "com.jcraft" % "jsch" % "0.1.55"
 )
 
+dockerEntrypoint := Seq(
+  "bin/oai2rosetta",
+  "-Dconfig.resource=docker.conf")

@@ -34,5 +34,15 @@ There is an example for system.d file in `dist/oai2rosetta.service`. When build 
     - systemctl stop oai2rosetta.
     - systemctl enable oai2rosetta.
 
+## Docker
+
+you can dockerize the application by
+
+`./sbt docker:publishLocal`
+and run the container by `docker run -p 9001:9000 oai2rosetta:1.0`.
+
+there is a docker.conf in the conf directory which is referenced in the build.sbt
+
+
 ## More Information
 this application is built on [play 2.5](https://www.playframework.com/documentation/2.5.x/Home)
