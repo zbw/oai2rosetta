@@ -272,7 +272,15 @@ public class FetchActor extends UntypedActor {
             record.status = record.STATUSIMPORTEDERROR;
             e.printStackTrace();
         }
-        record.save();
+        try {
+            record.save();
+        } catch (Exception e) {
+            record.title="";
+            record.errormsg = e.getLocalizedMessage();
+            record.metadata="";
+            record.status = record.STATUSIMPORTEDERROR;
+            record.save();
+        }
         return ok;
     }
 }
