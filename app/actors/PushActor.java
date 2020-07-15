@@ -122,23 +122,28 @@ public class PushActor extends UntypedActor {
             return false;
         }
         try {
-            sftpChannel.mkdir(src.getName());
-            // take parent rights
-            try {
-                SftpATTRS attr = sftpChannel.lstat(".");
-                sftpChannel.setStat(src.getName(),attr);
-            } catch (Exception e) {
-                //Logger.info(e.getMessage() +" permissions for: " + src.getName() + " : " + sftpChannel.lstat(src.getName()));
-            }
-            //Logger.info("permissions for: " + src.getName() + " : " + sftpChannel.lstat(src.getName()));
-        } catch (SftpException e) {
-                return false;
-        }
-        try {
             sftpChannel.cd(src.getName());
         } catch (SftpException e1) {
+            try {
+                sftpChannel.mkdir(src.getName());
+                // take parent rights
+                try {
+                    SftpATTRS attr = sftpChannel.lstat(".");
+                    sftpChannel.setStat(src.getName(),attr);
+                } catch (Exception e) {
+                    //Logger.info(e.getMessage() +" permissions for: " + src.getName() + " : " + sftpChannel.lstat(src.getName()));
+                }
+                //Logger.info("permissions for: " + src.getName() + " : " + sftpChannel.lstat(src.getName()));
+            } catch (SftpException e) {
+                return false;
+            }
+            try {
+                sftpChannel.cd(src.getName());
+            } catch (SftpException e2) {
 
+            }
         }
+
         // Start copying files in the directory
         for (File curFile : list) {
             if (curFile.isDirectory()) {
