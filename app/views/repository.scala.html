@@ -44,6 +44,8 @@
         @helper.inputText(repoForm("resourcesPrefix"),'size -> 50, 'help -> "OAI Prefix for the resources if different e.g. didl")
         @helper.inputText(repoForm("cms"),'size -> 50, 'help -> "Name of the CMS to use in Rosetta")
         @helper.inputText(repoForm("cmsfield"),'size -> 50, 'help -> "field to use for CMS Enrichment")
+        @helper.inputText(repoForm("bitstreamsearch"),'size -> 20, 'help -> "if the bitstream path has to be replaced")
+        @helper.inputText(repoForm("bitstreamreplace"),'size -> 20, 'help -> "if the bitstream path has to be replaced")
         @helper.inputText(repoForm("mastercollection"),'size -> 50, 'help -> "if not empty this is the mastercollection")
         @helper.inputText(repoForm("collectionxpath"),'size -> 50, 'help -> "xpath for collection ((//setSpec)[last()])")
         @helper.checkbox(repoForm("completecollectionpath"),'_label -> "completecollectionpath", 'help -> "only parent collection or whole path")(FieldConstructor(views.html.bootstrapCheckbox.f), null)

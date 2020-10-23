@@ -27,6 +27,8 @@ public class Repository extends Model {
     public String nomimetypes;
     public String metadataPrefix;
     public String resourcesPrefix;
+    public String bitstreamsearch;
+    public String bitstreamreplace;
     public boolean extractZip;
     public boolean xmlRedirect;
     public String cms;

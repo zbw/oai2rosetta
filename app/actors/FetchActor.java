@@ -203,6 +203,9 @@ public class FetchActor extends UntypedActor {
                         String origfile = uri.replaceAll("\\+", "%20");
 
                         origfile = ResourceUtils.cleanUrl(origfile);
+                        if (record.repository.bitstreamsearch != null && !record.repository.bitstreamsearch.equals("")) {
+                            origfile = origfile.replaceAll(record.repository.bitstreamsearch, record.repository.bitstreamreplace);
+                        }
                         if (origfile == null) {
                             record.status = record.STATUSIMPORTEDERROR;
                             record.errormsg = "file " + uri +" not found";

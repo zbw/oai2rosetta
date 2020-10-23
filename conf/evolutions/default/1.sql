@@ -33,6 +33,8 @@ create table repository (
   nomimetypes                   varchar(255),
   metadata_prefix               varchar(255),
   resources_prefix              varchar(255),
+  bitstreamsearch               varchar(255),
+  bitstreamreplace              varchar(255),
   extract_zip                   tinyint(1) default 0,
   xml_redirect                  tinyint(1) default 0,
   cms                           varchar(255),
