@@ -78,6 +78,10 @@
         @helper.inputText(repoForm("ftpMax"))
         @helper.inputText(repoForm("joblimit"))
         @helper.checkbox(repoForm("active"),'_label -> "active")(FieldConstructor(views.html.bootstrapCheckbox.f), null)
+        <input type="hidden" name="xmlRedirect" value="0" />
+            <input type="hidden" name="extractZip" value="0" />
+            <input type="hidden" name="completecollectionpath" value="0" />
+            <input type="hidden" name="active" value="0" />
         <input type="hidden" value="@repoForm("id").value" name="id">
         <input type="hidden" value="@repoForm("repository_id").value" name="repository_id">
         </fieldset>
