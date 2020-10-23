@@ -20,7 +20,8 @@ libraryDependencies ++= Seq(
   "commons-net" % "commons-net" % "3.3",
   "commons-lang" % "commons-lang" % "2.3",
   "dom4j" % "dom4j" % "1.6",
-  "com.jcraft" % "jsch" % "0.1.55"
+  "com.jcraft" % "jsch" % "0.1.55",
+  "org.mockito" % "mockito-core" % "2.7.19" % Test
 )
 
 dockerEntrypoint := Seq(
