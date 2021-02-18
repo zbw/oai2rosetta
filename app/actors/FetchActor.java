@@ -215,7 +215,8 @@ public class FetchActor extends UntypedActor {
 
                         }
 
-                        String filename = java.net.URLDecoder.decode(uri.substring(uri.lastIndexOf("/") + 1), "UTF-8");
+                        //String filename = java.net.URLDecoder.decode(uri.substring(uri.lastIndexOf("/") + 1), "UTF-8");
+                        String filename = uri.substring(uri.lastIndexOf("/") + 1);
                         if (!record.existResource(importdirectory + record.repository.id + "/" + record.id + "/content/streams/" + filename)) {
                             ResourceUtils.getResource(origfile, importdirectory + record.repository.id + "/" + record.id + "/content/streams/", filename);
                             if (record.repository.extractZip && filename.endsWith("zip")) {
