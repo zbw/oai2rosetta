@@ -31,6 +31,7 @@ public class Repository extends Model {
     public String bitstreamreplace;
     public boolean extractZip;
     public boolean xmlRedirect;
+    public boolean localImport;
     public String cms;
     public String cmsfield;
     public String mastercollection;
