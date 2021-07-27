@@ -19,3 +19,6 @@ projectFilesBackup/*
 /conf/id_rosetta.ppk
 /conf/id_tib
 /conf/id_tib.pub
+/root
+/soap
+
