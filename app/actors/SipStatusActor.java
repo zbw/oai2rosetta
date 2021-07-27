@@ -62,7 +62,7 @@ public class SipStatusActor extends UntypedActor {
                     new QName("http://dps.exlibris.com/", "SipWebServices")).
                     getSipWebServicesPort();
             
-            SipStatusInfo sipStatusInfo = sipws.getSIPStatusInfo(""+record.sipId);
+            SipStatusInfo sipStatusInfo = sipws.getSIPStatusInfo(""+record.sipId, false);
             String sipStatus = sipStatusInfo.getStage();
             if (sipStatus == null) {
                 record.sipStatus = "no rosetta status received";
