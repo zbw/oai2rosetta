@@ -10,9 +10,15 @@ import play.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Created by Ott Konstantin on 25.09.2014.
@@ -62,9 +68,46 @@ public class PushActor extends UntypedActor {
     }
 
     public static boolean move(Record record) {
-        boolean ok = false;
         Config conf = ConfigFactory.load();
         String importdirectory = conf.getString("importdirectory");
+        if(record.repository.localImport){
+            return setFtp(record, importdirectory);
+        }else {
+            return setSftp(record, importdirectory);
+        }
+    }
+    /**
+     * new function created by Hunar Karim on 12.05.2021.
+     */
+    private static boolean setFtp(Record record, String importdirectory){
+        boolean ok = false;
+        try {
+            setCopyFileFtp(importdirectory+record.repository.id+"/"+record.id, record.repository.ftpDir+"/"+record.id);
+            FileUtils.deleteDirectory(new File(importdirectory+record.repository.id+"/"+record.id));
+            ok = true;
+        } catch (IOException e) {
+            Logger.error("moveError for: " + record.identifier + " - "+ e.getMessage(), e);
+            ok = false;
+        }
+        return ok;
+    }
+    /**
+     * new function created by Hunar Karim on 12.05.2021.
+     */
+    private static void setCopyFileFtp(String sourcePath, String dest) throws IOException{
+        try {
+            Path path = Paths.get(dest);
+            Files.createDirectories(path);
+            FileUtils.copyDirectory(new File(sourcePath), new File(dest));
+            Logger.info("Directory is created!");
+
+        } catch (IOException e) {
+            Logger.error("Failed to create directory!" + e.getMessage(), e);
+        }
+    }
+
+    private static boolean setSftp(Record record, String importdirectory){
+        boolean ok = false;
         JSch jsch = new JSch();
         Session sftpSession;
         File keyFile = new File(record.repository.ftpKey);
@@ -113,9 +156,10 @@ public class PushActor extends UntypedActor {
         } catch (SftpException e) {
             Logger.error("moveError for: " + record.identifier + " - "+ e.getMessage(), e);
         }
-
         return ok;
     }
+
+
     private static boolean copyFiles(ChannelSftp sftpChannel, File src) {
         File[] list = src.listFiles();
         if(list==null){

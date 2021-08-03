@@ -37,6 +37,7 @@ create table repository (
   bitstreamreplace              varchar(255),
   extract_zip                   tinyint(1) default 0,
   xml_redirect                  tinyint(1) default 0,
+  local_import                  tinyint(1) default 0,
   cms                           varchar(255),
   cmsfield                      varchar(255),
   mastercollection              varchar(255),

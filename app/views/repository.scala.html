@@ -1,29 +1,29 @@
 @(repoForm:Form[Repository])
 @import helper._
 
-    @mappinghelp = {
-        <div class="alert alert-info" role="alert">
-            <small><code> &lt;iefield&gt;&lt?&gt; &lt;xpath in OAI&gt; &lt;countfield&gt; &lt;option [type|prefix]&gt; &lt;optionvalue&gt; </code></small>
-            <div>dc:creator //dc:creator 1 </div>
-            <div>dc:creator //dc:creator 2  </div>
-            <div>dc:creator //dc:creator 3  </div>
-            <div>dc:creator? //dc:creator 4  - this field is optional.</div>
-            <div>dc:title //dc:title 1   </div>
-            <div>dc:identifier //dc:identifier[starts-with(text(),'http')] 1 type dcterms:URI </div>
-            <div>dc:date //dc:date 1 </div>
-            <div>dc:identifier //dc:identifier[starts-with(text(),'ppn')] 1 prefix ppn: </div>
-        </div>
-    }
+@mappinghelp = {
+    <div class="alert alert-info" role="alert">
+        <small><code> &lt;iefield&gt;&lt?&gt; &lt;xpath in OAI&gt; &lt;countfield&gt; &lt;option [type|prefix]&gt; &lt;optionvalue&gt; </code></small>
+        <div>dc:creator //dc:creator 1 </div>
+        <div>dc:creator //dc:creator 2  </div>
+        <div>dc:creator //dc:creator 3  </div>
+        <div>dc:creator? //dc:creator 4  - this field is optional.</div>
+        <div>dc:title //dc:title 1   </div>
+        <div>dc:identifier //dc:identifier[starts-with(text(),'http')] 1 type dcterms:URI </div>
+        <div>dc:date //dc:date 1 </div>
+        <div>dc:identifier //dc:identifier[starts-with(text(),'ppn')] 1 prefix ppn: </div>
+    </div>
+}
 
-    @dcingesthelp = {
-        <div class="alert alert-info" role="alert">
-            <div>DC tags that will be ingested in every IE. Key and value are seperated by space and every line is an own entry </div>
-            <small><code> &lt;key&gt; &lt;value&gt; </code></small>
-            <div>dc:creator ZBW </div>
-            <div>dcterms:license templicense  </div>
-        </div>
-    }
-    @implicitField = @{FieldConstructor(bootstrapInput.f)}
+@dcingesthelp = {
+    <div class="alert alert-info" role="alert">
+        <div>DC tags that will be ingested in every IE. Key and value are seperated by space and every line is an own entry </div>
+        <small><code> &lt;key&gt; &lt;value&gt; </code></small>
+        <div>dc:creator ZBW </div>
+        <div>dcterms:license templicense  </div>
+    </div>
+}
+@implicitField = @{FieldConstructor(bootstrapInput.f)}
 
 @main("Edit Repository", null) {
 
@@ -31,24 +31,25 @@
         <fieldset>
 
             <legend>Repository (@repoForm("title").valueOr("New"))</legend>
-        @helper.inputText(repoForm("id"), '_label -> "ID of root institution or collection",'help ->"e.g. com_123456789_1 or root for everything")
-        @helper.inputText(repoForm("title"), '_label -> "Titel")
-        @helper.inputText(repoForm("oaiUrl"),'size -> 50, 'help ->"e.g. http://pub.zbw.eu/dspace-oai/request")
-        @helper.checkbox(repoForm("xmlRedirect"),'_label -> "xmlRedirect", 'help ->"Dspace xmlui redirects from bitstream to handle/bitstream but encodes wrong")(FieldConstructor(views.html.bootstrapCheckbox.f), null)
-        @helper.inputText(repoForm("oaiTitle"),'size -> 50, 'help -> "xpath of title e.g. //dc:title")
-        @helper.checkbox(repoForm("extractZip"),'_label -> "extractZip", 'help ->"Extract Zip Files?")(FieldConstructor(views.html.bootstrapCheckbox.f), null)
-        @helper.textarea(repoForm("oaiMapping"),'_label -> "oaiMapping",'rows -> 10, 'cols->50, 'help ->mappinghelp)(FieldConstructor(views.html.bootstrapTextarea.f), null)
-        @helper.textarea(repoForm("dcingest"),'_label -> "dcingest",'rows -> 10, 'cols->50, 'help ->dcingesthelp)(FieldConstructor(views.html.bootstrapTextarea.f), null)
-        @helper.textarea(repoForm("nomimetypes"),'_label -> "nomimetypes",'rows -> 3, 'cols->50, 'help ->"we dont want theses mimes")(FieldConstructor(views.html.bootstrapTextarea.f), null)
-        @helper.inputText(repoForm("metadataPrefix"),'size -> 50, 'help ->"OAI Prefix for the Metadata e.g. oai_dc")
-        @helper.inputText(repoForm("resourcesPrefix"),'size -> 50, 'help -> "OAI Prefix for the resources if different e.g. didl")
-        @helper.inputText(repoForm("cms"),'size -> 50, 'help -> "Name of the CMS to use in Rosetta")
-        @helper.inputText(repoForm("cmsfield"),'size -> 50, 'help -> "field to use for CMS Enrichment")
-        @helper.inputText(repoForm("bitstreamsearch"),'size -> 20, 'help -> "if the bitstream path has to be replaced")
-        @helper.inputText(repoForm("bitstreamreplace"),'size -> 20, 'help -> "if the bitstream path has to be replaced")
-        @helper.inputText(repoForm("mastercollection"),'size -> 50, 'help -> "if not empty this is the mastercollection")
-        @helper.inputText(repoForm("collectionxpath"),'size -> 50, 'help -> "xpath for collection ((//setSpec)[last()])")
-        @helper.checkbox(repoForm("completecollectionpath"),'_label -> "completecollectionpath", 'help -> "only parent collection or whole path")(FieldConstructor(views.html.bootstrapCheckbox.f), null)
+            @helper.inputText(repoForm("id"), '_label -> "ID of root institution or collection",'help ->"e.g. com_123456789_1 or root for everything")
+            @helper.inputText(repoForm("title"), '_label -> "Titel")
+            @helper.inputText(repoForm("oaiUrl"),'size -> 50, 'help ->"e.g. http://pub.zbw.eu/dspace-oai/request")
+            @helper.checkbox(repoForm("xmlRedirect"),'_label -> "xmlRedirect", 'help ->"Dspace xmlui redirects from bitstream to handle/bitstream but encodes wrong")(FieldConstructor(views.html.bootstrapCheckbox.f), null)
+            @helper.inputText(repoForm("oaiTitle"),'size -> 50, 'help -> "xpath of title e.g. //dc:title")
+            @helper.checkbox(repoForm("extractZip"),'_label -> "extractZip", 'help ->"Extract Zip Files?")(FieldConstructor(views.html.bootstrapCheckbox.f), null)
+            @helper.checkbox(repoForm("localImport"),'_label -> "localImport", 'help ->"Import Data locally?")(FieldConstructor(views.html.bootstrapCheckbox.f), null)
+            @helper.textarea(repoForm("oaiMapping"),'_label -> "oaiMapping",'rows -> 10, 'cols->50, 'help ->mappinghelp)(FieldConstructor(views.html.bootstrapTextarea.f), null)
+            @helper.textarea(repoForm("dcingest"),'_label -> "dcingest",'rows -> 10, 'cols->50, 'help ->dcingesthelp)(FieldConstructor(views.html.bootstrapTextarea.f), null)
+            @helper.textarea(repoForm("nomimetypes"),'_label -> "nomimetypes",'rows -> 3, 'cols->50, 'help ->"we dont want theses mimes")(FieldConstructor(views.html.bootstrapTextarea.f), null)
+            @helper.inputText(repoForm("metadataPrefix"),'size -> 50, 'help ->"OAI Prefix for the Metadata e.g. oai_dc")
+            @helper.inputText(repoForm("resourcesPrefix"),'size -> 50, 'help -> "OAI Prefix for the resources if different e.g. didl")
+            @helper.inputText(repoForm("cms"),'size -> 50, 'help -> "Name of the CMS to use in Rosetta")
+            @helper.inputText(repoForm("cmsfield"),'size -> 50, 'help -> "field to use for CMS Enrichment")
+            @helper.inputText(repoForm("bitstreamsearch"),'size -> 20, 'help -> "if the bitstream path has to be replaced")
+            @helper.inputText(repoForm("bitstreamreplace"),'size -> 20, 'help -> "if the bitstream path has to be replaced")
+            @helper.inputText(repoForm("mastercollection"),'size -> 50, 'help -> "if not empty this is the mastercollection")
+            @helper.inputText(repoForm("collectionxpath"),'size -> 50, 'help -> "xpath for collection ((//setSpec)[last()])")
+            @helper.checkbox(repoForm("completecollectionpath"),'_label -> "completecollectionpath", 'help -> "only parent collection or whole path")(FieldConstructor(views.html.bootstrapCheckbox.f), null)
             <div class="form-group">
                 <label for="source_mdformat" class="col-md-12 control-label">Source_mdformat @repoForm("source_mdformat").value</label>
                 <div class="col-md-6 field">
@@ -63,29 +64,30 @@
                     if this field is filled, source MD with specified format will be included to METS
                 </div>
             </div>
-        @helper.inputText(repoForm("depositWsdlUrl"),'size -> 50)
-        @helper.inputText(repoForm("producerWsdlUrl"),'size -> 50)
-        @helper.inputText(repoForm("sipstatusWsdlUrl"),'size -> 50)
-        @helper.inputText(repoForm("materialFlowId"))
-        @helper.inputText(repoForm("producerId"))
-        @helper.inputText(repoForm("depositSetId"))
-        @helper.inputText(repoForm("userName"))
-        @helper.inputText(repoForm("institution"))
-        @helper.inputText(repoForm("password"))
-        @helper.inputText(repoForm("ftpHost"))
-        @helper.inputText(repoForm("ftpUser"))
-        @helper.inputText(repoForm("ftpPort"))
-        @helper.inputText(repoForm("ftpDir"))
-        @helper.inputText(repoForm("ftpKey"))
-        @helper.inputText(repoForm("ftpMax"))
-        @helper.inputText(repoForm("joblimit"))
-        @helper.checkbox(repoForm("active"),'_label -> "active")(FieldConstructor(views.html.bootstrapCheckbox.f), null)
-        <input type="hidden" name="xmlRedirect" value="0" />
+            @helper.inputText(repoForm("depositWsdlUrl"),'size -> 50)
+            @helper.inputText(repoForm("producerWsdlUrl"),'size -> 50)
+            @helper.inputText(repoForm("sipstatusWsdlUrl"),'size -> 50)
+            @helper.inputText(repoForm("materialFlowId"))
+            @helper.inputText(repoForm("producerId"))
+            @helper.inputText(repoForm("depositSetId"))
+            @helper.inputText(repoForm("userName"))
+            @helper.inputText(repoForm("institution"))
+            @helper.inputText(repoForm("password"))
+            @helper.inputText(repoForm("ftpHost"))
+            @helper.inputText(repoForm("ftpUser"))
+            @helper.inputText(repoForm("ftpPort"))
+            @helper.inputText(repoForm("ftpDir"))
+            @helper.inputText(repoForm("ftpKey"))
+            @helper.inputText(repoForm("ftpMax"))
+            @helper.inputText(repoForm("joblimit"))
+            @helper.checkbox(repoForm("active"),'_label -> "active")(FieldConstructor(views.html.bootstrapCheckbox.f), null)
+            <input type="hidden" name="xmlRedirect" value="0" />
+            <input type="hidden" name="localImport" value="0" />
             <input type="hidden" name="extractZip" value="0" />
             <input type="hidden" name="completecollectionpath" value="0" />
             <input type="hidden" name="active" value="0" />
-        <input type="hidden" value="@repoForm("id").value" name="id">
-        <input type="hidden" value="@repoForm("repository_id").value" name="repository_id">
+            <input type="hidden" value="@repoForm("id").value" name="id">
+            <input type="hidden" value="@repoForm("repository_id").value" name="repository_id">
         </fieldset>
         <button type="submit" class="btn btn-default">Save</button>
     }
