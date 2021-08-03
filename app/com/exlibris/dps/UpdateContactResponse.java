@@ -3,7 +3,6 @@ package com.exlibris.dps;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 
@@ -17,7 +16,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="return" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="updateContact" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -28,35 +27,34 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "updateContactResponse", propOrder = {
-    "_return"
+    "updateContact"
 })
 public class UpdateContactResponse {
 
-    @XmlElement(name = "return")
-    protected String _return;
+    protected String updateContact;
 
     /**
-     * Gets the value of the return property.
+     * Gets the value of the updateContact property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getReturn() {
-        return _return;
+    public String getUpdateContact() {
+        return updateContact;
     }
 
     /**
-     * Sets the value of the return property.
+     * Sets the value of the updateContact property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setReturn(String value) {
-        this._return = value;
+    public void setUpdateContact(String value) {
+        this.updateContact = value;
     }
 
 }
